@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.ddmanage.mapper.GetPurchaseMapper">
+    <select id="Get_Purchase_bar"  resultType="java.lang.String"><!--查找用户-->
+       select count(*) from fy_purchase where status =#{status} and create_time>#{history_time}
+    </select>
+    <select id="Get_Supplier" resultType="java.lang.String">
+       select count(*) from bd_supplier where regist_time>#{history_time}
+    </select>
+
+    <select id="Purchase_track_mapper" resultType="com.mol.ddmanage.Ben.Purchase_track_ben">
+        select * from fy_purchase where status=#{status}
+    </select>
+
+    <select id="Get_Purchase_staff" resultType="com.mol.ddmanage.Ben.App_user_table">
+        select * from  app_user where dd_user_id=#{dd_user_id}
+    </select>
+
+    <select id="Get_Supplier_Review_mapper" resultType="com.mol.ddmanage.Ben.Supplier_Review_ben">
+        select * from  bd_supplier where supstate=#{supstate}
+    </select>
+
+    <select id="Get_this_month_Supplier_number_mapper" resultType="com.mol.ddmanage.Ben.Supplier_Review_ben">
+        select  * from  bd_supplier where supstate='1' and #{time_end}>last_update_time and last_update_time>#{time_start}
+    </select>
+
+
+</mapper>

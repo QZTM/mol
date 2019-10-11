@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.ddmanage.mapper.Office.Title_Details_Mapper">
+
+    <select id="Purchase" resultType="java.util.Map">
+        select * from fy_purchase where id=#{purchase_id}
+    </select>
+
+    <select id="MaterialListMapper"  resultType="com.mol.ddmanage.Ben.Office.Title_Details_Material"><!--查找用户-->
+      SELECT fy_purchase_detail.goods_quantity,bd_material.* ,(bd_measdoc.name)measdoc FROM fy_purchase_detail,bd_material,bd_measdoc WHERE fy_purchase_detail.pk_material=bd_material.pk_material AND fy_purchase_detail.fy_purchase_id=#{purchase_id} and bd_measdoc.pk_measdoc=bd_material.pk_measdoc
+    </select>
+
+    <select id="SupplierQuoteMapper" resultType="com.mol.ddmanage.Ben.Office.Title_Details_suppelier_quote_ben">
+        SELECT fy_quote.*,bd_material.`name`,bd_material.materialspec,(bd_measdoc.`name`)unit FROM fy_quote,bd_material,bd_measdoc WHERE fy_quote.pkMaterialId=bd_material.pk_material AND bd_material.pk_measdoc=bd_measdoc.pk_measdoc AND fy_quote.fyPurchaseId=#{purchase_id}
+    </select>
+
+
+</mapper>

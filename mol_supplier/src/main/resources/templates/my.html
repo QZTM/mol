@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta charset="UTF-8">
+    <title>我</title>
+    <!-- Bootstrap -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery) -->
+    <script th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <!--获取打开环境-->
+    <script th:src="@{/js/ddInit.js}" type="text/javascript" charset="utf-8"></script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。 -->
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <link th:href="@{/css/thirdPage_homePage.css}">
+    <script src="https://g.alicdn.com/dingding/dingtalk-jsapi/2.7.13/dingtalk.open.js"></script>
+    <style>
+        .button{
+            clear: both;
+            /*width: 120px;*/
+            text-align: right;
+            padding-right: 13px;
+            margin-top:43px;
+            height: 33px;
+
+        }
+
+        #form div input {
+            height: 42px;
+        }
+    </style>
+</head>
+<body>
+<div style="clear: both;height: 136px;">
+    <!-- 头像 -->
+    <div style="float: left;margin: 25px 0px 5px 15px;">
+        <img th:src="@{${session.ddUser.avatar == null?'/img/person.png':session.ddUser.avatar}}" alt="..." class="img-circle" style="width: 88px;height: 88px;">
+    </div>
+    <!-- 个人信息 -->
+    <div id="1" style="float: left;margin:35px 0px 5px 15px ;font-size: 16px;">
+        <div style="float: left;" th:text="${session.user.name}"></div>
+        <div style="float: left;">
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;部门:</span>
+            <span>销售部</span>
+        </div>
+        <div style="float: left;clear: both;margin-top: 15px;" th:text="${session.supplier.name}">枣庄星联信息科技有限公司</div>
+    </div>
+</div>
+<!-- 供应商性质 -->
+<!-- <div class="navbar-text" style="margin: 5px 0 5px 35px;font-size: 16px;">
+    <span>供应商性质：</span><span>基础供应商</span>
+</div>
+<div style="margin: 5px 0 5px 35px;font-size: 16px;" >
+    所属行业：<span>基础供应商</span>
+</div> -->
+<div >
+    <ul style="margin: 0px 0 5px 25px;font-size: 16px;">
+        <li role="presentation" style="margin-top: 10px;" ><span>供应商性质：</span><span th:text="${supplierattr}"></span></li>
+        <li role="presentation" style="margin-top: 10px;" ><span>所属行业：</span><span th:text="${industrystr==''?'暂未设置':industrystr}"></span></li>
+    </ul>
+</div>
+
+<hr style="height:3px;border:none;border-top:3px double dodgerblue;" />
+
+<div>
+    <ul class="nav nav-pills nav-stacked">
+        <li role="presentation" style="border:1px solid #dddddd;"><a href="#">手机验证</a></li>
+        <li role="presentation"  style="border:1px solid #dddddd;"><a href="/auth/attr">供应商属性认证</a></li>
+    </ul>
+</div>
+</body>
+</html>

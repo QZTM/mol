@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>丰源采购管理系统</title>
+  <link rel="shortcut icon" href="/imge/title.ico" />
+  <link rel="stylesheet" href="/layui/css/layui.css">
+  <script src="/echarts.min.js"></script>
+</head>
+<body style="overflow-y: hidden;overflow-x: hidden;">
+<!-- 水平导航菜单-->
+<div  style="height:1000px;width:100%;">
+	<div>
+	<ul class="layui-nav">
+	<!--<li class="layui-nav-item"><a href="">丰源中科生态后台管理系统</a></li>-->
+	<label style="font-size: 18px;">丰源采购后台系统</label><!--标题-->
+  <li class="layui-nav-item"><a href="">最新活动</a></li>
+  <li class="layui-nav-item layui-this">
+    <a href="javascript:;">产品</a>
+    <dl class="layui-nav-child">
+      <dd><a href="">选项1</a></dd>
+      <dd><a href="">选项2</a></dd>
+      <dd><a href="">选项3</a></dd>
+    </dl>
+  </li>
+  <li class="layui-nav-item"><a href="">大数据</a></li>
+  <li class="layui-nav-item">
+    <a href="javascript:;">解决方案</a>
+    <dl class="layui-nav-child">
+      <dd><a href="">移动模块</a></dd>
+      <dd><a href="">后台模版</a></dd>
+      <dd class="layui-this"><a href="">选中项</a></dd>
+      <dd><a href="">电商平台</a></dd>
+    </dl>
+  </li>
+  <li class="layui-nav-item"><a href="">社区</a>
+  	
+  </li>
+<!--  用户头像-->
+  <li class="layui-nav-item " style="float:right " lay-unselect="">
+    <a href="javascript:;"><img src="/imge/timg.jpg" class="layui-nav-img">我</a>
+    <dl class="layui-nav-child">
+      <dd><a href="javascript:;">修改信息</a></dd>
+      <dd><a href="javascript:;">安全管理</a></dd>
+      <dd><a href="javascript:;">退了</a></dd>
+    </dl>
+  </li>
+</ul>
+</div>
+
+
+<!--左侧垂直菜单栏-->
+<div style="width: 10.6%;height: 1000px; background-color: #393D49;float:left; display:inline">
+	<ul class="layui-nav layui-nav-tree layui-inline"  lay-filter="demo" style="width: 100%;margin-right: 10px;">
+  <li class="layui-nav-item layui-nav-itemed">
+    <a href="javascript:;">工作台</a>
+    <dl class="layui-nav-child">
+      <dd><a  id="G1I1" href="javascript:;">首页</a></dd>
+    </dl>
+  </li>
+  <li class="layui-nav-item">
+    <a href="javascript:;">办公管理</a>
+    <dl class="layui-nav-child">
+      <dd><a id="G2I1" href="javascript:;">内部公告</a></dd>
+      <dd><a id="G2I2" href="javascript:;">审核议价历史</a></dd>
+      <dd><a id="G2I3" href="javascript:;">通话记录</a></dd>
+      <dd><a id="G2I4" href="javascript:;">采购进度跟踪</a></dd>
+      <dd><a id="G2I5" href="javascript:;">采购合同管理</a></dd>
+    </dl>
+  </li>
+  
+  <li class="layui-nav-item">
+    <a href="javascript:;">成员管理</a>
+    <dl class="layui-nav-child">
+      <dd><a id="G3I1" href="javascript:;">部门管理</a></dd>
+      <dd><a id="G3I2" href="javascript:;">岗位设置</a></dd>
+      <dd><a id="G3I3" href="javascript:;">员工设置</a></dd>
+    </dl>
+  </li>
+
+      <li class="layui-nav-item">
+        <a href="javascript:;">专家管理</a>
+        <dl class="layui-nav-child">
+          <dd><a id="G4I1" href="javascript:;">专家信息管理</a></dd>
+          <dd><a id="G4I2" href="javascript:;">专家审核</a></dd>
+        </dl>
+      </li>
+
+  <li class="layui-nav-item">
+    <a href="javascript:;">采购订单管理</a>
+    <dl class="layui-nav-child">
+      <dd><a id="G5I1" href="javascript:">采购订单</a></dd>
+    </dl>
+  </li>
+  
+  <li class="layui-nav-item">
+    <a href="javascript:;">供应商管理</a>
+    <dl class="layui-nav-child">
+      <dd><a id="G6I1" href="javascript:">供应商管理</a></dd>
+      <dd><a id="G6I2" href="javascript:">供应商审核</a></dd>
+    </dl>
+  </li>
+  
+  <li class="layui-nav-item">
+    <a ref="javascript:;">工具</a>
+    <dl class="layui-nav-child">
+      <dd><a id="G7I1" href="javascript:">审批流程设置</a></dd>
+      <dd><a id="G7I2" href="javascript:">议价流程设置</a></dd>
+      <dd><a id="G7I3" href="javascript:">登录日志</a></dd>
+    </dl>
+  </li>
+ </ul>
+</div>
+
+<!--顶部任务栏-->
+<div id="demo" lay-filter="demo" style="width: 88.54%;height:auto;float:left; display:inline" class="layui-tab layui-tab-card" lay-allowClose="true"><!--width 1700-->
+
+  <ul id="li" class="layui-tab-title">
+    <li  lay-id="G1I1_bat_id" class="layui-this">首页</li>
+  </ul>
+  <div class="layui-tab-content" style="height: auto;">
+    <div class="layui-tab-item layui-show">
+      <div id="G1I1_form" style="width:100%;height: auto;float:left; display:inline">
+    		<iframe id="web" style="width: 100%;height:800px ;"  src="/Home/Home"><!--width 1700-->
+    			
+    		</iframe>
+    	</div>
+    </div>
+  </div>
+
+</div>
+<!--<button id="site-demo-active" onclick="ccc()">1111122334</button>-->
+
+</div>
+
+
+<script src="/layui/layui.all.js"></script>
+<script>
+  function test1()
+  {
+    // document.getElementById("tongji").click();
+    console.log(1111111);
+    // document.getElementById("G1I1_form").style.display="none";
+    document.getElementById("web").src="/Home/Title_Details?name=1"
+  //  document.getElementById("web").contentWindow.location.reload();
+
+  }
+
+</script>
+<script>
+
+layui.use('element', function(){
+  var $ = layui.jquery
+  ,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+  
+//document.getElementById("G1T1").click();
+  //触发事件
+  var active = {
+    tabAdd: function( Id,name,htmltext){
+    	console.log(name);
+      //新增一个Tab项
+      element.tabAdd('demo', {
+        title: name//+ (Math.random()*1000|0) //用于演示
+        ,content:htmltext// (Math.random()*1000|0)
+        ,id:Id //实际使用一般是规定好的id，这里以时间戳模拟下
+      })
+    }
+    ,tabDelete: function(othis){
+      //删除指定Tab项
+      element.tabDelete('demo', '44'); //删除：“商品管理”
+      othis.addClass('layui-btn-disabled');
+    }
+    ,tabChange: function(changeid){
+      //切换到指定Tab项
+      element.tabChange('demo', changeid); //切换到：用户管理
+    }
+  };
+  
+  $('#G1I1').on('click', function(){               //工作台首页点击事件
+  	if(document.getElementById('G1I1_form')!=null)
+  	{
+  		active.tabChange('G1I1_bat_id');
+  	}
+  	else
+  	{
+  		active.tabAdd('G1I1_bat_id',"首页",'<div id="G1I1_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/Home"></iframe></div>');
+    active.tabChange('G1I1_bat_id');   
+  	}
+  });
+  
+    $('#G1I2').on('click', function(){               //工作台首页点击事件
+  	if(document.getElementById('G1I2_form')!=null)
+  	{
+  		active.tabChange('G1I2_bat_id');
+  	}
+  	else
+  	{
+  		active.tabAdd('G1I2_bat_id',"统计报表",'<div id="G1I2_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/Statistics"></iframe></div>');
+    active.tabChange('G1I2_bat_id');   
+  	}
+  });
+  
+  $('#G2I1').on('click', function(){               //内部公告击事件
+  	if(document.getElementById('G2I1_form')!=null)
+  	{
+  		active.tabChange('G2I1_bat_id');
+  	}
+  	else
+  	{
+  		active.tabAdd('G2I1_bat_id',"内部公告",'<div id="G2I1_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/Announcement"></iframe></div>');
+    active.tabChange('G2I1_bat_id');   
+  	}
+  });
+  
+    $('#G2I2').on('click', function(){               //推送历史点击事件
+  	if(document.getElementById('G2I2_form')!=null)
+  	{
+  		active.tabChange('G2I2_bat_id');
+  	}
+  	else
+  	{
+  		active.tabAdd('G2I2_bat_id',"审核议价历史",'<div id="G2I2_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/Push_history"></iframe></div>');
+    active.tabChange('G2I2_bat_id');   
+  	}
+  });
+  
+    $('#G2I3').on('click', function(){               //通话记录点击事件
+  	if(document.getElementById('G2I3_form')!=null)
+  	{
+  		active.tabChange('G2I3_bat_id');
+  	}
+  	else
+  	{
+  		active.tabAdd('G2I3_bat_id',"通话记录",'<div id="G2I3_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/Call_Records"></iframe></div>');
+    active.tabChange('G2I3_bat_id');   
+  	}
+  });
+  
+      $('#G2I4').on('click', function(){               //采购进度跟踪点击事件
+  	if(document.getElementById('G2I4_form')!=null)
+  	{
+  		active.tabChange('G2I4_bat_id');
+  	}
+  	else
+  	{
+  		active.tabAdd('G2I4_bat_id',"采购进度跟踪",'<div id="G2I4_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/Purchase_Grogress"></iframe></div>');
+    active.tabChange('G2I4_bat_id');   
+  	}
+  });
+  
+      $('#G2I5').on('click', function(){               //采购合同管理点击事件
+  	if(document.getElementById('G2I5_form')!=null)
+  	{
+  		active.tabChange('G2I5_bat_id');
+  	}
+  	else
+  	{
+  		active.tabAdd('G2I5_bat_id',"采购合同管理",'<div id="G2I5_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/Purchase_Contract"></iframe></div>');
+    active.tabChange('G2I5_bat_id');   
+  	}
+
+
+  });
+
+  $('#G3I1').on('click', function(){               //部门管理点击事件
+    if(document.getElementById('G3I1_form')!=null)
+    {
+      active.tabChange('G3I1_bat_id');
+    }
+    else
+    {
+      active.tabAdd('G3I1_bat_id',"部门管理",'<div id="G3I1_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/DepartmentManagementPage"></iframe></div>');
+      active.tabChange('G3I1_bat_id');
+    }
+
+
+  });
+
+  $('#G3I2').on('click', function(){               //岗位设置
+    if(document.getElementById('G3I2_form')!=null)
+    {
+      active.tabChange('G3I2_bat_id');
+    }
+    else
+    {
+      active.tabAdd('G3I2_bat_id',"岗位设置",'<div id="G3I2_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/JobManagement"></iframe></div>');
+      active.tabChange('G3I2_bat_id');
+    }
+  });
+
+  $('#G4I1').on('click', function(){               //专家信息管理
+    if(document.getElementById('G4I1_form')!=null)
+    {
+      active.tabChange('G4I1_bat_id');
+    }
+    else
+    {
+      active.tabAdd('G4I1_bat_id',"专家信息管理",'<div id="G4I1_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/ExpertinforPage"></iframe></div>');
+      active.tabChange('G4I1_bat_id');
+    }
+  });
+
+  $('#G4I2').on('click', function(){               //专家信息审核
+    if(document.getElementById('G4I2_form')!=null)
+    {
+      active.tabChange('G4I2_bat_id');
+    }
+    else
+    {
+      active.tabAdd('G4I2_bat_id',"专家信息审核",'<div id="G4I2_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/ExperApprovalListPage"></iframe></div>');
+      active.tabChange('G4I2_bat_id');
+    }
+  });
+
+  $('#G5I1').on('click', function(){               //采购订单
+    if(document.getElementById('G5I1_form')!=null)
+    {
+      active.tabChange('G5I1_bat_id');
+    }
+    else
+    {
+      active.tabAdd('G5I1_bat_id',"采购订单",'<div id="G5I1_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/PurchasOrderListPage"></iframe></div>');
+      active.tabChange('G5I1_bat_id');
+    }
+  });
+
+  $('#G6I1').on('click', function(){               //供应商管理
+    if(document.getElementById('G6I1_form')!=null)
+    {
+      active.tabChange('G6I1_bat_id');
+    }
+    else
+    {
+      active.tabAdd('G6I1_bat_id',"供应商管理",'<div id="G6I1_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/SupplierListPage"></iframe></div>');
+      active.tabChange('G6I1_bat_id');
+    }
+  });
+
+  $('#G6I2').on('click', function(){               //供应商审核
+    if(document.getElementById('G6I2_form')!=null)
+    {
+      active.tabChange('G6I2_bat_id');
+    }
+    else
+    {
+      active.tabAdd('G6I2_bat_id',"供应商审核",'<div id="G6I2_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/SupplierToExamineListPage"></iframe></div>');
+      active.tabChange('G6I2_bat_id');
+    }
+  });
+
+  $('#G7I1').on('click', function(){               //审批流程设置
+    if(document.getElementById('G7I1_form')!=null)
+    {
+      active.tabChange('G7I1_bat_id');
+    }
+    else
+    {
+      active.tabAdd('G7I1_bat_id',"审批流程设置",'<div id="G7I1_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/ApprovalProcessSettingListPage"></iframe></div>');
+      active.tabChange('G7I1_bat_id');
+    }
+  });
+
+  $('#G7I2').on('click', function(){               //议价流程设置
+    if(document.getElementById('G7I2_form')!=null)
+    {
+      active.tabChange('G7I2_bat_id');
+    }
+    else
+    {
+      active.tabAdd('G7I2_bat_id',"议价流程设置",'<div id="G7I2_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/BargainingProcessListPage"></iframe></div>');
+      active.tabChange('G7I2_bat_id');
+    }
+  });
+
+  $('#G7I3').on('click', function(){               //登录日志
+    if(document.getElementById('G7I3_form')!=null)
+    {
+      active.tabChange('G7I3_bat_id');
+    }
+    else
+    {
+      active.tabAdd('G7I3_bat_id',"登录日志",'<div id="G7I3_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/SupplierToExamineListPage"></iframe></div>');
+      active.tabChange('G7I3_bat_id');
+    }
+  });
+////Hash地址的定位
+//var layid = location.hash.replace(/^#test=/, '');
+//element.tabChange('test', layid);
+//
+//element.on('tab(test)', function(elem){
+//  location.hash = 'test='+ $(this).attr('lay-id');
+//});
+//
+});
+</script> 
+</body>
+</html>

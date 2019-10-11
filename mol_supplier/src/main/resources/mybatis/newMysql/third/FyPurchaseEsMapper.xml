@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.supplier.mapper.newMysql.third.FyPurchaseEsMapper">
+    <select id="selectOrderById" parameterType="java.lang.String" resultType="com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj">
+        SELECT * FROM `fy_purchase_es` where id=#{id}
+    </select>
+    <insert id="insert" parameterType="com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj">
+        insert  into fy_purchase_es (id,buy_channel_id,goods_type,goods_brand,goods_name,goods_specs,goods_branch,goods_detail,create_time,status,title,staff_id,apply_cause,order_number,quoteSellerNum,supplierSellerNum,remarks,pk_supplier)
+        values (#{id},#{buyChannelId},#{goodsType},#{goodsBrand},#{goodsName},#{goodsSpecs},#{goodsBranch},#{goodsDetail},#{createTime},#{Status},#{title},#{staffId},#{applyCause},#{orderNumber},#{quoteSellerNum},#{supplierSellerNum},#{remarks},#{pkSupplier})
+    </insert>
+    <update id="updata" parameterType="com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj">
+        update
+        fy_purchase_es
+        set
+        buy_channel_id=#{buyChannelId},
+        goods_type=#{goodsType},
+        goods_brand=#{goodsBrand},
+        goods_name=#{goodsName},
+        goods_specs=#{goodsSpecs},
+        goods_branch=#{goodsBranch},
+        goods_detail=#{goodsDetail},
+        create_time=#{createTime},
+        status=#{Status},
+        title=#{title},
+        staff_id=#{staffId},
+        apply_cause=#{applyCause},
+        order_number=#{orderNumber},
+        quoteSellerNum=#{quoteSellerNum},
+        supplierSellerNum=#{supplierSellerNum},
+        remarks=#{remarks},
+        pk_supplier=#{pkSupplier}
+        where
+        id=#{id}
+    </update>
+</mapper>

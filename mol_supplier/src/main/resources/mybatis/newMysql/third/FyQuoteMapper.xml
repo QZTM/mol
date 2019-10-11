@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.supplier.mapper.newMysql.third.FyQuoteMapper">
+    <insert id="saveQuote" parameterType="com.mol.supplier.entity.thirdPlatform.FyQuote">
+        insert into fy_quote values(#{id} ,#{fyPurchaseId},#{pkMaterialId},#{quote},#{reason},#{pkSupplierId},#{supplierSalesmanId},#{creationtime},#{supplyCycle},#{expertRecommendation})
+    </insert>
+    <select id="getListBySupplier" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT DISTINCT fyPurchaseId FROM `fy_quote` where pkSupplierId=1 ORDER BY creationtime
+    </select>
+    <select id="findFypurchaseIdListById" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT DISTINCT
+        pkSupplierId
+    FROM
+        fy_quote
+    WHERE
+        fyPurchaseId =#{id}
+    </select>
+    <select id="findQuoteBySupplierIdAndPurchaseId" parameterType="java.lang.String" resultType="com.mol.supplier.entity.thirdPlatform.FyQuote">
+        select * from fy_quote where fyPurchaseId=#{id} and pkSupplierId=#{supplierId}
+    </select>
+    <select id="findIdByPurIdAndPkMatIdAndSupplierId" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT id FROM `fy_quote` e where e.fyPurchaseId=#{purId} and e.pkMaterialId=#{materId} and e.pkSupplierId=#{supplierId}
+    </select>
+    <select id="findFypurchaseIdListBySupplierId" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT DISTINCT fyPurchaseId FROM `fy_quote` where pkSupplierId=#{id}
+    </select>
+    <select id="findQuoteByid" parameterType="java.lang.String" resultType="com.mol.supplier.entity.thirdPlatform.FyQuote">
+        select * from fy_quote where id=#{quoteId}
+    </select>
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.supplier.mapper.newMysql.dingding.purchase.BdSupplierMapper">
+    <select id="getSupplierById" resultType="com.mol.supplier.entity.dingding.purchaseOrder.Supplier" parameterType="java.lang.String">
+       SELECT
+       *
+       from
+       bd_supplier bs
+       where
+       bs.pk_supplier=#{id}
+
+    </select>
+    <select id="getSupplierId" parameterType="java.util.Map" resultType="java.lang.String">
+        select distinct
+        a.pk_supplier
+        from
+        fy_mat_sup a
+        INNER JOIN fy_mat_sup b on a.pk_supplier = b.pk_supplier
+        INNER JOIN fy_mat_sup c on a.pk_supplier = c.pk_supplier
+        where
+        <foreach collection="map" index="index" item="item" >
+            <if test="index==1">
+                a.pk_material=#{item}
+            </if>
+            <if test="index==2">
+                and b.pk_material=#{item}
+            </if>
+            <if test="index==3">
+                and c.pk_material=#{item}
+            </if>
+        </foreach>
+
+
+    </select>
+
+    <select id="getSupplierNameById" resultType="java.lang.String" parameterType="java.lang.String">
+        SELECT name  FROM `bd_supplier` where pk_supplier=#{id}
+    </select>
+</mapper>

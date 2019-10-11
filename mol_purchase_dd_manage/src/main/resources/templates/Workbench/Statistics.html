@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	  <script src="/echarts.min.js"></script>
+	<body>
+<div  style="width: auto;height:auto;">
+	 <div style="float:left; display:inline;border:1px solid #B2B2B2">
+  	    <div>
+  		  <a>单品历史价格</a>
+  	    </div>
+  	    <div id="history_money" style="width: 1625px;height:400px;"><!--单品采购历史价格-->
+  	    </div>
+  	 </div>
+	 <div style="float:left; display:inline;border:1px solid #B2B2B2">
+  	    <div>
+  		 <a>供应商基数统计图</a>
+  	    </div>
+  	    <div id="supplier_number" style="width: 825px;height:400px;"><!--供应商人数-->
+  	 
+  	    </div>
+  	 </div>
+  	 	
+  	 <div style="float:left; display:inline;border:1px solid #B2B2B2">
+  	    <div>
+  		  <a>采购金额统计</a>
+  	    </div>
+  	    <div id="supplier_money" style="width: 800px;height:400px;"><!--采购金额统计-->
+  	    </div>
+  	 </div>
+  	 
+  	</div>
+ 
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart_0 = echarts.init(document.getElementById('history_money'));
+        var myChart = echarts.init(document.getElementById('supplier_number'));
+        var supplier_money = echarts.init(document.getElementById('supplier_money'));
+
+        var option_0= {
+    tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+            type: 'cross',
+            crossStyle: {
+                color: '#999'
+            }
+        }
+    },
+    toolbox: {
+        feature: {
+            dataView: {show: true, readOnly: false},
+            magicType: {show: true, type: ['line', 'bar']},
+            restore: {show: true},
+            saveAsImage: {show: true}
+        }
+    },
+    legend: {
+        data:['单月价格','平均价格']
+    },
+    xAxis: [
+        {
+            type: 'category',
+            data: ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+            axisPointer: {
+                type: 'shadow'
+            }
+        }
+    ],
+    yAxis: [
+        {
+            type: 'value',
+            name: '单月价格',
+            min: 0,
+           // max: 250,
+            interval: 20000,
+            axisLabel: {
+                formatter: '{value} 元'
+            }
+        },
+        {
+            type: 'value',
+            name: '平均价格',
+            min: 0,
+          //  max: 25,
+            interval: 20000,
+            axisLabel: {
+                formatter: '{value}元'
+            }
+        }
+    ],
+    series: [
+        {
+            name:'单月价格',
+            type:'bar',
+            data:[2.0, 4.9, 7.0, 23.2, 25000.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+        },
+
+        {
+            name:'平均价格',
+            type:'line',
+            yAxisIndex: 1,
+            data:[2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2]
+        }
+    ]
+};
+
+
+        // 指定图表的配置项和数据
+        var option = {
+           xAxis: {
+              type: 'category',
+              boundaryGap: false,
+              data: ['1月','1月','1月','1月','1月','1月','2月', '3月', '4月', '5月', '6月', '7月', '本月']
+                 },
+           yAxis: {
+              type: 'value'
+                 },
+           series: [{
+              data: [11,222,333,444,555,666,820, 932, 901, 934, 1290, 1330, 1320],
+              type: 'line',
+              areaStyle: {}
+               }]
+           };
+           
+           
+         
+           var option_1= {
+    legend: {},
+    tooltip: {},
+    dataset: {
+        source: [
+            ['product', '产品类', '设备类', '配件类','材料类','酒店类','应税劳务'],
+            ['9月份', 99, 85.8, 93.7,11,213,234],
+            // ['Milk Tea', 83.1, 73.4, 55.1],
+            // ['Cheese Cocoa', 86.4, 65.2, 82.5],
+            // ['Walnut Brownie', 72.4, 53.9, 39.1]
+        ]
+    },
+    xAxis: {type: 'category'},
+    yAxis: {},
+    // Declare several bar series, each will be mapped
+    // to a column of dataset.source by default.
+    series: [
+        {type: 'bar'},
+        {type: 'bar'},
+        {type: 'bar'},
+         {type: 'bar'},
+        {type: 'bar'},
+        {type: 'bar'}
+    ]
+};
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart_0.setOption(option_0)
+        myChart.setOption(option);
+        supplier_money.setOption(option_1);
+    </script>
+</div>		
+
+	</body>
+</html>

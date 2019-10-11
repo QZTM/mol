@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<link rel="stylesheet" href="/layui/css/layui.css">
+<script src="/echarts.min.js"></script>
+<body>
+<!--内部公告-->
+<div><!--1700px-->
+	<div style="margin: 16px;">
+		<a style="font-size: 22px;"><font size="3">基础分类：</font></a>
+		<select style="font-size: 12px;width: 7%; height: 26px;"  onchange="select_change(this)">
+			<option value =0 >全部</option>
+			<option value =1>消息通知</option>
+			<option value=2>任务安排</option>
+			<option value=3>公司新闻</option>
+		</select>
+
+		<!--<button class="layui-btn layui-btn-radius" style="float: right;">添加新信息</button>-->
+		<button type="button" class="layui-btn" style="float: right;"><i class="layui-icon">&#xe608;</i>添加新信息</button>
+	</div>
+	<div style="margin-left: 16px;">
+		<a style="font-size: 22px;"><font size="3">搜索内容：</font></a>
+		<input style="width: 10.5%;height: 20px;"/>
+		<button style="margin: 10px; width: 5.8%;height:26px;background-color: #009F95;border-radius:3px;color: #FBFBFB;">
+			开始搜索
+		</button>
+	</div>
+
+	<div>
+		<table class="layui-hide" id="test" lay-filter="test"></table>
+
+		<script type="text/html" id="toolbarDemo">
+			<div class="layui-btn-container">
+				<button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+				<button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+				<button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+			</div>
+		</script>
+	</div>
+
+
+	<script type="text/html" id="barDemo">
+		<!--<a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>-->
+		<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+	</script>
+</div>
+
+
+<script src="/layui/layui.all.js"></script>
+
+<script>
+	function select_change(e)
+	{
+		alert("111111")
+	}
+	layui.use('table', function(){
+		var table = layui.table;
+		var Data=[{"id":"BeJson","fujian":"http://www.bejson.com","titl":true,"fenlei":"12","time":"12","founder":"12","right":"12111"},{"id":"BeJson","fujian":"http://www.bejson.com","titl":true,"fenlei":"12","time":"12","founder":"12","right":"12111"},{"id":"BeJson","fujian":"http://www.bejson.com","titl":true,"fenlei":"12","time":"12","founder":"12","right":"12111"}]
+		table.render({
+			elem: '#test'
+			// ,url:'data.json'//json路径
+			, data:Data
+			,toolbar: '#toolbarDemo'
+			,title: '用户数据表'
+			,cols: [
+					[
+				{type: 'checkbox', fixed: 'left'}
+				,{field:'id', title:'ID', width:180, fixed: 'left', unresize: true, sort: true}
+				,{field:'fujian', title:'附件', width:220, edit: 'text'}
+				,{field:'titl', title:'标题', width:280, edit: 'text', sort: true}
+				,{field:'fenlei', title:'分类', width:200}
+				,{field:'time', title:'日期'}
+				,{field:'founder', title:'创建人', width:150, sort: true}
+				,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+			]
+			]
+			,page: true
+		});
+
+		//头工具栏事件
+		table.on('toolbar(test)', function(obj){
+			var checkStatus = table.checkStatus(obj.config.id);
+			switch(obj.event){
+				case 'getCheckData':
+					var data = checkStatus.data;
+					layer.alert(JSON.stringify(data));
+					break;
+				case 'getCheckLength':
+					var data = checkStatus.data;
+					layer.msg('选中了：'+ data.length + ' 个');
+					break;
+				case 'isAll':
+					layer.msg(checkStatus.isAll ? '全选': '未全选');
+					break;
+			};
+		});
+
+		//监听行工具事件
+		table.on('tool(test)', function(obj){
+			var data = obj.data;
+			//console.log(obj)
+			if(obj.event === 'del'){
+				layer.confirm('真的删除行么', function(index){
+					obj.del();
+					layer.close(index);
+				});
+			} else if(obj.event === 'edit'){
+				layer.prompt({
+					formType: 2
+					,value: data.email
+				}, function(value, index){
+					obj.update({
+						email: value
+					});
+					layer.close(index);
+				});
+			}
+		});
+	});
+</script>
+</body>
+
+</html>

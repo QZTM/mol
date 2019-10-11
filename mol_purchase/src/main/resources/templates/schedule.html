@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>进度</title>
+    <!-- Bootstrap -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery) -->
+    <script th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。 -->
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <style>
+        .list{
+            height: 100px;
+            border-bottom: 1px solid #eeeeee;
+            margin-left: 19px;
+            margin-top: 15px;
+        }
+        .list_down{
+            width: 45%;
+            text-align: center;
+        }
+        .refreshText{
+            line-height: 50px; text-align: center;
+        }
+        .bottom_div{
+            width: 100%;
+            height: 28px;
+            position: fixed;
+            bottom: 0px;
+            left: 0;
+            background-color: #dddddd;
+        }
+        .bottom_div div{
+            float:left ;
+            width: 33%;
+            text-align: center;
+            margin: 5px 0px 20px 0px ;font-size: 18px;
+        }
+        .pos{
+            position: fixed;
+            top: 0px;
+            left: 0;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+<!-- 导航栏开始 -->
+<!--<nav class="navbar navbar-default">-->
+<!--    <div class="container-fluid">-->
+<!--        &lt;!&ndash; Brand and toggle get grouped for better mobile display &ndash;&gt;-->
+<!--        <div class="navbar-header">-->
+<!--            <div style="float: left;padding-left: 6px;margin-left: 6px;margin-top: 9px;">-->
+<!--                <a  th:href="@{'/index/findAll'}">-->
+<!--                    <img th:src="@{'/img/left.jpg'}" alt="..." style="width: 28px;height: 32px">-->
+<!--                </a>-->
+<!--            </div>-->
+<!--            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">-->
+<!--                <span class="sr-only">Toggle navigation</span>-->
+<!--                <span class="icon-bar"></span>-->
+<!--                <span class="icon-bar"></span>-->
+<!--                <span class="icon-bar"></span>-->
+<!--            </button>-->
+
+<!--            <a class="navbar-brand" href="#">进度</a>-->
+<!--        </div>-->
+
+<!--        &lt;!&ndash; Collect the nav links, forms, and other content for toggling &ndash;&gt;-->
+<!--        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">-->
+<!--            <ul class="nav navbar-nav">-->
+<!--                <li class="active"><a th:href="@{'/sche/findList?status=5&pageNum=1&pageSize=6'}">正在进行 <span class="sr-only">(current)</span></a></li>-->
+<!--                <li><a th:href="@{'/sche/findList?status=6&pageNum=1&pageSize=6'}">已废止</a></li>-->
+<!--                <li><a th:href="@{'/sche/findList?status=8&pageNum=1&pageSize=6'}">已通过</a></li>-->
+<!--                <li><a th:href="@{'/sche/findList?status=5&pageNum=1&pageSize=7'}">已淘汰</a></li>-->
+<!--            </ul>-->
+<!--        </div>&lt;!&ndash; /.navbar-collapse &ndash;&gt;-->
+<!--    </div>&lt;!&ndash; /.container-fluid &ndash;&gt;-->
+<!--</nav>-->
+<!-- 导航栏结束 -->
+<div class="pos" style="width: 100%;">
+    <ul class="nav nav-tabs">
+        <li role="presentation col-md-3 col-xs-3" th:class="${status}==1?'active':''"><a href="/sche/findList?status_first=1&status_second=4&status_thrid=6&pageNum=1&pageSize=6">正在进行</a></li>
+        <li role="presentation col-md-3 col-xs-3" th:class="${status}==3?'active':''"><a href="/sche/findList?status_first=3&pageNum=1&pageSize=6">已废止</a></li>
+        <li role="presentation col-md-3 col-xs-3" th:class="${status}==7?'active':''"><a href="/sche/findList?status_first=7&pageNum=1&pageSize=6">已通过</a></li>
+        <li role="presentation col-md-3 col-xs-3" th:class="${status}==8?'active':''"><a href="/sche/findList?status_first=8&pageNum=1&pageSize=7">已淘汰</a></li>
+    </ul>
+</div>
+<div style="height: 52px;border-bottom: 1px solid black">
+    <input id="hidden_status" type="hidden" th:value="${status}">
+</div>
+<!-- 物品进度简介开始 -->
+<div style="clear: both;" id="refreshContainer">
+    <!--第一个-->
+    <div class="list" th:each="er:${list}" >
+        <a th:href="@{'/sche/getScheduleOne?id='+${er.id}}" style="text-decoration: none;color: black;">
+            <p style="font-size: 16px;font-weight: bold;" th:text="${er.applyCause}">斯凯孚skf6轴承询价采购</p>
+<!--            <p>单号<span th:text="${er.orderNumber}">0000001</span></p>-->
+
+            <p th:switch="${er.buyChannelId}">单号&nbsp;&nbsp;&nbsp;<span th:text="${er.orderNumber}">0000001</span>&nbsp;&nbsp;&nbsp;&nbsp;类型&nbsp;&nbsp;&nbsp;<span th:case="3">战略采购</span><span th:case="4">询价采购</span><span th:case="5">单一采购</span></p>
+
+
+            <span class="label label-primary " th:text="${er.status}">正在采集报价</span>
+            
+            <span  class="glyphicon-time list_down" aria-hidden="true" th:text="${er.createTime}" style="float: right;color: red;">2017-6-7</span>
+            <span style="float: right;" >该进度时间</span>
+        </a>
+
+    </div>
+</div>
+<p class="refreshText"></p>
+<div class="bottom_div test">
+    <div>
+        <!--        不用topage，发送请求-->
+        <a th:href="@{'/index/findAll'}">首页</a>
+    </div>
+    <div>
+        <a th:href="@{'/sche/findList?status_first=1&status_second=4&status_thrid=6&pageNum=1&pageSize=8'}">进度</a>
+    </div>
+    <div>
+        <a th:href="@{'/toPage?url='+my}">我的</a>
+
+    </div>
+</div>
+<!-- 物品进度简介结束 -->
+
+<!--&lt;!&ndash;    分页&ndash;&gt;-->
+<!--<nav aria-label="Page navigation" style="text-align: center">-->
+<!--    <ul class="pagination">-->
+<!--        <li>-->
+<!--            <a>共<span th:text="${pb.totalPage}"></span>页</a>-->
+<!--        </li>-->
+<!--        <li>-->
+<!--            <a th:href="@{'/index/schedule?status=5&pageNum=1&pageSize=6'}">首页</a>-->
+<!--        </li>-->
+<!--        <li th:if="${pb.currentPage!=1}">-->
+<!--            <a th:href="@{'/index/schedule?status=5&pageNum='+${pb.currentPage-1}+'&pageSize=6'}" aria-label="Previous">-->
+<!--                <span aria-hidden="true">&laquo;</span>-->
+<!--            </a>-->
+<!--        </li>-->
+
+<!--        <li th:class="${page==pb.currentPage}?active:''" th:each="page:${pb.list}"><a th:href="@{'/index/schedule?status=5&pageNum='+${page}+'&pageSize=6'}" th:text="${page}"></a></li>-->
+
+<!--        <li th:if="${pb.currentPage!=pb.totalPage}">-->
+<!--            <a th:href="@{'/index/schedule?status=5&pageNum='+${pb.currentPage+1}+'&pageSize=6'}" aria-label="Next">-->
+<!--                <span aria-hidden="true">&raquo;</span>-->
+<!--            </a>-->
+<!--        </li>-->
+<!--        <li>-->
+<!--            <a th:href="@{'/index/schedule?status=5&pageNum='+${pb.totalPage}+'&pageSize=6'}">尾页</a>-->
+<!--        </li>-->
+<!--    </ul>-->
+<!--</nav>-->
+</body>
+<script type="text/javascript">
+    (function(window) {
+        var sc =false;
+        // 获取当前滚动条的位置
+        function getScrollTop() {
+            var scrollTop = 0;
+            if (document.documentElement && document.documentElement.scrollTop) {
+                scrollTop = document.documentElement.scrollTop;
+            } else if (document.body) {
+                scrollTop = document.body.scrollTop;
+            }
+            return scrollTop;
+        }
+        // 获取当前可视范围的高度
+        function getClientHeight() {
+            var clientHeight = 0;
+            if (document.body.clientHeight && document.documentElement.clientHeight) {
+                clientHeight = Math.min(document.body.clientHeight, document.documentElement.clientHeight);
+            }
+            else {
+                clientHeight = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
+            }
+            return clientHeight;
+        }
+        // 获取文档完整的高度
+        function getScrollHeight() {
+            return Math.max(document.body.scrollHeight, document.documentElement.scrollHeight)-10;
+        }
+        var _text = document.querySelector('.refreshText'),
+            _container = document.getElementById('refreshContainer');
+        var throttle = function(method, context){
+            clearTimeout(method.tId);
+            method.tId = setTimeout(function(){
+                method.call(context);
+            }, 300);
+        }
+        //pagesize
+        var pageSize=6;
+        var pageNum=2;
+        var status=5;
+        var refresh="";
+        var goodsType="";
+        var pn=0;
+        function fetchData() {
+            $.get("/index/refresh",{"status":status,"pageNum":pageNum,"pageSize":pageSize},function (data) {
+                console.log(data);
+                if (data.length==0){
+                    sc=true;
+                    _text.innerHTML="我真的一滴都没有了！"
+                    return;
+                } else {
+                    for (var i=0;i<data.length;i++){
+                        var buyIdString = "";
+                        if (data[i].buyChannelId==3){
+                            buyIdString="战略采购";
+                        }
+                        if (data[i].buyChannelId==4){
+                            buyIdString="询价采购";
+                        }
+                        if (data[i].buyChannelId==5){
+                            buyIdString="单一采购";
+                        }
+                        var re="<div class=\"list\" id=\"refreshContainer\">\n" +
+                            "        <a href=\"/index/selectOne?id="+data[i].id+"\">\n" +
+                            "            <p style=\"font-size: 16px;font-weight: bold;\">"+data[i].title+"</p>\n" +
+                            "              <p>单号&nbsp;&nbsp;&nbsp;<span>"+data[i].orderNumber+"</span>&nbsp;&nbsp;&nbsp;&nbsp;类型&nbsp;&nbsp;&nbsp;<span>"+buyIdString+"</span></p>\n" +
+                            "            <span class=\"label label-primary \">"+data[i].status+"</span>\n" +
+                            "            <span style=\"padding-left: 3px;\">该进度时间</span>\n" +
+                            "            <span class=\" glyphicon-time list_down\" aria-hidden=\"true\">"+data[i].createTime+"</span>\n" +
+                            "        </a>\n" +
+                            "\n" +
+                            "    </div>";
+                        refresh+=re;
+                    }
+                }
+
+                pageNum++;
+
+            })
+            /**
+             * 循环遍历数组，拼接字符串
+             */
+            setTimeout(function() {
+                _container.insertAdjacentHTML('beforeend', refresh);
+            }, 2000);
+            refresh="";
+            pn=0;
+        }
+        window.onscroll = function() {
+            pn=pageNum;
+            if (sc){
+                return;
+            }
+            if(pn!=pageNum){
+                return;
+            }
+            if (getScrollTop() + getClientHeight() == getScrollHeight()) {
+                // alert("1:"+getScrollTop())
+                // alert("2:"+getClientHeight())
+                // alert("3:"+getScrollHeight())
+                _text.innerText = '加载中...';
+                throttle(fetchData);
+            }
+        };
+    })(window);
+</script>
+</html>

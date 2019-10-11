@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<link rel="stylesheet" href="/layui/css/layui.css">
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js" type="text/javascript"></script>
+<body id="body" style="overflow-x: hidden" onload="start_landing()"><!--标题详情--><!--width 1700-->
+<div style="padding: 12px;width: 100%;">
+    <!--标题-->
+    <div style="width: 95%;height: 50px;background-color: #2D93CA;color: #fbfbfb;border-radius: 6px;margin: 4px;padding: 16px;font-size: 20px;"><!--width: 1568px-->
+        <div style="float: left;margin-left: 10px">
+            <p th:text="${titl}">查看审批记录:计算机采购</p>
+        </div>
+        <div id="close" style="float: right;" >
+            <label style="cursor: pointer;">返回</label>
+        </div>
+        <div style="float: right;margin-right: 12px;" onclick="preview()">
+            <label style="cursor: pointer;">打印</label>
+        </div>
+
+    </div>
+
+    <!--采购订单-->
+    <div  style="float: left;margin: initial;width: 49%;height: 500px;margin: 6px;border-radius: 6px; border: 1px solid #B2B2B2"><!--width:792px-->
+
+        <!--标题-->
+        <div style="margin: 15px; width: 96%;height: 165px; background-color: #009F95;border-radius:12px;"><!--width: 760px-->
+             <div style="float: left;margin-top: 12px;margin-left: 12px; "><font size="5" color="#FBFBFB">斯凯孚SKF6021 轴承</font></div>
+             <div style="width: 96.1%; float: left;margin-top: 6px;font-size: 15px;"><!--width: 700px-->
+            	<font id="Order" color="#FBFBFB" style="float: left;margin-left: 12px;" th:text="${Order}">订单编号:</font>
+            	<font color="#FBFBFB" style="float:right;" th:text="${people}">采购申请人:李XX</font>
+             </div>
+
+            <div style="width: 96%; float: left;margin-top: 5px;text-align: center;color: #FBFBFB; font-size: 15px;"><!--width: 730px;-->
+              <div style="float: left;margin: 10px;">
+                <font th:text="${quoteSellerNum}">已报价商家</font>
+              </div>
+              <div>
+                <font style="float:right;margin-right: 1px;margin-top: 12px"  color="#FBFBFB" th:text="${create_time}">发布日期:2019年07月21 09:12</font>
+              </div>
+            </div>
+
+            <div style="width: 96%; float: left;text-align: center;color: #FBFBFB; font-size: 15px;"><!--width: 730px;-->
+                <div style="float: left;margin: 10px;">
+                    <font>供货周期</font>
+                </div>
+                <div>
+                    <font style="float:right;margin-right: 1px;margin-top: 12px"  color="#FBFBFB" >技术支持电话</font>
+                </div>
+            </div>
+        </div>
+
+        <!--商品表格-->
+        <div style="margin: 12px;width: 96%"><!--width: 750px-->
+            <table  class="layui-hide" id="test1"></table>
+        </div>
+
+    </div>
+
+    <!--审批流程-->
+    <div style="float: left;margin: initial;width: 47%;height: 500px;margin: 6px;border-radius: 6px; border: 1px solid #B2B2B2;">
+        <div>
+            <div style="width: 100px;background-color: #2D93CA;padding: 6px;border-radius: 4px;font-size: 16px;margin: 24px;text-align: center;color:#fbfbfb;">
+                <p>审批流程</p>
+            </div>
+            <div style="margin: 24px" id="approval_view"><!--审批流程视图-->
+                <!--<div style="display: inline-block;vertical-align:top">&lt;!&ndash;头像和姓名&ndash;&gt;-->
+                    <!--<div>-->
+                        <!--<img src="/imge/timg.jpg" style="height: 80px;width: 80px;" class="layui-nav-img">-->
+                    <!--</div>-->
+                    <!--<div style="width: 80px;text-align: center;font-size: 18px;margin-top: 8px">-->
+                        <!--<p>王XX</p>-->
+                    <!--</div>-->
+                <!--</div>-->
+
+
+        </div>
+        <div style="margin-top: 48px">
+            <div style="width: 100px;background-color: #2D93CA;padding: 6px;border-radius: 4px;font-size: 16px;margin: 24px;text-align: center;color:#fbfbfb;">
+                <p>抄送人</p>
+            </div>
+            <div style="margin: 24px" id="delivery_view"><!--抄送流程视图-->
+                <div style="display: inline-block;vertical-align:top;margin-left: 10px"><!--头像和姓名-->
+                    <div>
+                        <img src="/imge/timg.jpg" style="height: 80px;width: 80px;" class="layui-nav-img">
+                    </div>
+                    <div style="width: 80px;text-align: center;font-size: 18px;margin-top: 8px">
+                        <p>王XX</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!--报价的供应商-->
+    <div style="float: left;margin: initial;width: 49%;height: 500px;margin: 6px;border-radius: 6px; border: 1px solid #B2B2B2">
+       <div style=" float: left;margin: initial;margin: 12px;width: 750px;color: #fbfbfb;font-size: 14px ;">
+           <div style="float: left;margin: initial;">
+               <div style="background-color: #2D93CA;padding: 6px;border-radius: 4px">
+                   <font>山东XXXX有限公司 报价</font>
+               </div>
+           </div>
+           <div style="float: left;margin: initial;float: right;">
+               <div style="background-color: #2D93CA;padding: 6px;border-radius: 4px">
+                   <font>共计400元</font>
+               </div>
+           </div>
+
+       </div>
+        <div style="float: left;margin: initial;margin-left: 10px;width: 96%">
+            <table  class="layui-hide" id="test2"></table>
+        </div>
+
+    </div>
+
+    <!--审批日志-->
+    <div style="float: left;margin: initial;width: 47%;height: 500px;margin: 6px;border-radius: 6px; border: 1px solid #B2B2B2">
+
+        <div style="font-size: 14px ;float: left;margin: initial;margin: 12px;font-size: 14px;color: #fbfbfb">
+            <div style="background-color: #2D93CA;padding: 6px;border-radius: 4px">
+                <font>审批日志</font>
+            </div>
+        </div>
+
+        <div style="float: left;margin: initial;margin-left: 12px;width: 96%">
+            <table  class="layui-hide" id="test3"></table>
+        </div>
+    </div>
+</div>
+
+<script src="/layui/layui.all.js"></script>
+<script>
+
+    function start_landing()
+    {
+        add_approval_view();
+        add_delivery_view();
+    }
+
+    function add_approval_view()//添加审批视图
+    {
+        var a=[{"itme1":"000001","itme2":"询价采购","itme3":"000001","itme4":"张XX","itme5":"机械零件","itme6":"正在询价","itme7":"2019年06月13日09:38"},
+            {"itme1":"000001","itme2":"询价采购","itme3":"000001","itme4":"张XX","itme5":"机械零件","itme6":"正在询价","itme7":"2019年06月13日09:38"}];
+
+        for (var i = 0; i < a.length; i++) {
+            var divitem = document.createElement("div");
+            divitem.style.display="inline-block";
+            var div = document.getElementById("approval_view");
+            divitem.innerHTML =
+        '<div style="display: inline-block;vertical-align:top">'+
+                '<div>'+
+                ' <img src="/imge/timg.jpg" style="height: 80px;width: 80px;" class="layui-nav-img">'+
+                '</div>'+
+                ' <div style="width: 80px;text-align: center;font-size: 18px;margin-top: 8px">'+
+                ' <p>王XX</p>'+
+                '</div>'+
+                '</div>'
+            div.appendChild(divitem);
+
+            if (i+1<a.length)
+            {
+                var divitem_1 = document.createElement("div");//添加箭头
+                divitem_1.style.display="inline-block";
+                var div_1 = document.getElementById("approval_view");
+                divitem_1.innerHTML =
+           ' <div style="display: inline-block;vertical-align:top;margin-top: 20px">'+
+                ' <img style="width: 50px;height: 50px;" src="/imge/jiantou.jpg">'+
+                ' </div>'
+                div_1.appendChild(divitem_1);
+
+            }
+        }
+    }
+
+    function add_delivery_view()//添加抄送视图
+    {
+        var a=[{"itme1":"000001","itme2":"询价采购","itme3":"000001","itme4":"张XX","itme5":"机械零件","itme6":"正在询价","itme7":"2019年06月13日09:38"},
+            {"itme1":"000001","itme2":"询价采购","itme3":"000001","itme4":"张XX","itme5":"机械零件","itme6":"正在询价","itme7":"2019年06月13日09:38"}];
+
+        for (var i = 0; i < a.length; i++) {
+            var divitem = document.createElement("div");
+            divitem.style.display="inline-block";
+            var div = document.getElementById("delivery_view");
+            divitem.innerHTML =
+       ' <div style="display: inline-block;vertical-align:top;margin-left: 10px">'+
+            '  <div>'+
+            '  <img src="/imge/timg.jpg" style="height: 80px;width: 80px;" class="layui-nav-img">'+
+            '  </div>'+
+            '  <div style="width: 80px;text-align: center;font-size: 18px;margin-top: 8px">'+
+            '  <p>王XX</p>'+
+            '   </div>'
+            div.appendChild(divitem);
+        }
+    }
+
+    $(document).ready(
+             $("#close").click(
+                 function () {
+                    // document.getElementById("body").style.display="none";
+                     parent.close_Details_page();
+                 }
+             )
+    )
+    function getUrlParam(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+        var r = window.location.search.substr(1).match(reg); //匹配目标参数
+        if (r != null) return unescape(r[2]);//返回参数值
+        return null;
+    }
+
+
+    function preview() {
+        bdhtml = window.document.body.innerHTML;
+        window.print();
+    }
+
+    layui.use('table', function(){
+/*        var table = layui.table;
+        var Data = [{"id":"BeJson","username":"http://www.bejson.com","sex":true,"city":"12","number":"12","all":"100"}]
+        table.render({
+            elem: '#test1'
+           // ,url:'/demo/table/user/'
+            , data:Data
+            ,cols: [
+                [
+                {field:'id', width:80, title: '序号', sort: true}
+                ,{field:'username', width:150, title: '名称'}
+                ,{field:'sex', width:100, title: '规格', sort: true}
+                ,{field:'city', width:80, title: '单位'}
+                ,{field:'number', width:80,title: '数量', minWidth: 150}
+                    ,{field:'all', width:120, title: '备注', sort: true}
+            ]
+            ]
+            ,page: true
+        });
+        */
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/Office/Title_Details_contorller/MaterialList',
+            dataType: 'json',
+            data:{purchase_id:document.getElementById("Order").innerText.substring(5)},
+            // headers:{  'eticket': app.globalData.eticket},
+            success: function (data)
+            {
+                var table = layui.table;
+                var Data = data;
+                table.render({
+                    elem: '#test1'
+                    // ,url:'/demo/table/user/'
+                    , data:Data
+                    ,cols: [
+                        [
+                            {field:'id', width:80, title: '序号', sort: true}
+                            ,{field:'name', width:150, title: '名称'}
+                            ,{field:'materialspec', width:100, title: '规格'}
+                            ,{field:'measdoc', width:80, title: '单位'}
+                            ,{field:'goods_quantity', width:80,title: '数量', minWidth: 150}
+                            ,{field:'all', width:120, title: '备注'}
+                        ]
+                    ]
+                    ,page: true
+                });
+
+            },
+            error: function (data) {
+                alert("获取审核议价信息失败")
+            }
+        });
+
+
+
+    });
+
+    layui.use('table', function(){
+/*        var table = layui.table;
+        var Data = [{"id":"BeJson","username":"http://www.bejson.com","sex":true,"city":"12","number":"12","experience":"12"}]
+        table.render({
+            elem: '#test2'
+            // ,url:'/demo/table/user/'
+            , data:Data
+            ,cols: [
+                [
+                    {field:'id', width:80, title: '序号', sort: true}
+                    ,{field:'username', width:150, title: '名称'}
+                    ,{field:'sex', width:100, title: '规格', sort: true}
+                    ,{field:'city', width:80, title: '数量'}
+                    ,{field:'number', width:80,title: '报价', minWidth: 150}
+                    ,{field:'experience', width:240, title: '合计', sort: true}
+                ]
+            ]
+            ,page: true
+        });*/
+
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/Office/Title_Details_contorller/SuppelierQuote',
+            dataType: 'json',
+            data:{purchase_id:document.getElementById("Order").innerText.substring(5)},
+            // headers:{  'eticket': app.globalData.eticket},
+            success: function (data)
+            {
+                var table = layui.table;
+                var Data = data
+                table.render({
+                    elem: '#test2'
+                    // ,url:'/demo/table/user/'
+                    , data:Data
+                    ,cols: [
+                        [
+                            {field:'number', width:80, title: '序号', sort: true}
+                            ,{field:'name', width:150, title: '名称'}
+                            ,{field:'materialspec', width:100, title: '规格'}
+                            ,{field:'quote', width:80, title: '报价'}
+                            ,{field:'unit', width:80,title: '单位', minWidth: 150}
+                         /*   ,{field:'experience', width:240, title: '合计', sort: true}*/
+                        ]
+                    ]
+                    ,page: true
+                });
+
+            },
+            error: function (data) {
+                alert("获取审核议价信息失败")
+            }
+        });
+
+    });
+
+    layui.use('table', function(){
+        var table = layui.table;
+        var Data = [{"people":"BeJson","state":"http://www.bejson.com","time":true,"opinion":"12"}]
+        table.render({
+            elem: '#test3'
+            // ,url:'/demo/table/user/'
+            , data:Data
+            ,cols: [
+                [
+                    {field:'people', width:100, title: '审批人', sort: true}
+                    ,{field:'state', width:150, title: '审批状态'}
+                    ,{field:'time', width:200, title: '审批时间', sort: true}
+                    ,{field:'opinion', width:230, title: '意见'}
+                ]
+            ]
+            ,page: true
+        });
+    });
+
+</script>
+</body>
+</html>

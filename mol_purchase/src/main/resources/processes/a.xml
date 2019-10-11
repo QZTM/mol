@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+    <process id="myProcess" name="My process" isExecutable="true">
+        <startEvent id="startevent1" name="Start"/>
+        <endEvent id="endevent1" name="End"/>
+        <serviceTask id="servicetask1" name="审核通过" activiti:type="expression"/>
+        <serviceTask id="servicetask2" name="审核未通过"/>
+        <userTask id="usertask1" name="审核人1"/>
+        <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"/>
+        <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="usertask1"/>
+        <sequenceFlow id="flow2" sourceRef="usertask1" targetRef="exclusivegateway1"/>
+        <sequenceFlow id="flow3" sourceRef="exclusivegateway1" targetRef="servicetask2">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${result=='refuse'}]]></conditionExpression>
+        </sequenceFlow>
+        <userTask id="usertask2" name="审核人2"/>
+        <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway"/>
+        <sequenceFlow id="flow4" sourceRef="exclusivegateway1" targetRef="usertask2">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${result=='pass'}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow5" sourceRef="usertask2" targetRef="exclusivegateway2"/>
+        <sequenceFlow id="flow6" sourceRef="exclusivegateway2" targetRef="servicetask2">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${result=='refuse'}]]></conditionExpression>
+        </sequenceFlow>
+        <userTask id="usertask3" name="审核人3"/>
+        <exclusiveGateway id="exclusivegateway3" name="Exclusive Gateway"/>
+        <sequenceFlow id="flow7" sourceRef="exclusivegateway2" targetRef="usertask3">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${result=='pass'}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow8" sourceRef="usertask3" targetRef="exclusivegateway3"/>
+        <sequenceFlow id="flow9" sourceRef="exclusivegateway3" targetRef="servicetask1">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${result=='pass'}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow10" sourceRef="exclusivegateway3" targetRef="servicetask2">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${result=='refuse'}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flow11" sourceRef="servicetask1" targetRef="endevent1"/>
+        <sequenceFlow id="flow12" sourceRef="servicetask2" targetRef="endevent1"/>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_myProcess">
+        <bpmndi:BPMNPlane bpmnElement="myProcess" id="BPMNPlane_myProcess"/>
+    </bpmndi:BPMNDiagram>
+</definitions>

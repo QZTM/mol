@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<link rel="stylesheet" href="/layui/css/layui.css">
+<body onload="start_landing()"><!--订单通话记录--><!--width: 1670px-->
+   <div id="list_table">
+       <div style="margin: 15px; width: 97%;height: 80px; background-color:#2D93CA;border-radius:12px;padding: 12px;color: #fbfbfb;font-size: 18px">
+         <div style="width: 98%;display: inline-block">
+             <p style="display: inline;margin-left: 12px">关联订单编号:111111111</p>
+             <p style="display: inline;margin-left: 12px">标题:XXX零部件</p>
+             <p style="display: inline;margin-left: 65%">申请人:王XX</p>
+         </div>
+           <div style="margin-top: 12px;width: 95%;display: inline-block">
+               <p style="display: inline;margin-left: 12px">中标供应商:山东XXX有限公司</p>
+               <p style="display: inline;margin-left: 75%" onclick="return_top()">返回上一页</p>
+           </div>
+       </div>
+
+       <hr class="layui-bg-green">
+
+       <!--<div style="margin: 15px; width: 97%;height:70px; background-color: #009F95;border-radius:12px;padding: 12px;color: #fbfbfb;font-size: 18px">-->
+           <!--<div style="width: 98%;display: inline-block">-->
+               <!--<p style="display: inline;margin-left: 12px">主叫:王XX</p>-->
+           <!--</div>-->
+           <!--<div style="margin-top: 12px;width: 95%;display: inline-block">-->
+               <!--<p style="display: inline;margin-left: 12px">被叫山东XXXG有限公司</p>-->
+               <!--<p style="display: inline;margin-left: 20%">通话时间:2019.06.28 13:24</p>-->
+               <!--<p style="display: inline;margin-left: 35%">时长:X分钟</p>-->
+           <!--</div>-->
+       <!--</div>-->
+   </div>
+   <script src="/layui/layui.all.js"></script>
+
+   <script>
+       function start_landing()
+       {
+           Landing_call_recording();
+       }
+       
+       function Landing_call_recording()
+       {
+           for (var n=1;n<10;n++)
+           {
+               var element=document.createElement('div');
+               element.innerHTML=
+                   ' <div style="margin: 15px; width: 97%;height:70px; background-color: #009F95;border-radius:12px;padding: 12px;color: #fbfbfb;font-size: 18px"> '+
+                   ' <div style="width: 98%;display: inline-block">'+
+                   ' <p style="display: inline;margin-left: 12px">主叫:王XX</p>'+
+                   ' </div>'+
+                   ' <div style="margin-top: 12px;width: 95%;display: inline-block">'+
+                   ' <p style="display: inline;margin-left: 12px">被叫山东XXXG有限公司</p>'+
+                   ' <p style="display: inline;margin-left: 20%">通话时间:2019.06.28 13:24</p>'+
+                   '<p style="display: inline;margin-left: 35%">时长:X分钟</p>'+
+                   ' </div>'+
+                   ' </div>'
+               document.getElementById("list_table").appendChild(element);
+           }
+       }
+       function return_top() {
+           parent.close_Details_page();
+       }
+   </script>
+
+</body>
+</html>

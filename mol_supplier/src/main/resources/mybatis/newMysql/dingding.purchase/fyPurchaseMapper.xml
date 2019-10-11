@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseMapper">
+    <insert id="insertStrategyPur" parameterType="com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj">
+        INSERT into
+        fy_purchase
+        (id,buy_channel_id,goods_type,goods_brand,goods_name,goods_specs,goods_branch,goods_detail,create_time,status,title,staff_id,org_id,order_number,quoteSellerNum,supplierSellerNum,apply_cause,remarks,pk_supplier,req_file_url,deadLine,supplyCycle,payMent,technicalSupportTelephone,expertReview,quote_counts)
+        VALUES (#{id},#{buyChannelId},#{goodsType},#{goodsBrand},#{goodsName},#{goodsSpecs},#{goodsBranch},#{goodsDetail},#{createTime},#{status},#{title},#{staffId},#{orgId},#{orderNumber},#{quoteSellerNum},#{supplierSellerNum},#{applyCause},#{remarks},#{pkSupplier},#{reqfileurl},#{deadLine},#{supplyCycle},#{payMent},#{technicalSupportTelephone},#{expertReview},#{quoteCounts})
+    </insert>
+
+    <select id="findListByStatus" parameterType="java.lang.String" resultType="com.mol.supplier.entity.dingding.solr.fyPurchase">
+        SELECT * FROM fy_purchase where status  in (#{status_f},#{status_s},#{status_t})  order by create_time desc
+    </select>
+    <select id="findCountByStatus" parameterType="java.lang.String" resultType="int">
+         SELECT  COUNT(id) from fy_purchase  where status in (#{status_f},#{status_s},#{status_t})
+    </select>
+    <select id="getQuoteCountsByPurchaseId" parameterType="java.lang.String" resultType="java.lang.String">
+        select quote_counts from fy_purchase  where id =#{id}
+    </select>
+    <update id="addQuoteCountsByPurchaseId" parameterType="java.lang.String">
+        update fy_purchase set quote_counts =#{counts} where id =#{id}
+    </update>
+    <select id="findListByIdAndByGoodsType" parameterType="java.lang.String" resultType="com.mol.supplier.entity.dingding.solr.fyPurchase">
+        select * from fy_purchase where buy_channel_id = #{buyId}  and goods_type =#{goodsType} ORDER BY create_time desc
+    </select>
+    <select id="findListByIdAndStatus"  parameterType="java.lang.String" resultType="com.mol.supplier.entity.dingding.solr.fyPurchase">
+        SELECT *  FROM `fy_purchase` where buy_channel_id =#{buyId} and status =#{status}
+    </select>
+
+    <select id="findCountByIdAndStatus"  resultType="java.lang.Integer" parameterType="java.lang.String">
+        select count(id)
+        FROM
+        fy_purchase
+        <if test="buyId!=null and buyId != ''">
+            where  buy_channel_id = #{buyId}
+        </if>
+        <if test="status!=null and status!=''">
+            AND STATUS = #{status}
+        </if>
+        <if test="list!=null ">
+            and id in
+            <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+                #{item.fyPurchaseId}
+            </foreach>
+        </if>
+    </select>
+    <select id="selectOrderByDeadLine" parameterType="java.lang.String" resultType="com.mol.supplier.entity.dingding.solr.fyPurchase">
+        SELECT * FROM `fy_purchase` where deadLine &lt; #{nowDateTime} and status !="3"
+    </select>
+    <update id="updateStatusById" parameterType="java.lang.String">
+        UPDATE fy_purchase set status =#{status} where  id =#{id}
+    </update>
+    <select id="findListByPurchaseDetailList" resultType="com.mol.supplier.entity.dingding.solr.fyPurchase" parameterType="java.util.List">
+        select * FROM fy_purchase WHERE id in
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+            #{item.fyPurchaseId}
+        </foreach>
+        order by create_time desc
+    </select>
+    <select id="findList" resultType="com.mol.supplier.entity.dingding.solr.fyPurchase">
+        SELECT
+        *
+        FROM
+            fy_purchase
+        <if test="buyId!=null and buyId != ''">
+            where  buy_channel_id = #{buyId}
+        </if>
+        <if test="status!=null and status!=''">
+            AND STATUS = #{status}
+        </if>
+        <if test="list!=null ">
+        and id in
+            <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+                #{item.fyPurchaseId}
+            </foreach>
+        </if>
+        order by create_time desc
+    </select>
+    <select id="findListByIdlistAndStatus" resultType="com.mol.supplier.entity.dingding.solr.fyPurchase">
+        SELECT
+        *
+        FROM
+            fy_purchase
+        WHERE
+        id IN
+        <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+        AND STATUS  in( #{status_f},#{status_s},#{status_t})  order by create_time desc
+    </select>
+    <select id="findListByOrgIdAndStatus" resultType="com.mol.supplier.entity.dingding.solr.fyPurchase" parameterType="java.lang.String">
+        		select * from fy_purchase where org_id =#{orgId} and status in (#{status},#{secondStatus}) ORDER BY create_time DESC
+    </select>
+    <select id="findOneById" resultType="com.mol.supplier.entity.dingding.solr.fyPurchase" parameterType="java.lang.String">
+        select * from fy_purchase where id =#{id}
+    </select>
+    <update id="updateAppUserListById" parameterType="java.lang.String">
+         UPDATE fy_purchase set negotiate_person =#{arr} where  id =#{id}
+    </update>
+    <select id="findAppUserListById" resultType="java.lang.String" parameterType="java.lang.String">
+        select negotiate_person from fy_purchase where id =#{id}
+    </select>
+    <update id="updateExplainById" parameterType="java.lang.String">
+        UPDATE fy_purchase set negotiated_explain =#{explain} where  id =#{purId}
+    </update>
+    <update id="updateStatusAndApproverProposalById" parameterType="java.lang.String">
+        UPDATE fy_purchase set approver_proposal =#{approverProposal} , status=#{passOrNot} where  id =#{purId}
+    </update>
+    <select id="findListByOrgIdAndStaffId" parameterType="java.lang.String" resultType="com.mol.supplier.entity.dingding.solr.fyPurchase">
+        select * from fy_purchase where org_id =#{orgId} and staff_id =#{userId} ORDER BY create_time DESC
+    </select>
+    <select id="findPurchaseByIdList" parameterType="java.lang.String" resultType="com.mol.supplier.entity.dingding.solr.fyPurchase">
+        select * from fy_purchase where id in
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </select>
+</mapper>

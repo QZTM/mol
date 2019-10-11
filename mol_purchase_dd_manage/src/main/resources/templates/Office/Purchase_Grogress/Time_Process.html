@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head><!--采购审批时间线 点击详情时弹出-->
+<link rel="stylesheet" href="/layui/css/layui.css">
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js" type="text/javascript"></script>
+<body onload="landing_star()">
+ <div style="padding: 24px">
+
+     <div>
+         <div style="margin: 15px; width:97%;height: 110px; background-color: #009F95;border-radius:12px;color: #fbfbfb;padding: 16px">
+             <div style="width: 100%;">
+                 <p id="Tilte_name" style="font-size: 24px;display: inline-block">标题零部件名字</p>
+                 <p style="font-size: 16px;display: inline-block;margin-top: 6px;float:right;cursor:pointer;margin-right: 12px" onclick="return_top()">返 回</p>
+             </div>
+             <div style="font-size: 16px;width: 100%;float: left;margin-top: 12px">
+                 <p style="display: inline-block" th:text="${Oreder_number}"></p><!--订单编号-->
+                 <p  id="People" style="display: inline-block;float: right;margin-right: 12px" >申请人:王XX</p>
+             </div>
+             <div style="width: 100%; float: left;margin-top: 12px;font-size: 16px;">
+                 <p id="Merchant_number" style="float: left;" >已报价商家:2</p>
+                 <p  id="Create_time" style="float:right;margin-right: 12px"  color="#FBFBFB" >申请时间:2019-09-01</p>
+             </div>
+         </div>
+     </div>
+
+     <div>
+         <ul class="layui-timeline">
+
+             <li class="layui-timeline-item">
+                 <i class="layui-icon layui-timeline-axis"></i>
+                 <div class="layui-timeline-content layui-text">
+                     <h3 class="layui-timeline-title">8月18日</h3>
+                     <h3 class="layui-timeline-title">发出申请</h3>
+                     <div id="list1" >
+
+                     </div>
+                 </div>
+             </li>
+
+             <li class="layui-timeline-item">
+                 <i class="layui-icon layui-timeline-axis"></i>
+                 <div class="layui-timeline-content layui-text">
+                     <h3 class="layui-timeline-title">8月16日</h3>
+                     <h3 class="layui-timeline-title">报价</h3>
+                     <div id="list2" style="overflow-y:auto;height: 500px;border: 2px solid #8D8D8D ">
+
+                     </div>
+                 </div>
+             </li>
+
+             <li class="layui-timeline-item">
+                 <i class="layui-icon layui-timeline-axis"></i>
+                 <div class="layui-timeline-content layui-text">
+                     <h3 class="layui-timeline-title">8月15日</h3>
+                     <h3 class="layui-timeline-title">专家评审</h3>
+                     <div id="list3" style="overflow-y:auto;height: 500px;border: 2px solid #8D8D8D ">
+
+                     </div>
+                 </div>
+             </li>
+
+             <li class="layui-timeline-item">
+                 <i class="layui-icon layui-timeline-axis"></i>
+                 <div class="layui-timeline-content layui-text">
+                     <h3 class="layui-timeline-title">8月15日</h3>
+                     <h3 class="layui-timeline-title">采购部议价结果</h3>
+                     <div id="list4" style="overflow-y:auto;height: 500px;border: 3px solid #8D8D8D ">
+
+                     </div>
+                 </div>
+             </li>
+
+             <li class="layui-timeline-item">
+                 <i class="layui-icon layui-timeline-axis"></i>
+                 <div class="layui-timeline-content layui-text">
+                     <h3 class="layui-timeline-title">8月15日</h3>
+                     <h3 class="layui-timeline-title">审批结果</h3>
+                     <div id="list5" style="overflow-y:auto;height: 500px;border: 3px solid #8D8D8D ">
+
+                     </div>
+                 </div>
+             </li>
+             <li class="layui-timeline-item">
+                 <i class="layui-icon layui-timeline-axis"></i>
+                 <div class="layui-timeline-content layui-text">
+                     <div class="layui-timeline-title">过去</div>
+                 </div>
+             </li>
+         </ul>
+     </div>
+ </div>
+
+
+ <script src="/layui/layui.all.js"></script>
+ <script>
+
+     function landing_star()
+     {
+
+         var table=document.createElement('table');//创建一个表
+         table.id='list1table1';
+         table.class='layui-hide';
+         document.getElementById('list1').appendChild(table);
+
+         layui.use('table', function(){
+             var table = layui.table;
+             var Data = [{"id":"BeJson","username":"http://www.bejson.com","sex":true,"city":"12","number":"12","experience":"12","all":"100"}]
+             table.render({
+                 elem: '#list1table1'
+                 // ,url:'/demo/table/user/'
+                 , data:Data
+                 ,cols: [
+                     [
+                         {field:'id', width:80, title: '序号', sort: true}
+                         ,{field:'username', width:150, title: '名称'}
+                         ,{field:'sex', width:100, title: '规格', sort: true}
+                         ,{field:'city', width:80, title: '单位'}
+                         ,{field:'number', width:80,title: '数量', minWidth: 150}
+                         ,{field:'experience', width:120, title: '报价', sort: true}
+                         ,{field:'all', width:120, title: '共计', sort: true}
+
+                     ]
+                 ]
+                 ,page: true
+             });
+         });
+
+
+         //报价商家区域
+         var  Data2=[{"Compayny_name":"山东XXX科技有限公司","data":[{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"},{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"}]},{"Compayny_name":"江苏XXX网络科技有限公司","data":[{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"},{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"}]}]
+         Add_data_table("list2",Data2)
+
+         //专家评审区域
+         var  Data3=[{"Compayny_name":"山东XXX科技有限公司","data":[{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"},{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"}]},{"Compayny_name":"江苏XXX网络科技有限公司","data":[{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"},{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"}]}]
+         Add_data_table("list3",Data3)
+
+         //采购部议价区域
+         var  Data4=[{"Compayny_name":"山东XXX科技有限公司","data":[{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"},{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"}]},{"Compayny_name":"江苏XXX网络科技有限公司","data":[{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"},{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"}]}]
+         Add_data_table("list4",Data4);
+         var log_Data4 = [{"people":"BeJson","state":"http://www.bejson.com","time":true,"opinion":"12"}]
+         Log_Process("list4",log_Data4);
+
+         //审核结果区域
+         var  Data5=[{"Compayny_name":"山东XXX科技有限公司","data":[{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"},{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"}]},{"Compayny_name":"江苏XXX网络科技有限公司","data":[{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"},{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"}]}]
+         Add_data_table("list5",Data4);
+         var log_Data5 =[{"people":"BeJson","state":"http://www.bejson.com","time":true,"opinion":"12"}]
+         Log_Process("list5",log_Data5);
+
+
+
+     }
+
+
+     function Add_data_table(list_name,Data)//生成商家报价 专家审核等表单 参数 对应日期框的div的id 和多个公司数据
+     {
+         //Data数据结构  var  Data2=
+         // [
+         // {"Compayny_name":"山东XXX科技有限公司","data":[{"id":"BeJson","all":"100"},{"id":"BeJson","all":"100"}]},第一家报价公司
+         // {"Compayny_name":"江苏XXX网络科技有限公司","data":[{"id":"BeJson","all":"100"},{"id":"BeJson","all":"100"}]}第二家报价公司
+         // ]
+
+         for (var n=0;n<Data.length;n++)//循环一次代表一个公司的表单被生成
+         {
+             if (n>0)//报价公司大于1家时加一个分界线
+             {
+                 var line=document.createElement('div');
+                 line.innerHTML=
+                     '<div style="margin: 12px">'+
+                     '<hr class="layui-bg-green">'+
+                     '</div>';
+                 document.getElementById(list_name.toString()).appendChild(line);
+             }
+
+             var div_table=document.createElement('div');//容纳公司名 报价表等
+             div_table.id='div_table'+list_name+n.toString();
+             document.getElementById(list_name).appendChild(div_table)
+
+             //报价的厂家名
+             var Company_name=document.createElement('div');//创建一个表头
+             Company_name.innerHTML=
+                 '<div style="width:16%;margin-top: 12px;margin-left:6px;padding: 6px;background-color: #2D93CA;color: #fbfbfb;font-size: 16px;border-radius: 6px;display: inline-block;text-align: center">'+
+                 ' <label >'+Data[n].Compayny_name+'</label>'+
+                 '</div>'+
+             '<div style="width:60px;margin-right: 6px;margin-top: 12px;padding: 6px;background-color:#009688;color: #fbfbfb;font-size: 16px;border-radius: 6px;display: inline-block;float: right;text-align: center;cursor:pointer">'+
+             ' <label style=";cursor:pointer" onclick="Table_visible(this)">收起</label>'+
+             '</div>'+
+             '<div style="width:auto;margin-right: 6px;margin-top: 12px;padding: 6px;background-color:#eb7350;color: #fbfbfb;font-size: 16px;border-radius: 6px;display: inline-block;float: right;text-align: center;cursor:pointer">'+
+             ' <label>总计:100000元</label>'+
+             '</div>'
+             document.getElementById('div_table'+list_name+n.toString()).appendChild(Company_name);
+
+
+
+             var table=document.createElement('table');//创建一个表
+             table.id=list_name.toString()+'table'+n.toString();
+             table.class='layui-hide';
+             document.getElementById('div_table'+list_name+n.toString()).appendChild(table);
+
+             layui.use('table', function(){
+
+                 var table = layui.table;
+                 table.render({
+                     elem: '#'+list_name.toString()+'table'+n.toString()
+                     // ,url:'/demo/table/user/'
+                     , data:Data[n].data
+                     ,cols: [
+                         [
+                             {field:'id', width:80, title: '序号', sort: true}
+                             ,{field:'username', width:300, title: '名称'}
+                             ,{field:'sex', width:200, title: '规格', sort: true}
+                             ,{field:'number', width:80,title: '数量', minWidth: 150}
+                             ,{field:'experience', width:150, title: '报价', sort: true}
+                             ,{field:'all', width:120, title: '共计', sort: true}
+                         ]
+                     ]
+                     ,page: true
+                 });
+             });
+
+         }
+     }
+
+     function Log_Process(List_name,log_Data)//审批日志 参数 对应日期框的div的id 和审批日志数据
+     {
+        // var Data = [{"id":"BeJson","username":"http://www.bejson.com","sex":true,"city":"12","number":"12","experience":"12","all":"100"}]
+         //审批日志
+         var Company_name=document.createElement('div')
+         Company_name.innerHTML=
+             '<div style="margin: 12px">'+
+             '<hr class="layui-bg-green">'+
+             '</div>'+
+             '<div style="width:8%;margin: 6px;padding: 6px;background-color: #eb7350;color: #fbfbfb;font-size: 16px;border-radius: 6px;text-align: center">'+
+             ' <label >审批日志</label>'+
+             '</div>';
+         document.getElementById(List_name).appendChild(Company_name);
+
+         var table=document.createElement('table');//创建一个表
+         table.id=List_name+'_log';
+         table.class='layui-hide';
+         document.getElementById(List_name).appendChild(table);
+
+         layui.use('table', function(){
+             var table = layui.table;
+             table.render({
+                 elem: '#'+List_name+'_log'
+                 // ,url:'/demo/table/user/'
+                 , data:log_Data
+                 ,cols: [
+                     [
+                         {field:'people', width:80, title: '议价人', sort: true}
+                         ,{field:'state', width:150, title: '审核状态'}
+                         ,{field:'time', width:100, title: '审核时间', sort: true}
+                         ,{field:'opinion', width:80, title: '意见'}
+                     ]
+                 ]
+                 ,page: true
+             });
+         });
+     }
+
+     function Table_visible(e)//隐藏或显示表单
+     {
+         var Contrels=e.parentElement;
+         var Contrels1=Contrels.parentElement.parentElement;
+         var table=Contrels1.childNodes;//找到表格所在的父级div
+
+         if (table[2].style.display!='none')
+         {
+             e.innerText="显示";
+             table[2].style.display='none';
+         }
+         else
+         {
+             e.innerText="收起";
+             table[2].style.display='block';
+         }
+
+     }
+
+     function return_top()//返回上一层
+     {
+         parent.close_Details_page();
+     }
+
+
+ </script>
+</body>
+</html>

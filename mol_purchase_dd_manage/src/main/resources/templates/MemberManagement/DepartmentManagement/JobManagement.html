@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<link rel="stylesheet" href="/layui/css/layui.css">
+<script src="/echarts.min.js"></script>
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js" type="text/javascript"></script>
+
+<body>
+
+<div style="padding: 16px" id="datagridview">
+    <div style="width: 100%;height: 45px;">
+        <div style="float:right; width: 150px;height: 35px;background-color:#2D93CA;border-radius: 6px;font-size: 20px;text-align:center;color:#fbfbfb;cursor:pointer;">
+            <p style="margin-top: 3px">+添加新角色</p>
+        </div>
+
+        <div style="float:left;">
+            <p style="float:left; font-size: 24px;">搜索内容：</p>
+            <input style="width: 180px;height: 30px;"/>
+            <button style=" width: 100px;height:35px;background-color: #009F95;border-radius:3px;color: #FBFBFB;">
+                开始搜索
+            </button>
+        </div>
+    </div>
+    <div style="width: 100%;">
+        <table class="layui-hide" id="test" lay-filter="test"></table>
+    </div>
+</div>
+
+
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit1">员工管理</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit2" >编辑</a>
+    <a class="layui-btn layui-btn-xs" lay-event="edit3">复制</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+<div id="Details">
+    <iframe  id="subWin"  style="width: 98.2%;height: 750px;border: none;overflow-x:hidden ;overflow-y: hidden"><!--width: 1670px-->
+
+    </iframe>
+</div>
+
+<script src="/layui/layui.all.js"></script>
+
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+
+    function close_Details_page()//关闭订单详情通话页
+    {
+       // $("#Details").animate({width:"50%"}, 0);//收起
+        document.getElementById("datagridview").style.display="block";
+        document.getElementById("Details").style.display="none";
+    }
+
+    layui.use('table', function(){
+        var table = layui.table;
+        var Data=[{"id":"BeJson","item1":"销售主管","item2":true,"item3":"12"},{"id":"BeJson","item1":"采购主管","item2":true,"item3":"12"},{"id":"BeJson","item1":"采购员","item2":true,"item3":"12"}]
+        table.render({
+            elem: '#test'
+            // ,url:'data.json'//json路径
+            , data:Data
+            ,toolbar: '#toolbarDemo'
+            ,title: '用户数据表'
+            ,cols: [
+                [
+                    {type: 'checkbox', fixed: 'left'}
+                    ,{field:'id', title:'ID', width:100, fixed: 'left', unresize: true, sort: true}
+                    ,{field:'item1', title:'岗位名称', width:220, edit: 'text'}
+                    ,{field:'item2', title:'员工名单', width:350, edit: 'text'}
+                    ,{field:'item3', title:'岗位状态', width:200}
+                    ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:260}
+                ]
+            ]
+            ,page: true
+        });
+
+
+
+        //监听行工具事件
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+            //console.log(obj)
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    layer.close(index);
+                });
+            } else if(obj.event === 'edit2')
+            {
+                document.getElementById("datagridview").style.display="none";
+                document.getElementById("subWin").src="/Home/JobEditPage/?JobName="+data.item1;//跳转到合同详情 传送一个合同编号
+                document.getElementById("Details").style.display="block";
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

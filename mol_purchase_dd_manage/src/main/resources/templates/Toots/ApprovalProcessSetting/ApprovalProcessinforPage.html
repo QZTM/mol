@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div style="padding: 24px;">
+   <div>
+       <p style="font-size: 26px">
+           合同订单
+       </p>
+   </div>
+    <div style="width: 100% ;height: 60px;">
+        <div style="float: left">
+            <div style="display: inline-block">
+                <p>
+                    开启审核
+                </p>
+            </div>
+            <div style="display: inline-block">
+                <input id="d1" name="Fruit1" type="radio" value="1" />是
+                <input id="d2" name="Fruit1" type="radio" value="2" />否
+            </div>
+        </div>
+        <div style="float: left;margin-left: 10%">
+            <div style="display: inline-block">
+                <p>
+                    允许更改
+                </p>
+            </div>
+            <div style="display: inline-block">
+                <input id="d3" name="Fruit2" type="radio" value="1" />是
+                <input id="d4" name="Fruit2" type="radio" value="2" />否
+            </div>
+        </div>
+    </div>
+
+    <div style="width: 100% ;height: 100px;font-size: 20px">
+        <div style=" width: 150px;height: 35px;background-color:#2D93CA;border-radius: 6px;text-align:center;color:#fbfbfb;">
+            <p>金额区间</p>
+        </div>
+        <div style="width: 100%;height:50px ">
+            <div style="float: left;margin-top: 20px ;margin-left: 12px">
+                <input id="number1" type="text"/> 至
+            </div>
+            <div style="float: left;margin-top: 20px;margin-left: 12px">
+                <input id="number2" type="text"/>
+            </div>
+        </div>
+    </div>
+
+    <div style="width: 100% ;height: 200px;font-size: 20px;margin-top: 12px">
+        <div style=" width: 150px;height: 35px;background-color:#2D93CA;border-radius: 6px;text-align:center;color:#fbfbfb;">
+            <p>审批流程</p>
+        </div>
+        <div id="approval_view" style="float: left;margin-top: 24px">
+
+        </div>
+        <div style="float: left;margin-left: 24px;margin-top: 24px">
+           <img src="/imge/add_file.ico" style="width: 80px;height: 80px" onclick="add_approval_view()">
+        </div>
+    </div>
+
+    <div style="width: 100% ;height: 200px;font-size: 20px;margin-top: 12px">
+        <div style=" width: 150px;height: 35px;background-color:#2D93CA;border-radius: 6px;text-align:center;color:#fbfbfb;">
+            <p>审核解锁人</p>
+        </div>
+        <div id="Unlock_Peolpe" style="float: left;margin-top: 24px">
+
+        </div>
+        <div style="float: left;margin-left: 24px;margin-top: 24px">
+            <img src="/imge/add_file.ico" style="width: 80px;height: 80px" onclick="add_Unlock_Peolpe()">
+        </div>
+    </div>
+
+    <div style="width: 100% ;height: 200px;font-size: 20px;margin-top: 12px">
+        <div style=" width: 150px;height: 35px;background-color:#2D93CA;border-radius: 6px;text-align:center;color:#fbfbfb;">
+            <p>抄送人</p>
+        </div>
+        <div id="CopyPerson" style="float: left;margin-top: 24px">
+
+        </div>
+        <div style="float: left;margin-left: 24px;margin-top: 24px">
+            <img src="/imge/add_file.ico" style="width: 80px;height: 80px" onclick="Copy_person()">
+        </div>
+    </div>
+
+</div>
+<script>
+    function radio()
+    {
+      if (document.getElementById("d1").checked)
+      {
+          alert("1")
+      }
+      else if (document.getElementById("d2").checked)
+      {
+          alert("2")
+      }
+    }
+
+    function add_approval_view()//添加审批视图
+    {
+
+        var element=document.getElementById("approval_view");
+        if (element.childNodes.length>1)
+        {
+            var divitem_1 = document.createElement("div");//添加箭头
+            divitem_1.style.display="inline-block";
+            var div_1 = document.getElementById("approval_view");
+            divitem_1.innerHTML =
+                ' <div style="display: inline-block;margin-left: 12px;vertical-align:top;margin-top: 20px">'+
+                ' <img style="width: 50px;height: 50px;" src="/imge/jiantou.jpg">'+
+                ' </div>'
+            div_1.appendChild(divitem_1);
+        }
+
+            var divitem = document.createElement("div");
+            divitem.style.display = "inline-block";
+            var div = document.getElementById("approval_view");
+            divitem.innerHTML =
+                '<div style="display: inline-block;margin-left: 12px;vertical-align:top">' +
+                '<div>' +
+                ' <img src="/imge/timg.jpg" style="height: 80px;width: 80px;" class="layui-nav-img">' +
+                '</div>' +
+                ' <div style="width: 80px;text-align: center;font-size: 18px">' +
+                ' <p>王XX</p>' +
+                '</div>' +
+                '</div>'
+            div.appendChild(divitem);
+    }
+    
+    function add_Unlock_Peolpe() //审核解锁人
+    {
+        var divitem = document.createElement("div");
+        divitem.style.display = "inline-block";
+        var div = document.getElementById("Unlock_Peolpe");
+        divitem.innerHTML =
+            '<div style="display: inline-block;margin-left: 12px;vertical-align:top">' +
+            '<div>' +
+            ' <img src="/imge/timg.jpg" style="height: 80px;width: 80px;" class="layui-nav-img">' +
+            '</div>' +
+            ' <div style="width: 80px;text-align: center;font-size: 18px">' +
+            ' <p>王XX</p>' +
+            '</div>' +
+            '</div>'
+        div.appendChild(divitem);
+    }
+
+    function Copy_person()//抄送人
+    {
+        var divitem = document.createElement("div");
+        divitem.style.display = "inline-block";
+        var div = document.getElementById("CopyPerson");
+        divitem.innerHTML =
+            '<div style="display: inline-block;margin-left: 12px;vertical-align:top">' +
+            '<div>' +
+            ' <img src="/imge/timg.jpg" style="height: 80px;width: 80px;" class="layui-nav-img">' +
+            '</div>' +
+            ' <div style="width: 80px;text-align: center;font-size: 18px">' +
+            ' <p>王XX</p>' +
+            '</div>' +
+            '</div>'
+        div.appendChild(divitem);
+    }
+
+
+</script>
+</body>
+</html>
