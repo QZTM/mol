@@ -12,10 +12,10 @@ import javax.servlet.MultipartConfigElement;
 @SpringBootApplication
 @MapperScan(value = "com.mol.ddmanage.mapper")
 @Configuration
-public class DemoApplication {
+public class DdManageApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoApplication.class, args);
+        SpringApplication.run(DdManageApplication.class, args);
     }
 
     @Bean

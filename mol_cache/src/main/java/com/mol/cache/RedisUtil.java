@@ -20,7 +20,8 @@ public class RedisUtil {
     private  RedisUtil() {
         // jedispool为null则初始化，
         if (pool == null) {
-            String ip = "127.0.0.1";
+            String ip = "140.249.22.202";
+            String password = "ald377";
             int port = 6379;
             JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
             // 如果赋值为-1，则表示不限制；如果pool已经分配了maxTotal个jedis实例，则此时pool的状态为exhausted(耗尽）.
@@ -33,7 +34,7 @@ public class RedisUtil {
             jedisPoolConfig.setTestOnBorrow(true);
             //pool = new JedisPool(jedisPoolConfig, ip, port, 10000, password);
             // redis 未设置密码
-            pool = new JedisPool(jedisPoolConfig, ip, port, 10000);
+            pool = new JedisPool(jedisPoolConfig, ip, port, 10000 ,password);
         }
     }
 
