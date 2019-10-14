@@ -181,6 +181,7 @@
 <script th:inline="javascript">
     console.log("初始化layer：");
     var layer ;
+    var index;
     layui.use(["layer","form"], function(){
         layer = layui.layer;
     });
@@ -199,12 +200,12 @@
         console.log("user && supplier");
         console.log(user && supplier);
 
-        if(user && supplier){
-            console.log("session中有user和supplier：。。。。supstateNormal:"+supplier.supstateNormal);
-            var supstate = supplier.supstateNormal;
-            alertMsg(supstate);
-            xunjia(4,supstate);
-        }else{
+        // if(user && supplier){
+        //     console.log("session中有user和supplier：。。。。supstateNormal:"+supplier.supstateNormal);
+        //     var supstate = supplier.supstateNormal;
+        //     //alertMsg(supstate);
+        //     xunjia(4,supstate);
+        // }else{
             console.log("session中没有user或supplier：");
             <!--获取缓存的变量-->
             localStorage.clear();
@@ -233,7 +234,7 @@
             }
             console.log("判断当前运行的环境为：");
             console.log(localRunEnvExl);
-        }
+        // }
     })
 
 

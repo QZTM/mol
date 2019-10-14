@@ -25,6 +25,7 @@ import util.RandomStr;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.net.URL;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -141,13 +142,10 @@ public class MicroDDLoginController {
         Supplier getdSupplier = null;
         Salesman salesman = null;
 
-
         /*根据用户名和手机号码验证业务员表中是否有该业务员*/
         Example example1 = new Example(Salesman.class);
         example1.and().andEqualTo("name", ddUser.getName()).andEqualTo("phone", ddUser.getMobile());
         salesman = microSalesmanService.getSalesman(example1);
-
-
         logger.info("salesman == null?---" + (salesman == null));
 
         if (salesman != null) {
@@ -192,39 +190,36 @@ public class MicroDDLoginController {
      * @return
      */
     public Map getConfig(HttpServletRequest request) {
-        String urlString = request.getRequestURL().toString();
-        String queryString = request.getQueryString();
+//        String urlString = request.getRequestURL().toString();
+//        String queryString = request.getQueryString();
+//
+//        String queryStringEncode = null;
+//        String url;
+//        if (queryString != null) {
+//            queryStringEncode = URLDecoder.decode(queryString);
+//            url = urlString + "?" + queryStringEncode;
+//        } else {
+//            url = urlString;
+//        }
+        String url = "http://fyycg88.vaiwan.com/index/findAll";
 
-        String queryStringEncode = null;
-        String url;
-        if (queryString != null) {
-            queryStringEncode = URLDecoder.decode(queryString);
-            url = urlString + "?" + queryStringEncode;
-        } else {
-            url = urlString;
-        }
         /**
          * 确认url与配置的应用首页地址一致
          */
-        System.out.println(url);
+        //System.out.println(url);
 
         /**
          * 随机字符串
          */
         String nonceStr = RandomStr.getRandom(7, RandomStr.TYPE.LETTER);
-        System.out.println(nonceStr);
         long timeStamp = System.currentTimeMillis() / 1000;
         String signedUrl = url;
-        String accessToken = null;
-        String ticket = null;
+        //String accessToken = microTokenService.getToken();;
+        String ticket = microJsapiTicketService.getJsApiTicket();;
         String signature = null;
 
         try {
-            accessToken = microTokenService.getToken();
-
-            ticket = microJsapiTicketService.getJsApiTicket();
             signature = sign(ticket, nonceStr, timeStamp, signedUrl);
-
         } catch (OApiException e) {
             e.printStackTrace();
         }
@@ -236,7 +231,6 @@ public class MicroDDLoginController {
         configValue.put("timeStamp", timeStamp);
         configValue.put("corpId", MicroAttr.CROPID);
         configValue.put("agentId", MicroAttr.AGENTID);
-
         //String config = JSON.toJSONString(configValue);
         return configValue;
     }
@@ -249,6 +243,35 @@ public class MicroDDLoginController {
         } catch (Exception ex) {
             throw new OApiException();
         }
+    }
+
+
+
+
+    private String check(String url,String corpId,String suiteKey) throws Exception{
+        try {
+
+            url = URLDecoder.decode(url,"UTF-8");
+            URL urler = new URL(url);
+            StringBuffer urlBuffer = new StringBuffer();
+            urlBuffer.append(urler.getProtocol());
+            urlBuffer.append(":");
+            if (urler.getAuthority() != null && urler.getAuthority().length() > 0) {
+                urlBuffer.append("//");
+                urlBuffer.append(urler.getAuthority());
+            }
+            if (urler.getPath() != null) {
+                urlBuffer.append(urler.getPath());
+            }
+            if (urler.getQuery() != null) {
+                urlBuffer.append('?');
+                urlBuffer.append(URLDecoder.decode(urler.getQuery(), "utf-8"));
+            }
+            url = urlBuffer.toString();
+        } catch (Exception e) {
+            throw new IllegalArgumentException("url非法");
+        }
+        return url;
     }
 
 
