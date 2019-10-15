@@ -43,19 +43,16 @@ public class XiaoNiuMsm implements SendMsmHandler{
 
 
 
+    /**
+     * 小牛云应用名称
+     */
+    public static final String SIGNNAME_MEYG = "茉尔易购";
+
+
     //产品名称:云通信短信API产品,开发者无需替换
     static final String product = "Dysmsapi";
     //产品域名,开发者无需替换
     static final String domain = "sms11.hzgxr.com:40081";
-
-    @Setter
-    private String phone = "";
-    @Setter
-    private String signName = "";
-    @Setter
-    private String templateCode = "";
-    @Setter
-    private String code = "";
 
 
     // TODO 此处需要替换成开发者自己的AK
@@ -68,59 +65,37 @@ public class XiaoNiuMsm implements SendMsmHandler{
 
 
     @Override
-    public String sendMsm(String signName, String templateCode, String phoneNumber) {
+    public String sendMsm(String signName,MsmTemplate template, String phoneNumber) {
+        if(StringUtils.isEmpty(signName)){
+            log.warning("小牛应用名称不能为空");
+            return "短信发送失败";
+        }
+        if(template != null && StringUtils.isEmpty(template.getId())){
+            log.warning("模板ID不能为空");
+            return "短信发送失败";
+        }
         String oldPhoneCode = cacheHandle.getStr(phoneNumber);
         if(oldPhoneCode == null){
-            oldPhoneCode = RandomStr.getRandom(6, RandomStr.TYPE.LETTER);
+            oldPhoneCode = RandomStr.getRandom(6, RandomStr.TYPE.NUMBER);
         }
-        return this.setSendParam(signName,templateCode,phoneNumber,oldPhoneCode).sendMes();
-    }
 
-
-
-
-    /**
-     * 设置发送参数
-     * @param signName
-     * @param templateCode
-     * @param phone
-     * @param code
-     * @return
-     */
-    private XiaoNiuMsm setSendParam(String signName,String templateCode,String phone,String code){
-        this.setSignName(signName);
-        this.setTemplateCode(templateCode);
-        this.setPhone(phone);
-        this.setCode(code);
-        return this;
-    }
-
-
-    /**
-     * 发送短信
-     *
-     * @return 如果发送成功则返回该验证码
-     */
-    public String sendMes() {
-        if (StringUtils.isEmpty(phone) || StringUtils.isEmpty(signName) || StringUtils.isEmpty(templateCode) || StringUtils.isEmpty(code)) {
-            throw new RuntimeException("发送短信时的参数有误");
-        }
         try {
-//            SendSmsResponse response = MicroSmsService.sendSms();
-//            if("OK".equals(response.getMessage())){
+            SendSmsResponse response = this.sendSms(signName,template.getId(),phoneNumber,oldPhoneCode);
+            if("OK".equals(response.getMessage())){
+                return "短信发送成功"+oldPhoneCode;
+            }
+//            if (true) {
+//                saveToCache(phone,code);
 //                return code;
 //            }
-            if (true) {
-                saveToCache(phone,code);
-                return code;
-            }
         } catch (Exception e) {
+            log.warning("发送短信时出错");
             e.printStackTrace();
             throw new RuntimeException("发送短信时出错");
         }
-        return null;
-    }
+        return "短信发送失败";
 
+    }
 
     /*去缓存中获取*/
     public Object getCacheCode(String phone) {
@@ -132,7 +107,7 @@ public class XiaoNiuMsm implements SendMsmHandler{
         cacheHandle.saveStr(phone,5*60, code);
     }
 
-    public SendSmsResponse sendSms() throws ClientException {
+    private SendSmsResponse sendSms(String signName,String templateCode,String phoneNumber,String phoneCode) throws ClientException {
 
         //可自助调整超时时间
         System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
@@ -147,15 +122,15 @@ public class XiaoNiuMsm implements SendMsmHandler{
         //必填:待发送手机号
         request.setMethod(MethodType.POST);
         request.setAcceptFormat(FormatType.JSON);
-        request.setPhoneNumbers(phone);
+        request.setPhoneNumbers(phoneNumber);
         //必填:短信签名-可在短信控制台中找到
         request.setSignName(signName);
         //必填:短信模板-可在短信控制台中找到
         request.setTemplateCode(templateCode);
         //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
-        String code = RandomStr.getRandom(6, RandomStr.TYPE.NUMBER);
-        System.out.println("短信验证码：" + code);
-        request.setTemplateParam("{ \"code\":\"" + code + "\"}");
+//        String code = RandomStr.getRandom(6, RandomStr.TYPE.NUMBER);
+////        System.out.println("短信验证码：" + code);
+        request.setTemplateParam("{ \"code\":\"" + phoneCode + "\"}");
 
         //选填-上行短信扩展码(无特殊需求用户请忽略此字段)
         //request.setSmsUpExtendCode("90997");

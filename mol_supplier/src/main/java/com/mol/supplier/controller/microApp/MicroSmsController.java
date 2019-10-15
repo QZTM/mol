@@ -1,6 +1,8 @@
 package com.mol.supplier.controller.microApp;
 
 import com.mol.sms.SendMsmHandler;
+import com.mol.sms.XiaoNiuMsm;
+import com.mol.sms.XiaoNiuMsmTemplate;
 import entity.ServiceResult;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -46,17 +48,17 @@ public class MicroSmsController {
         if (StringUtils.isEmpty(msgType)) {
             return ServiceResult.failure("短信类型不能为空！");
         }
-        String templateCode = "";
+        XiaoNiuMsmTemplate templateCode = null;
         switch (msgType) {
             case MSMTYPE_REGIST:
-                templateCode = SendMsmHandler.TEMPLATECODE_SUPPLIER_REGIST;
+                templateCode = XiaoNiuMsmTemplate.供应商注册模板();
                 break;
             case MSMTYPE_AUTH:
-                templateCode = SendMsmHandler.TEMPLATECODE_SUPPLIER_AUTH;
+                templateCode = XiaoNiuMsmTemplate.供应商认证模板();
                 break;
         }
-        String phoneCode = sendMsmHandler.sendMsm(SendMsmHandler.SIGNNAME,templateCode,phone);
-        return ServiceResult.success("发送成功", phoneCode);
+        String sendResult = sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, templateCode,phone);
+        return ServiceResult.success("发送成功", sendResult);
     }
 
 
