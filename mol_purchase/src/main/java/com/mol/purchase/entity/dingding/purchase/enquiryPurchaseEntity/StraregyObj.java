@@ -8,6 +8,7 @@ public class StraregyObj {
 
     private String id;
     private String buyChannelId;
+    private String pkMarbasclass;
     private String goodsType;
     private String goodsBrand;
     private String goodsName;
@@ -44,6 +45,8 @@ public class StraregyObj {
     private String technicalSupportTelephone;
     //专家评审
     private String expertReview;
+    //评审奖励
+    private String expertReward;
     //参与议价人员列表
     private String negotiatePerson;
     //议价完成时添加说明

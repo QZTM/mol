@@ -1,8 +1,15 @@
 package com.mol.purchase.controller.dingding.purchase;
 
+import com.alipay.api.domain.ShopPosSchedule;
+import com.mol.config.Constant;
+import com.mol.notification.SendNotification;
+import com.mol.purchase.entity.Supplier;
+import com.mol.purchase.entity.SupplierSalesman;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PageArray;
+import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.SubObj;
 import com.mol.purchase.service.dingding.purchase.EnquiryPurchaseService;
+import com.mol.purchase.service.token.TokenService;
 import entity.ServiceResult;
 import org.dom4j.DocumentException;
 import org.slf4j.Logger;
@@ -12,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 询价采购
@@ -26,16 +34,31 @@ public class EnquiryPurchaseController {
     @Autowired
     private EnquiryPurchaseService shoppingService;
 
+
+    @Autowired
+    private SendNotification sendNotification;
+
+    @Autowired
+    private TokenService tokenService;
+
     @RequestMapping(value = "/start",method = RequestMethod.POST)
     public ServiceResult<String> start(@RequestBody SubObj obj, HttpServletRequest request) throws DocumentException, IllegalAccessException, IOException {
 
-        System.out.println("pagecontent"+ obj);
         PageArray pageArray = obj.getPageArray();
-//        DDUser ddUser = JWTUtil.getUserByRequest(request);
-//        String userid = ddUser.getUserid();
         String staid=obj.getStaffId();
         String orgId=obj.getOrgId();
-        return shoppingService.save(pageArray,staid,orgId);
+        StraregyObj stobj = shoppingService.save(pageArray, staid, orgId);
+        //所属行业供应商
+        List<Supplier> list=shoppingService.findSupplierByPur(stobj);
+        if (list.size()>0 && list!=null){
+            //查询供应商下的人员的ddid
+            List<String> manList= shoppingService.findSaleList(list);
+            //发送通知消息
+            for (String s : manList) {
+                sendNotification.sendOaFromThird(s, Constant.AGENTID_THIRDPLAT,tokenService.getMicroToken());
+            }
+        }
+        return ServiceResult.success("成功");
     }
 
     @RequestMapping(value = "/getSupplierNum")

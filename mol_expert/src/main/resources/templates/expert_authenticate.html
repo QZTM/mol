@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<!--suppress ALL-->
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta charset="UTF-8">
+    <title>专家认证</title>
+    <!-- Bootstrap -->
+	<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+	<link th:href="@{/layui/css/layui.css}" rel="stylesheet">
+	<script th:src="@{/layui/layui.all.js}"></script>
+	<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery) -->
+	<script th:src="@{/js/jquery-3.2.1.min.js}"></script>
+	<!-- 加载 Bootstrap 的所有 JavaScript 插件。 -->
+	<script th:src="@{/js/bootstrap.min.js}"></script>
+
+
+<!--	开始引入日历需要的-->
+	<script th:src="@{/js/date/mobiscroll.core.js}"></script>
+	<script th:src="@{/js/date/mobiscroll.frame.js}"></script>
+	<script th:src="@{/js/date/mobiscroll.scroller.js}"></script>
+
+	<script th:src="@{/js/date/mobiscroll.util.datetime.js}"></script>
+	<script th:src="@{/js/date/mobiscroll.datetimebase.js}"></script>
+	<script th:src="@{/js/date/mobiscroll.datetime.js}"></script>
+	<script th:src="@{/js/date/mobiscroll.select.js}"></script>
+	<script th:src="@{/js/date/mobiscroll.listbase.js}"></script>
+	<script th:src="@{/js/date/mobiscroll.image.js}"></script>
+	<script th:src="@{/js/date/mobiscroll.treelist.js}"></script>
+
+	<script th:src="@{/js/date/mobiscroll.frame.android.js}"></script>
+	<script th:src="@{/js/date/mobiscroll.frame.android-holo.js}"></script>
+	<script th:src="@{/js/date/mobiscroll.frame.ios-classic.js}"></script>
+	<script th:src="@{/js/date/mobiscroll.frame.ios.js}"></script>
+	<script th:src="@{/js/date/mobiscroll.frame.jqm.js}"></script>
+	<script th:src="@{/js/date/mobiscroll.frame.sense-ui.js}"></script>
+	<script th:src="@{/js/date/mobiscroll.frame.wp.js}"></script>
+
+	<script th:src="@{/js/date/mobiscroll.android-holo-light.js}"></script>
+	<script th:src="@{/js/date/mobiscroll.wp-light.js}"></script>
+	<script th:src="@{/js/date/mobiscroll.mobiscroll-dark.js}"></script>
+
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.cs.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.de.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.en-UK.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.es.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.fa.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.fr.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.hu.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.it.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.ja.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.nl.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.no.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.pl.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.pt-BR.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.pt-PT.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.ro.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.ru.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.ru-UA.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.sk.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.sv.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.tr.js}"></script>
+	<script th:src="@{/js/date/i18n/mobiscroll.i18n.zh.js}"></script>
+
+	<link th:href="@{/css/date/mobiscroll.animation.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.icons.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.frame.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.frame.android.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.frame.android-holo.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.frame.ios-classic.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.frame.ios.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.frame.jqm.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.frame.sense-ui.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.frame.wp.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.scroller.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.scroller.android.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.scroller.android-holo.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.scroller.ios-classic.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.scroller.ios.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.scroller.jqm.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.scroller.sense-ui.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.scroller.wp.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.image.css}" rel="stylesheet" type="text/css" />
+
+	<link th:href="@{/css/date/mobiscroll.android-holo-light.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.wp-light.css}" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/date/mobiscroll.mobiscroll-dark.css}" rel="stylesheet" type="text/css" />
+	<style>
+		.dw-i{
+			text-align: center;
+		}
+
+	</style>
+</head>
+<body>
+		<div id="1">
+			<div class="page-header">
+			  <h1> <small>专家认证</small></h1>
+			</div>
+		</div>
+
+			<!-- 姓名开始 -->
+			<div class="input-group" style="margin:16px 6px 0 10px ">
+				<span class="input-group-addon" id="basic-addon1">姓名：</span>
+				<input readonly="readonly" type="text" class="form-control" id="name" name="upload.name"  th:placeholder="${my.name}" aria-describedby="basic-addon1">
+			</div>
+
+			<!-- 年月-->
+			<div class="input-group" style="margin:16px 6px 0 10px " data-role="fieldcontain"  id="demo_cont_date">
+				<span class="input-group-addon" id="basic-addon1">出生年月：</span>
+				<input type="text" id="demo_date" name="birthday"  class="form-control" placeholder="Working life" aria-describedby="basic-addon1">
+			</div>
+
+			<!-- 年龄开始 -->
+			<div class="input-group" style="margin:16px 6px 0 10px ">
+				<span class="input-group-addon" id="basic-addon1">年龄：</span>
+				<input type="text" id="age" name="upload.age" class="form-control" placeholder="Age" aria-describedby="basic-addon1">
+			</div>
+
+			<!-- 工作年限开始 -->
+			<div class="input-group" style="margin:16px 6px 0 10px ">
+				<span class="input-group-addon" id="basic-addon1">工作年限：</span>
+				<input type="text" class="form-control" name="upload.workLife" id="worklife" placeholder="Working life" aria-describedby="basic-addon1">
+			</div>
+
+			<!--行业开始 -->
+			<div class="input-group" style="clear:both;margin:16px 6px 0 10px">
+				<span class="input-group-addon" id="basic-addon1">所属行业：</span>
+				<select class="js-example-basic-single js-states form-control " id="select" name="upload.bdmar">
+					<option  style="font-size: 12px" value="" >--请选择行业类别--</option>
+					<option  value="1" th:each="er:${bdMar}"  th:value="${er.pkMarbasclass}" th:text="${er.name}">正在询价</option>
+				</select>
+			</div>
+
+			<!-- 身份证号码开始 -->
+			<div class="input-group" style="margin:16px 6px 0 10px ">
+				<span class="input-group-addon" id="basic-addon1">身份证号码：</span>
+				<input type="text" class="form-control" name="upload.idNumber" id="idNumber" placeholder="ID number" aria-describedby="basic-addon1">
+			</div>
+
+			<!-- 上传身份证正反面开始 -->
+			<div id="1"style="margin:6px 6px 0 10px;">
+				<ul class="nav nav-tabs">
+					<li role="presentation" class="active"><a href="#">上传身份证正反面</a></li>
+				</ul>
+				<!-- 第一个 -->
+				<div style="float: left;" class="col-xs-6 col-md-4">
+					<div class="control-group" id="upimg">
+						<label class="col-md-3 control-label span3"></label>
+						<div class="col-md-9">
+							<img id="img1" src="/img/upimg.png" width="70px" height="70px"  >
+						</div>
+					</div>
+					<div class="control-group">
+
+						<div class="col-md-9">
+							<div class="input-group">
+								<label class="input-group-btn">
+									<input  class="file" id="file" type="file" accept="image/*" name="img1" style="left: -9999px; position: absolute;">
+									<span class="btn btn-default">点击上传</span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- 第二个 -->
+				<div style="float: right;" class="col-xs-6 col-md-4">
+					<div class="control-group" id="upimg">
+						<label class="col-md-3 control-label span3"></label>
+						<div class="col-md-9">
+							<img id="img2" src="/img/upimg.png" width="70px" height="70px" >
+						</div>
+					</div>
+
+					<div class="control-group">
+
+						<div class="col-md-9">
+							<div class="input-group">
+								<label class="input-group-btn">
+									<input  class="file" id="file" type="file" accept="image/*" name="img2" style="left: -9999px; position: absolute;">
+									<span class="btn btn-default">点击上传</span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- 上传名片开始 -->
+			<div id="1"style="margin:16px 6px 0 10px;clear: both;">
+				<ul class="nav nav-tabs">
+					<li role="presentation" class="active"><a href="#">上传名片正反面</a></li>
+				</ul>
+				<!-- 第一个 -->
+				<div style="float: left;" class="col-xs-6 col-md-4">
+					<div class="control-group" id="upimg">
+						<label class="col-md-3 control-label span3"></label>
+						<div class="col-md-9">
+							<img id="img3" src="/img/upimg.png" width="70px" height="70px" >
+						</div>
+					</div>
+
+					<div class="control-group">
+
+						<div class="col-md-9">
+							<div class="input-group">
+								<label class="input-group-btn">
+									<input  class="file" id="file" type="file" accept="image/*" name="img3" style="left: -9999px; position: absolute;">
+									<span class="btn btn-default">点击上传</span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- 第二个 -->
+				<div style="float: right;" class="col-xs-6 col-md-4">
+					<div class="control-group" id="upimg">
+						<label class="col-md-3 control-label span3"></label>
+						<div class="col-md-9">
+							<img id="img4" src="/img/upimg.png" width="70px" height="70px" >
+						</div>
+					</div>
+
+					<div class="control-group">
+
+						<div class="col-md-9">
+							<div class="input-group">
+								<label class="input-group-btn">
+									<input  class="file" id="file" type="file" accept="image/*" name="img4" style="left: -9999px; position: absolute;">
+									<span class="btn btn-default">点击上传</span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- 上传其他证件开始 -->
+			<div id="1"style="margin:16px 6px 0 10px;clear: both;">
+				<ul class="nav nav-tabs">
+					<li role="presentation" class="active"><a href="#">其他证件</a></li>
+				</ul>
+				<!-- 第一个 -->
+				<div style="float: left;" class="col-xs-6 col-md-4">
+					<div class="control-group" id="upimg">
+						<label class="col-md-3 control-label span3"></label>
+						<div class="col-md-9">
+							<img id="img5" src="/img/upimg.png" width="70px" height="70px" >
+						</div>
+					</div>
+
+					<div class="control-group">
+
+						<div class="col-md-9">
+							<div class="input-group">
+								<label class="input-group-btn">
+									<input  class="file" id="file" type="file" name="img5" style="left: -9999px; position: absolute;">
+									<span class="btn btn-default">点击上传</span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- 第二个 -->
+				<div style="float: right;" class="col-xs-6 col-md-4">
+					<div class="control-group" id="upimg">
+						<label class="col-md-3 control-label span3"></label>
+						<div class="col-md-9">
+							<img id="img6" src="/img/upimg.png" width="70px" height="70px" >
+						</div>
+					</div>
+
+					<div class="control-group">
+
+						<div class="col-md-9">
+							<div class="input-group">
+								<label class="input-group-btn">
+									<input  class="file" id="file" type="file" name="img6" style="left: -9999px; position: absolute;">
+									<span class="btn btn-default">点击上传</span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+
+			<!-- 提交开始 -->
+			<button type="button" class="btn btn-danger" style="margin-top: 20px;width: 100%;" onclick="sub()" id="subBtn">提交</button>
+
+
+
+
+
+</body>
+<script>
+
+	var name='';
+	var birthday="";
+	var age="";
+	var worklife='';
+	var bdmar='';
+	var idNumber='';
+
+
+	//年龄
+	$(function () {
+		$("#age").change(function () {
+			age=$("#age").val();
+		})
+	})
+	//工作年限
+	$(function () {
+		$("#worklife").change(function () {
+			worklife=$("#worklife").val();
+		})
+	})
+	//行业
+	$(function(){
+		$("#select").change(function(){
+			var val = $("#select").children('option:selected').val();
+			bdmar=val;
+		})
+
+	})
+	//身份证号码
+	$(function () {
+
+		$("#idNumber").change(function () {
+			idNumber=$("#idNumber").val();
+
+		})
+	})
+	//出生年月
+	$(function () {
+		function init() {
+			$('#demo_date').mobiscroll().date({
+				theme: theme,     // Specify theme like: theme: 'ios' or omit setting to use default
+				mode: mode,       // Specify scroller mode like: mode: 'mixed' or omit setting to use default
+				display: display, // Specify display mode like: display: 'bottom' or omit setting to use default
+				lang: lang        // Specify language like: lang: 'pl' or omit setting to use default
+			});
+
+
+		}
+		var demo="date";
+		var theme="ios";
+		var mode="scroller";
+		var display="bottom";
+		var lang ="zh";
+		$('#demo_cont_date').on('click', function() {
+			init();
+		});
+
+	});
+	var bl="";
+	var file="";
+	var filename="";
+	$(function () {
+	    $(".file").change(function (e) {
+	    	var upImageName="";
+			var imgname=e.target.value;
+			//console.log(e.target.value)
+			var geshi=imgname.split(".")[1]+"";
+			console.log(geshi)
+			if(geshi=="png" || geshi=="gif" || geshi=="jpeg" || geshi=="jpg"){
+
+				//console.log(e.target.outerHTML)
+				var outH=e.target.outerHTML;//2left.html:97 <input id="file" type="file" name="img1" style="left: -9999px; position: absolute;">
+				var index=outH.indexOf("name=");
+				var newout=outH.substr(index+6);//name="img1" style="left: -9999px; position: absolute;">
+				var s=newout.split("\"");
+				var id =s[0];
+				if (id=="img1"){
+					filename="frontOfId";
+				}
+				if (id=="img2"){
+					filename="reverseOfId";
+				}
+				if (id=="img3"){
+					filename="frontOfBusiness";
+				}
+				if (id=="img4"){
+					filename="reverseOfBusiness";
+				}
+				if (id=="img5"){
+					filename="otherDocumentsOne";
+				}
+				if (id=="img6"){
+					filename="otherDocumentsTwo";
+				}
+				file = e.target.files[0] || e.dataTransfer.files[0];
+				// $('#photoCover').val(document.getElementById("file").files[0].name);
+				if (file) {
+					var reader = new FileReader();
+					reader.onload = function () {
+						$("#"+id).attr("src", this.result);
+					}
+					reader.readAsDataURL(file);
+					if(file.size/1024 > 100) { //大于1M，进行压缩上传
+						console.log("theFile.size/1024 > 100");
+						photoCompress(file, {
+							quality: 0.7
+						}, function(base64Codes){
+							console.log("压缩后：" + base64Codes.length / 1024 + "k");
+							// $("#"+pervDivId).children("img").attr("src", base64Codes);
+							// $("#"+pervDivId).children("img").css("width", (window.innerWidth-40)+"px");
+							var newBl = convertBase64UrlToBlob(base64Codes);
+							console.log("newBl:");
+							console.log(newBl);
+							console.log("filename:"+filename);
+							uploadImg(newBl,filename);
+
+
+						});
+					}else{
+						console.log("theFile.size/1024 <= 100");
+						var ready=new FileReader();
+						/*开始读取指定的Blob对象或File对象中的内容. 当读取操作完成时,readyState属性的值会成为DONE,如果设置了onloadend事件处理程序,则调用之.同时,result属性中将包含一个data: URL格式的字符串以表示所读取文件的内容.*/
+						ready.readAsDataURL(file);
+						ready.onload=function(){
+							var re=this.result;
+							console.log("ready.onload....this.result:");
+							console.log(this.result);
+							// $("#"+pervDivId).children("img").attr("src", this.result);
+							// $("#"+pervDivId).children("img").css("width", (window.innerWidth-40)+"px");
+							bl = convertBase64UrlToBlob(this.result);
+							uploadImg(bl,filename);
+
+
+						}
+					}
+				}
+			}else {
+				alert("请上传图片");
+				return;
+			}
+
+
+
+		});
+	})
+
+	/**
+	 *       用url方式表示的base64图片数据
+	 */
+	function convertBase64UrlToBlob(urlData){
+		console.log("convertBase64UrlToBlob");
+
+		var arr = urlData.split(','), mime = arr[0].match(/:(.*?);/)[1],
+				bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+		while(n--){
+			u8arr[n] = bstr.charCodeAt(n);
+		}
+		return new Blob([u8arr], {type:mime});
+	};
+	function photoCompress(file,w,objDiv){
+		console.log("photoCompress");
+		// console.log("photoCompress"+w);
+		// console.log("photoCompress"+objDiv);
+		var ready=new FileReader();
+		/*开始读取指定的Blob对象或File对象中的内容. 当读取操作完成时,readyState属性的值会成为DONE,
+        如果设置了onloadend事件处理程序,则调用之.
+        同时,result属性中将包含一个data: URL格式的字符串以表示所读取文件的内容.*/
+		ready.readAsDataURL(file);
+		ready.onload=function(){
+			var re=this.result;
+			canvasDataURL(re,w,objDiv)
+		}
+	};
+	/**
+	 * 按比例缩放图片，通过canvas新生成图片并把新生成的图片转换为base64码返回
+	 * @param path
+	 * @param obj
+	 * @param callback
+	 */
+	function canvasDataURL(path, obj, callback){
+		console.log("canvasDta");
+		// console.log("canvasDta"+obj);
+		// console.log("canvasDta"+callback);
+		var img = new Image();
+		img.src = path;
+		img.onload = function(){
+			var that = this;
+			// 默认按比例压缩
+			var w = that.width,
+					h = that.height,
+					scale = w / h;
+			w = obj.width || w;
+			h = obj.height || (w / scale);
+			var quality = 0.7;  // 默认图片质量为0.7
+			//生成canvas
+			var canvas = document.createElement('canvas');
+			var ctx = canvas.getContext('2d');
+			// 创建属性节点
+			var anw = document.createAttribute("width");
+			anw.nodeValue = w;
+			var anh = document.createAttribute("height");
+			anh.nodeValue = h;
+			canvas.setAttributeNode(anw);
+			canvas.setAttributeNode(anh);
+			ctx.drawImage(that, 0, 0, w, h);
+			// 图像质量
+			if(obj.quality && obj.quality <= 1 && obj.quality > 0){
+				quality = obj.quality;
+			}
+			// quality值越小，所绘制出的图像越模糊
+			var base64 = canvas.toDataURL('image/jpeg', quality);
+			// 回调函数返回base64的值
+			callback(base64);
+		}
+	};
+
+	//提交
+	function sub(e) {
+		name =$("#name").val();
+		birthday=$("#demo_date").val();
+		if (check()){
+			$.ajax({
+				url:'/my/subMessage',
+				method:'post',
+				type:'json',
+				data:{
+					birthday:birthday,
+					age:age,
+					workLife:worklife,
+					marId:bdmar,
+					idNumber:idNumber
+				},
+				success:function (e) {
+					alert(e.result);
+					window.history.go(-1);
+				}
+			})
+		} else{
+			return;
+		}
+
+	}
+	//验证数据
+	function check() {
+		if (birthday =="" ||age =="" ||worklife =="" ||bdmar =="" ||idNumber =="" ) {
+			console.log(birthday);
+			console.log(age);
+			console.log(worklife);
+			console.log(bdmar);
+			console.log(idNumber);
+			alert("请完善个人信息！");
+			return false;
+		}else{
+			return true;
+		}
+
+	}
+
+	/**
+	 * 上传图片
+	 * @param bl                    图片的blob
+	 * @param whichImg              自定义的图片种类，例如身份证正面，反面，营业执照等，值是在后端的MicroAuthController类中定义的常量
+	 * @returns {Promise<any>}
+	 */
+	function uploadImg(e,whichImg){
+
+		console.log("uloadimg"+JSON.stringify(e));
+		console.log("uloadimg"+whichImg);
+		var fd = new FormData();
+		fd.append("file",e);
+		fd.append("whichImg",whichImg);
+		return new Promise(function(resolve, reject){
+			$.ajax({
+				url: '/my/uploadImage',
+				data:fd,
+				type: 'post',
+				//contentType: 'application/json;charset=UTF-8',
+				// headers: {
+				//     'Content-Type': 'application/x-www-form-urlencoded'  //multipart/form-data;boundary=--xxxxxxx   application/json
+				// },
+				contentType : false,
+				processData: false,
+				contentType: false,
+				success:function(data){
+					resolve(data);
+					console.log(data);
+				},fail:function(data){
+					reject(data);
+				}
+			})
+		})
+	}
+
+</script>
+</html> 

@@ -1,5 +1,6 @@
 package com.mol.supplier.mapper.newMysql.third;
 
+import com.mol.base.BaseMapper;
 import com.mol.supplier.entity.thirdPlatform.FyQuote;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -14,10 +15,10 @@ import java.util.List;
  * @author:yangjiangyan
  */
 @Mapper
-public interface FyQuoteMapper {
+public interface FyQuoteMapper extends BaseMapper<FyQuote> {
 
     //保存报价信息
-    void saveQuote(FyQuote fyQuote);
+    //void saveQuote(FyQuote fyQuote);
 
     //获取公司参与的订单
     List<String> getListBySupplier(String supplierId);

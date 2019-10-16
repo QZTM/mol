@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mol.expert.mapper.newMysql.dingding.schedule.ScheduleMapper">
+
+	<select id="selectByUserIdAndState" parameterType="map" resultType="com.mol.expert.entity.dingding.approve.PurchaseApprove">
+			select process_instance_id as processInstanceId,
+					staff_id as staffId,
+				   goods_type as goodsType,
+				   goods_name as goodsName,
+				   goods_specs as goodsSpecs,
+				   goods_branch as goodsBranch,
+				   goods_quantity as goodsQuantity,
+				   url,
+				   status
+			from fy_purchase
+			where staff_id=#{userId} and status in
+					<foreach collection="states" index="index" item="states" open="(" separator="," close=")">
+						#{states}
+					</foreach>
+			order by create_time desc
+	</select>
+
+	<select id="selectDetailByIds" parameterType="map" resultType="com.mol.expert.entity.dingding.approve.PurchaseApprove">
+		select process_instance_id as processInstanceId,
+					staff_id as staffId,
+				   goods_type as goodsType,
+				   goods_name as goodsName,
+				   goods_specs as goodsSpecs,
+				   goods_branch as goodsBranch,
+				   goods_quantity as goodsQuantity,
+				   url,
+				   status,
+				   goods_detail as goodsDetail
+		from fy_purchase
+		where process_instance_id=#{progressInstanceId} and staff_id=#{userId}
+	</select>
+</mapper>

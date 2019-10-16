@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.expert.mapper.newMysql.dingding.purchase.BdMaterialRepairMapper">
+    <insert id="insert" parameterType="com.mol.expert.entity.thirdPlatform.BdMaterialRepair">
+        insert into bd_material_repair  values (#{pkMaterial},#{name},#{code},#{materialspec},#{materialtype},#{measdoc},#{brand},#{marbasclass},#{creationtime},#{creator},#{pk_org},#{pk_group},#{enablestate},#{type})
+    </insert>
+</mapper>

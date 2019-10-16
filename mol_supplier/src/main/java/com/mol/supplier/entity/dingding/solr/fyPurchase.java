@@ -61,4 +61,8 @@ public class fyPurchase implements Serializable {
     private String negotiatedExplain;
     //待审核结束后的审核人的建议
     private String approverProposal;
+    //评审奖励
+    private String expertReward;
+    //采购预算
+    private String budget;
 }

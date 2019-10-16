@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mol.expert.mapper.fyOracle.dingding.order.PurchaseOrderMapper">
+	<select id="getPurchaseOrderDetailListByItemId" resultType="com.mol.expert.entity.dingding.purchaseOrder.PurchaseOrderDetail">
+		select po.approver,
+				po.billmaker,
+				po.cemployeeid,
+				po.creationtime,
+				po.ctrantypeid,
+				po.pk_group,
+				po.pk_org,
+				po.pk_supplier,
+				po.vbillcode,
+				po.vcoopordercode,
+				po.vmemo,
+				pob.crowno,
+				pob.norigtaxprice,
+				pob.pk_order_b as id,
+				po.pk_order
+		from po_order_b@ncdb pob
+		left join po_order@ncdb po on pob.pk_order=po.pk_order
+		where pob.pk_order in(select pk_order from po_order@ncdb where to_date(dbilldate,'yyyy-mm-dd hh24:mi:ss')>add_months(sysdate,-12)) and pob.pk_material=#{itemId}
+	</select>
+</mapper>

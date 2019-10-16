@@ -24,7 +24,7 @@
 
 
 
-<!--	<select id="Historical_price" parameterType="java.lang.String" resultType="com.purchase.entity.dingding.purchaseOrder.PurchaseOrderDetail">-->
+<!--	<select id="Historical_price" parameterType="java.lang.String" resultType="PurchaseOrderDetail">-->
 <!--        select * from po_order_b where pk_order in (select pk_order from po_order where pk_order in (select pk_order from po_order_b where pk_material=#{id}) and creationtime>#{Data_last_year}) and pk_material=#{id}-->
 <!--	</select>-->
 </mapper>

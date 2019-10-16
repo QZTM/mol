@@ -24,6 +24,8 @@ public class TokenService {
 
     private final String appTokenKey = "purchase-app-token";
 
+    public static final String MICROAPPTOKENKEY = "mol-supplier-microAppToken";
+
     @Synchronized
     public String getToken(){
         String token = cacheHandle.getStr(appTokenKey);
@@ -46,6 +48,13 @@ public class TokenService {
                 throw new RuntimeException("服务器通讯异常，请稍后再试");
             }
         }
+        return token;
+    }
+
+    @Synchronized
+    public String getMicroToken(){
+        String token = cacheHandle.getStr(MICROAPPTOKENKEY);
+
         return token;
     }
 }

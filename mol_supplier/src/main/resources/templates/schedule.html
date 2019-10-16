@@ -97,13 +97,14 @@
     <div class="list" th:each="er:${list}" >
         <a th:href="@{'/sche/getScheduleOne?id='+${er.id}}" style="text-decoration: none;color: black;">
             <p style="font-size: 16px;font-weight: bold;" th:text="${er.applyCause}">斯凯孚skf6轴承询价采购</p>
-<!--            <p>单号<span th:text="${er.orderNumber}">0000001</span></p>-->
+            <!--            <p>单号<span th:text="${er.orderNumber}">0000001</span></p>-->
+            <span style="float: right;margin-right: 6px" th:if="${er.expertReview=='true'}">需支付评审奖励<text th:text="${er.expertReward}" style="color: red;"></text>元</span>
 
             <p th:switch="${er.buyChannelId}">单号&nbsp;&nbsp;&nbsp;<span th:text="${er.orderNumber}">0000001</span>&nbsp;&nbsp;&nbsp;&nbsp;类型&nbsp;&nbsp;&nbsp;<span th:case="3">战略采购</span><span th:case="4">询价采购</span><span th:case="5">单一采购</span></p>
 
 
             <span class="label label-primary " th:text="${er.status}">正在采集报价</span>
-            
+
             <span  class="glyphicon-time list_down" aria-hidden="true" th:text="${er.createTime}" style="float: right;color: red;">2017-6-7</span>
             <span style="float: right;" >该进度时间</span>
         </a>

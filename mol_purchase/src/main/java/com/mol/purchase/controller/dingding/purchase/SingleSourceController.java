@@ -1,8 +1,13 @@
 package com.mol.purchase.controller.dingding.purchase;
 
+import com.mol.config.Constant;
+import com.mol.notification.SendNotification;
+import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj;
+import com.mol.purchase.service.dingding.purchase.EnquiryPurchaseService;
 import com.mol.purchase.service.dingding.purchase.SingleSourceService;
 import com.mol.purchase.entity.dingding.purchase.strategPurchaseEntity.PageArray;
 import com.mol.purchase.entity.dingding.purchase.strategPurchaseEntity.subObj;
+import com.mol.purchase.service.token.TokenService;
 import entity.ServiceResult;
 import com.mol.purchase.entity.Supplier;
 import org.dom4j.DocumentException;
@@ -13,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 单一来源
@@ -26,6 +32,15 @@ public class SingleSourceController {
     @Autowired
     private SingleSourceService singleSourceService;
 
+    @Autowired
+    private EnquiryPurchaseService shoppingService;
+
+
+    @Autowired
+    private SendNotification sendNotification;
+
+    @Autowired
+    private TokenService tokenService;
     /**
      * 保存单一采购的采购物品
      * @param obj
@@ -40,7 +55,17 @@ public class SingleSourceController {
 //        String userid = ddUser.getUserid();
         String staid=obj.getStaffId();
         String orgId=obj.getOrgId();
-        return singleSourceService.save(pageArray,staid,orgId);
+        StraregyObj stobj = singleSourceService.save(pageArray,staid,orgId);
+        //所属行业供应商
+        List<Supplier> list=singleSourceService.findSupplierByPur(stobj);
+        //查询供应商下的人员的ddid
+        List<String> manList= shoppingService.findSaleList(list);
+        //发送通知消息
+        for (String s : manList) {
+            sendNotification.sendOaFromThird(s, Constant.AGENTID_THIRDPLAT,tokenService.getMicroToken());
+        }
+
+        return ServiceResult.success("成功");
     }
 
     /**

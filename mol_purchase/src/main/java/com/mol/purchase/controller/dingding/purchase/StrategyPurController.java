@@ -1,9 +1,15 @@
 package com.mol.purchase.controller.dingding.purchase;
 
 
+import com.mol.config.Constant;
+import com.mol.notification.SendNotification;
+import com.mol.purchase.entity.Supplier;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PageArray;
+import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.SubObj;
+import com.mol.purchase.service.dingding.purchase.EnquiryPurchaseService;
 import com.mol.purchase.service.dingding.purchase.StrategyPurchaseService;
+import com.mol.purchase.service.token.TokenService;
 import com.mol.purchase.util.JWTUtil;
 import entity.ServiceResult;
 import org.dom4j.DocumentException;
@@ -14,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 是战略
@@ -28,6 +35,15 @@ public class StrategyPurController {
     @Autowired
     private StrategyPurchaseService strategyPurchaseService;
 
+    @Autowired
+    private EnquiryPurchaseService shoppingService;
+
+    @Autowired
+    private SendNotification sendNotification;
+
+    @Autowired
+    private TokenService tokenService;
+
     @RequestMapping(value = "/start",method = RequestMethod.POST)
     public ServiceResult<String> start(@RequestBody SubObj obj, HttpServletRequest request) throws DocumentException , IllegalAccessException, IOException {
 
@@ -37,7 +53,17 @@ public class StrategyPurController {
 //        String userid = ddUser.getUserid();
         String orgId = obj.getOrgId();
         String staffId = obj.getStaffId();
-        return strategyPurchaseService.save(pageArray,orgId,staffId);
+        StraregyObj stobj =strategyPurchaseService.save(pageArray,orgId,staffId);
+        //所属行业供应商
+        List<Supplier> list=strategyPurchaseService.findSupplierByPur(stobj);
+        //查询供应商下的人员的ddid
+        List<String> manList= shoppingService.findSaleList(list);
+        //发送通知消息
+        for (String s : manList) {
+            sendNotification.sendOaFromThird(s, Constant.AGENTID_THIRDPLAT,tokenService.getMicroToken());
+        }
+
+        return ServiceResult.success("成功");
     }
 
     @RequestMapping(value = "/getSupplierNum")

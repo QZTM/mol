@@ -1,6 +1,7 @@
 package com.mol.purchase;
 
 import com.mol.cache.CacheHandle;
+import com.mol.notification.SendNotification;
 import org.activiti.spring.boot.SecurityAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -34,6 +35,10 @@ public class PurchaseApplication {
         return CacheHandle.getCacheHandle();
     }
 
+    @Bean
+    public SendNotification getSendNotification(){
+        return SendNotification.getSendNotification();
+    }
 
 
 }

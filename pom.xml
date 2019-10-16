@@ -16,6 +16,7 @@
         <module>mol_expert</module>
         <module>mol_oos</module>
         <module>mol_cache</module>
+        <module>mol_notification</module>
     </modules>
     <packaging>pom</packaging>
 

@@ -179,6 +179,11 @@ public class ScheController {
         String technicalSupportTelephone = pageArray.getTechnicalSupportTelephone();
         modelMap.addAttribute("tst",technicalSupportTelephone);
         //专家评审
+        String expertReview = pageArray.getExpertReview();
+        modelMap.addAttribute("expertReview",expertReview);
+        //专家评审费
+        String expertReward = pageArray.getExpertReward();
+        modelMap.addAttribute("expertReward",expertReward);
 
 
         return "schedule_detail";

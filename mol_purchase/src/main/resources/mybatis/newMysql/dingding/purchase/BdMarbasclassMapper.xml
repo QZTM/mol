@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.expert.mapper.newMysql.third.BdMarbasclassMapper">
+    <select id="findMarbasFirstList" resultType="entity.BdMarbasclass">
+       SELECT * FROM bd_marbasclass where pk_parent ="~"
+    </select>
+    <select id="findThreeMarListByPkmarbasClass" parameterType="java.lang.String" resultType="entity.BdMarbasclass">
+        SELECT * FROM bd_marbasclass where pk_parent in(SELECT pk_marbasclass FROM bd_marbasclass where pk_parent =#{goodsType})
+    </select>
+    <select id="findFourMarListByPkmarbasClass" parameterType="java.lang.String" resultType="entity.BdMarbasclass">
+        SELECT * FROM bd_marbasclass where pk_parent in(SELECT pk_marbasclass FROM bd_marbasclass where pk_parent in(
+        SELECT pk_marbasclass FROM bd_marbasclass where pk_parent =#{goodsType}))
+    </select>
+    <select id="findListByCodeLike" resultType="entity.BdMarbasclass">
+        select * FROM bd_marbasclass where code like #{code}
+    </select>
+</mapper>

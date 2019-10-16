@@ -1,6 +1,7 @@
 package com.mol.supplier.service.third;
 
 import com.github.pagehelper.PageHelper;
+import com.mol.supplier.entity.MicroApp.Salesman;
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
 import com.mol.supplier.entity.dingding.solr.fyPurchase;
 import com.mol.supplier.entity.thirdPlatform.*;
@@ -8,6 +9,7 @@ import com.mol.supplier.mapper.newMysql.dingding.purchase.BdSupplierMapper;
 import com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseDetailMapper;
 import com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
 import com.mol.supplier.mapper.newMysql.dingding.workBench.PoOrderMapper;
+import com.mol.supplier.mapper.newMysql.microApp.MicroSalesmanMapper;
 import com.mol.supplier.mapper.newMysql.third.BdMarbasclassMapper;
 import com.mol.supplier.mapper.newMysql.third.FyQuoteMapper;
 import com.mol.supplier.mapper.newMysql.third.TpMapper;
@@ -49,6 +51,9 @@ public class ThirdPlatformService {
 
     @Autowired
     private IdWorker idWorker;
+
+    @Autowired
+    private MicroSalesmanMapper salesmanMapper;
 
     //enter排版
     public List<Enter> findAll() {
@@ -245,7 +250,7 @@ public class ThirdPlatformService {
      *
      * @param quotes
      */
-    public void saveQuote(QuoteModel quotes,String supplierId,String ddUserId) {
+    public void saveQuote(QuoteModel quotes,String supplierId,Salesman salesman) {
 
         List<FyQuote> quo = quotes.getQuotes();
         //供货周期
@@ -254,13 +259,13 @@ public class ThirdPlatformService {
             //------------------------------公司id  和职员id
             fyQuote.setId(idWorker.nextId() + "");
             fyQuote.setPkSupplierId(supplierId);
-            fyQuote.setSupplierSalesmanId(ddUserId);
+            fyQuote.setSupplierSalesmanId(salesman.getId());
             fyQuote.setCreationtime(TimeUtil.getNowDateTime());
             //设置供货周期
             fyQuote.setSupplyCycle(supplyCycle);
             //初始化专家推荐  1为推荐，0为不推荐
             fyQuote.setExpertRecommendation("0");
-            fyQuoteMapper.saveQuote(fyQuote);
+            fyQuoteMapper.insert(fyQuote);
         }
 
     }
@@ -335,5 +340,11 @@ public class ThirdPlatformService {
         }else {
             return false;
         }
+    }
+
+    public Salesman findSalesManId(String ddUserId) {
+        Salesman t=new Salesman();
+        t.setDdUserId(ddUserId);
+        return salesmanMapper.selectOne(t);
     }
 }

@@ -11,7 +11,9 @@ import com.mol.purchase.mapper.fyOracle.dingding.purchase.StrategyOraclMapper;
 import com.mol.purchase.mapper.newMysql.FyPurchaseEsMapper;
 import com.mol.purchase.mapper.newMysql.dingding.purchase.BdSupplierMapper;
 import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
+import com.mol.purchase.util.FindFirstMarbasclassByMaterialUtils;
 import com.mol.purchase.util.robot.Cread_PDF;
+import entity.BdMarbasclass;
 import entity.ServiceResult;
 import com.mol.purchase.entity.Supplier;
 import org.dom4j.DocumentException;
@@ -19,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 import util.IdWorker;
 import util.TimeUtil;
 
@@ -52,12 +55,19 @@ public class SingleSourceService {
     @Resource
     private FyPurchaseEsMapper fyPurchaseEsMapper;
 
+    @Resource
+    private BdSupplierMapper supplierMapper;
 
-    public ServiceResult<String> save(PageArray pageArray, String staId, String orgId) throws IOException, DocumentException, IllegalAccessException {
+    @Autowired
+    FindFirstMarbasclassByMaterialUtils find;
+
+
+    public StraregyObj save(PageArray pageArray, String staId, String orgId) throws IOException, DocumentException, IllegalAccessException {
         //申请事由
         String applyCause = pageArray.getApplyCause();
         //采购详情
         List<PurchaseArray> purchaseList = pageArray.getPurchaseArray();
+        BdMarbasclass firstMarbasclass = find.getFirstMarbasclass(purchaseList.get(0).getMaterialId());
         //单一供应商
         String singleSource = pageArray.getSingleSource();
         //电话
@@ -76,13 +86,14 @@ public class SingleSourceService {
         String technicalSupportTelephone = pageArray.getTechnicalSupportTelephone();
         //专家评审
         String expertReview = pageArray.getExpertReview();
+        //评审奖励
+        String expertReward = pageArray.getExpertReward();
 
 
-
-        ServiceResult result= null;
         StraregyObj stObj = new StraregyObj();
         stObj.setId(idWorker.nextId()+"");
         stObj.setBuyChannelId(BuyChannelResource.SINGLESOURCE);//单一来源
+        stObj.setPkMarbasclass(firstMarbasclass.getPkMarbasclass());
         stObj.setGoodsType(purchaseList.get(0).getTypeName());
         stObj.setGoodsBrand(purchaseList.get(0).getBrandName());
         stObj.setGoodsName(purchaseList.get(0).getItemName());
@@ -104,6 +115,7 @@ public class SingleSourceService {
         stObj.setPayMent(payMent);
         stObj.setTechnicalSupportTelephone(technicalSupportTelephone);
         stObj.setExpertReview(expertReview);
+        stObj.setExpertReward(expertReward);
         stObj.setQuoteCounts(0+"");
         purchaseMapper.insertStrategyPur(stObj);
         String []page_text={"申请理由："+applyCause,"单一供应商："+singleSource,"电话："+telePhone,"备注："+remarks};
@@ -132,10 +144,10 @@ public class SingleSourceService {
         }
 
         //strategyPurMapper.insertStrategyPur(stObj);
-        result= new ServiceResult(true,"添加成功","物品添加成功");
+        //result= new ServiceResult(true,"添加成功","物品添加成功");
 
 
-        return result;
+        return stObj;
     }
     /**
      * 将物品信息存为json
@@ -184,5 +196,13 @@ public class SingleSourceService {
         orederStartNum++;
         orderNum+=orederStartNum;
         return orderNum;
+    }
+
+    public List<Supplier> findSupplierByPur(StraregyObj stobj) {
+        Example e=new Example(Supplier.class);
+        Example.Criteria and = e.and();
+        and.andEqualTo("industryFirst",stobj.getPkMarbasclass()).andEqualTo("ifAttrSingle",1);
+        return  supplierMapper.selectByExample(e);
+
     }
 }
