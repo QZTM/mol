@@ -47,19 +47,19 @@
                 <version>1.0-SNAPSHOT</version>
             </dependency>
      
-    ②在使用的地方设置工具类：
+    ②在使用的地方：
     
         private SendMsmHandler sendMsmHandler = SendMsmHandler.getSendMsmHandler();
         
     
     ③使用：
     
-        String sendResult = sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, templateCode,phone);
+        String sendResult = sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, template,phone);
         
     
         参数说明：
-            XiaoNiuMsm.SIGNNAME_MEYG        在小牛云短信平台建立的应用的名称，已设置为常亮，必填
-            templateCode                    模板id,已在XiaoNiuMsmTemplate中设置模板，根据业务选择，例如：XiaoNiuMsmTemplate.供应商注册模板();
+            XiaoNiuMsm.SIGNNAME_MEYG        在小牛云短信平台建立的应用的名称，已设置为常量，必填
+            template                    模板id,已在XiaoNiuMsmTemplate中设置为静态方法，根据业务选择，例如：XiaoNiuMsmTemplate.供应商注册模板();
             phone                           接收短信的手机号码
           
           

@@ -48,16 +48,16 @@ public class MicroSmsController {
         if (StringUtils.isEmpty(msgType)) {
             return ServiceResult.failure("短信类型不能为空！");
         }
-        XiaoNiuMsmTemplate templateCode = null;
+        XiaoNiuMsmTemplate template = null;
         switch (msgType) {
             case MSMTYPE_REGIST:
-                templateCode = XiaoNiuMsmTemplate.供应商注册模板();
+                template = XiaoNiuMsmTemplate.供应商注册模板();
                 break;
             case MSMTYPE_AUTH:
-                templateCode = XiaoNiuMsmTemplate.供应商认证模板();
+                template = XiaoNiuMsmTemplate.供应商认证模板();
                 break;
         }
-        String sendResult = sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, templateCode,phone);
+        String sendResult = sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, template,phone);
         return ServiceResult.success("发送成功", sendResult);
     }
 
