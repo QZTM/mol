@@ -13,6 +13,7 @@ public class TimeUtil {
 
     public static String dateFormaterDateTime = "yyyy-MM-dd HH:mm:ss";
     public static String dateFormaterOnlyDate = "yyyy-MM-dd";
+    public static String payOrderFormat = "yyyyMMddHHmmssSSS";
 
     /**
      * 把时间戳转换为日期时间格式
