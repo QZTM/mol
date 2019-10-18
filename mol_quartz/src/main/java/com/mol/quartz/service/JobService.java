@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.mol.quartz.entity.Quartz;
+import com.mol.quartz.job.ExpertReviewEndJob;
 import com.mol.quartz.job.QuoteEndJob;
 import lombok.extern.java.Log;
 import org.apache.commons.lang.RandomStringUtils;
@@ -57,7 +58,7 @@ public class JobService {
                 jobDetail = JobBuilder.newJob(QuoteEndJob.class).withIdentity(quartz.getJobName(), MolJob.QUOTEENDJOB.getDesc()).build();
            }
            if(MolJob.EXPERTREVIEWJOB == quartz.getJobGroup()) {
-                jobDetail = JobBuilder.newJob(JobTwo.class).withIdentity(quartz.getJobName(), MolJob.EXPERTREVIEWJOB.getDesc()).build();
+                jobDetail = JobBuilder.newJob(ExpertReviewEndJob.class).withIdentity(quartz.getJobName(), MolJob.EXPERTREVIEWJOB.getDesc()).build();
            }
                    
            //表达式调度构建器(即任务执行的时间,不立即执行)

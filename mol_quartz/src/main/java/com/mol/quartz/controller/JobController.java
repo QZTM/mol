@@ -33,9 +33,27 @@ public class JobController {
 
 
     @RequestMapping("/testAdd")
-    public void test(){
+    public void test(String orderId,String endTime){
         try{
-            addJobHandler.addExpertReviewEndJob("1184292704515919872","2019-10-18 16:12");
+            addJobHandler.addQuoteEndJob(orderId,endTime);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @RequestMapping("/testAdd2")
+    public void test2(String orderId,String endTime){
+        try{
+            addJobHandler.addExpertReviewEndJob(orderId,endTime);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @RequestMapping("/testAdd3")
+    public void test3(String orderId,Long delaySeconds){
+        try{
+            addJobHandler.addExpertReviewEndJob(orderId,delaySeconds);
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -65,6 +65,7 @@ public class AddJobHandler {
      * @throws Exception
      */
     public String addExpertReviewEndJob(String orderId,Long delaySeconds) throws Exception {
+        log.info("添加专家推荐截止事件：orderId:"+orderId+",延时:"+delaySeconds+"秒执行");
         if(StringUtils.isEmpty(orderId)){
             log.warning("添加专家推荐截止事件出错，orderId为空");
             throw new RuntimeException("添加专家推荐截止事件出错，orderId不该为空");
@@ -82,6 +83,7 @@ public class AddJobHandler {
                 .setCronExpression(TimeUtil.getCron(TimeUtil.LocalDateTimeToDate(LocalDateTime.now().plusSeconds(delaySeconds))))
                 .setJobGroup(MolJob.EXPERTREVIEWJOB)
                 .setInvokeParam(paraMap));
+        log.info("添加专家推荐截止事件：orderId:"+orderId+"成功！");
         return "success";
     }
 
@@ -92,6 +94,7 @@ public class AddJobHandler {
      * @return                  添加成功返回"success"
      */
     public String addExpertReviewEndJob(String orderId,String endTime) throws Exception {
+        log.info("添加专家推荐截止事件：orderId:"+orderId+",执行时间:"+endTime);
         if(StringUtils.isEmpty(orderId)){
             log.warning("添加专家推荐截止事件出错，orderId为空");
             throw new RuntimeException("添加专家推荐截止事件出错，orderId不该为空");
@@ -99,6 +102,9 @@ public class AddJobHandler {
         if(StringUtils.isEmpty(endTime)){
             log.warning("添加专家推荐截止事件出错，结束时间（endTime）为空");
             throw new RuntimeException("添加专家推荐截止事件出错，结束时间（endTime）不该为空");
+        }
+        if(endTime.length()<17){
+            endTime = endTime+":00";
         }
         Map paraMap = new HashMap();
         paraMap.put("orderId",orderId);
@@ -109,6 +115,7 @@ public class AddJobHandler {
                 .setCronExpression(TimeUtil.getCron(endTime))
                 .setJobGroup(MolJob.EXPERTREVIEWJOB)
                 .setInvokeParam(paraMap));
+        log.info("添加专家推荐截止事件：orderId:"+orderId+"成功！");
         return "success";
     }
 
