@@ -1,6 +1,7 @@
 package com.mol.expert.mapper.newMysql.dingding.purchase;
 
 import com.mol.expert.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
+import entity.BdMarbasclass;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

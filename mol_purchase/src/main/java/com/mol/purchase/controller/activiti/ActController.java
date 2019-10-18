@@ -3,6 +3,7 @@ package com.mol.purchase.controller.activiti;
 import com.mol.config.Constant;
 import com.mol.notification.SendNotification;
 import com.mol.notification.SendNotificationImp;
+import com.mol.purchase.entity.FyQuote;
 import com.mol.purchase.service.activiti.ActService;
 import com.mol.purchase.entity.dingding.login.AppAuthOrg;
 import com.mol.purchase.entity.dingding.login.AppUser;
@@ -47,7 +48,6 @@ public class ActController {
     public String hello(){
         return "hello world?";
     }
-
 
     /**
      * 部署流程实例

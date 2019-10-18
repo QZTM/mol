@@ -11,5 +11,6 @@ public class PurchaseDetail {
     private int goodsQuantity;
     //最终选中的报价
     private String quoteId;
-
+    //最终选中的推荐专家
+    private String expertId;
 }

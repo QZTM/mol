@@ -233,9 +233,13 @@ public class EnquiryPurchaseService {
 
     }
 
-
-    public List<String> findSaleList(List<Supplier> list) {
-        List<String > ssL=new ArrayList<>();
+    /**
+     * 获取公司的员工
+     * @param list
+     * @return
+     */
+    public List<SupplierSalesman> findSaleManList(List<Supplier> list) {
+        List<SupplierSalesman > ssL=new ArrayList<>();
         if (list!=null && list.size()>0){
 //            SupplierSalesman e =new SupplierSalesman();
             Example e=new Example(SupplierSalesman.class);
@@ -243,14 +247,38 @@ public class EnquiryPurchaseService {
                 e.and().andEqualTo("pkSupplier",supplier.getPkSupplier());
                 List<SupplierSalesman> supplierSalesmenlist = bdSupplierSalesmanMapper.selectByExample(e);
                 if (supplierSalesmenlist!=null && supplierSalesmenlist.size()>0){
-                    for (SupplierSalesman supplierSalesman : supplierSalesmenlist) {
-                        ssL.add(supplierSalesman.getDdUserId());
-                    }
+                    ssL.addAll(supplierSalesmenlist);
                 }
             }
+            return ssL;
         }else {
             return ssL;
         }
-        return ssL;
+
+    }
+
+
+    public List<String> findSaleIdList(List<SupplierSalesman> saleManList) {
+        List<String> ssI=new ArrayList<>();
+        if (saleManList!=null && saleManList.size()>0){
+            for (SupplierSalesman supplierSalesman : saleManList) {
+                ssI.add(supplierSalesman.getDdUserId());
+            }
+            return ssI;
+        }else {
+            return ssI;
+        }
+    }
+
+    public List<String> findSalePhoneList(List<SupplierSalesman> saleManList) {
+        List<String> ssP=new ArrayList<>();
+        if (saleManList!=null && saleManList.size()>0){
+            for (SupplierSalesman supplierSalesman : saleManList) {
+                ssP.add(supplierSalesman.getPhone());
+            }
+            return ssP;
+        }else {
+            return ssP;
+        }
     }
 }

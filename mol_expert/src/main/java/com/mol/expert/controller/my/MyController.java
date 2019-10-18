@@ -6,6 +6,7 @@ import com.mol.expert.entity.expert.ExpertUser;
 import com.mol.expert.service.expert.MyService;
 import com.mol.expert.service.expert.SchuleService;
 import com.mol.expert.util.ServiceResult;
+import entity.BdMarbasclass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -159,11 +160,14 @@ public class MyController {
         ExpertUser user = (ExpertUser) session.getAttribute("user");
         if (eu!=null){
             eu.setId(user.getId());
-            eu.setAuthentication(1+"");
+//            eu.setAuthentication(0+"");
             int result=myService.updataMyMessage(eu);
             if (result!=1){
                 return ServiceResult.failure("认证失败");
             }
+            //查询数据库
+            ExpertUser  userNew=myService.getMyInfo(user.getId());
+            session.setAttribute("user",userNew);
         }
         return ServiceResult.success("资料上传成功，请等待人工审核结果！");
     }

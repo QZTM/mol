@@ -8,8 +8,8 @@ public class Constant {
      * 域名
      */
     //public static final String domain = "fyycg1.vaiwan.com";
-    public static final String domain = "140.249.22.202";
-    //public static final String domain = "fyycg1.vaiwan.com";
+    //public static final String domain = "140.249.22.202";
+    public static final String domain = "fyycg2.vaiwan.com";
     /**
      * 企业corpid, 需要修改成开发者所在企业
      */

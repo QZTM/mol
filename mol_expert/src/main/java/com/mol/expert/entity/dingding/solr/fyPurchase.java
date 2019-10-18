@@ -12,6 +12,7 @@ public class fyPurchase implements Serializable {
 
     private String id;
     private Integer buyChannelId;
+    private String pkMarbasclass;
     private String goodsType;
     private String goodsBrand;
     private String goodsName;
@@ -40,7 +41,7 @@ public class fyPurchase implements Serializable {
     //报价商家数
     private String quoteSellerNum;
     //pdf_url
-    private String reqfileurl;
+    private String reqFileUrl;
     //订单报价的公司数量
     private String quoteCounts;
     //截止时间
@@ -63,7 +64,8 @@ public class fyPurchase implements Serializable {
     private String expertReward;
     //采购预算
     private String budget;
-
+    //参与订单评审的专家数量
+    private String expertCounts;
     //推荐状态
     @Transient
     private String adopt;

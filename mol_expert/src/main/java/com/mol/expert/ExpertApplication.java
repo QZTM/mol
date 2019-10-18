@@ -16,10 +16,10 @@ import org.springframework.cache.annotation.EnableCaching;
 @EnableScheduling
 @EnableAsync
 @Configuration
-public class CloudPurchaseApplication {
+public class ExpertApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(CloudPurchaseApplication.class, args);
+        SpringApplication.run(ExpertApplication.class, args);
     }
 
     @Bean

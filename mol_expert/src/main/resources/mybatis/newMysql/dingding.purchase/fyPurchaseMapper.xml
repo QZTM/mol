@@ -6,7 +6,7 @@
     <insert id="insertStrategyPur" parameterType="com.mol.expert.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj">
         INSERT into
         fy_purchase
-        (id,buy_channel_id,goods_type,goods_brand,goods_name,goods_specs,goods_branch,goods_detail,create_time,status,title,staff_id,org_id,order_number,quoteSellerNum,supplierSellerNum,apply_cause,remarks,pk_supplier,req_file_url,deadLine,supplyCycle,payMent,technicalSupportTelephone,expertReview,expert_reward,quote_counts)
+        (id,buy_channel_id,goods_type,goods_brand,goods_name,goods_specs,goods_branch,goods_detail,create_time,status,title,staff_id,org_id,order_number,quote_seller_num,supplier_seller_num,apply_cause,remarks,pk_supplier,req_file_url,dead_line,supply_cycle,pay_ment,technical_support_telephone,expert_review,expert_reward,quote_counts)
         VALUES (#{id},#{buyChannelId},#{goodsType},#{goodsBrand},#{goodsName},#{goodsSpecs},#{goodsBranch},#{goodsDetail},#{createTime},#{status},#{title},#{staffId},#{orgId},#{orderNumber},#{quoteSellerNum},#{supplierSellerNum},#{applyCause},#{remarks},#{pkSupplier},#{reqfileurl},#{deadLine},#{supplyCycle},#{payMent},#{technicalSupportTelephone},#{expertReview},#{expertReward},#{quoteCounts})
     </insert>
 
@@ -47,7 +47,7 @@
         </if>
     </select>
     <select id="selectOrderByDeadLine" parameterType="java.lang.String" resultType="com.mol.expert.entity.dingding.solr.fyPurchase">
-        SELECT * FROM `fy_purchase` where deadLine &lt; #{nowDateTime} and status !="3"
+        SELECT * FROM `fy_purchase` where dead_line &lt; #{nowDateTime} and status !="3"
     </select>
     <update id="updateStatusById" parameterType="java.lang.String">
         UPDATE fy_purchase set status =#{status} where  id =#{id}
@@ -118,7 +118,7 @@
         </foreach>
     </select>
     <select id="findListByStatusAndExpertReview" parameterType="java.lang.String"  resultType="com.mol.expert.entity.dingding.solr.fyPurchase">
-        select * from fy_purchase where status=#{status} and expertReview =#{exper}  order by create_time desc
+        select * from fy_purchase where  status=#{status} and expert_review =#{exper}  order by create_time desc
     </select>
     <update id="updateBudgetById" parameterType="java.lang.String">
          UPDATE fy_purchase set budget =#{budget} where  id =#{id}

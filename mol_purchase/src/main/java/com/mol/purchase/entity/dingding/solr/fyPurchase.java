@@ -41,7 +41,7 @@ public class fyPurchase implements Serializable {
     //报价商家数
     private String quoteSellerNum;
     //pdf_url
-    private String reqfileurl;
+    private String reqFileUrl;
     //订单报价的公司数量
     private String quoteCounts;
     //截止时间
@@ -60,4 +60,10 @@ public class fyPurchase implements Serializable {
     private String negotiatedExplain;
     //待审核结束后的审核人的建议
     private String approverProposal;
+    //评审奖励
+    private String expertReward;
+    //采购预算
+    private String budget;
+    //参与订单评审的专家数量
+    private String expertCounts;
 }

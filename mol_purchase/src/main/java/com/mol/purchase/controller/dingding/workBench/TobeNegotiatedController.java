@@ -1,5 +1,7 @@
 package com.mol.purchase.controller.dingding.workBench;
 
+import com.mol.purchase.entity.ExpertRecommend;
+import com.mol.purchase.entity.ExpertUser;
 import com.mol.purchase.entity.dingding.login.AppAuthOrg;
 import com.mol.purchase.entity.dingding.login.AppUser;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
@@ -173,17 +175,37 @@ public class TobeNegotiatedController {
     public ServiceResult getBigDate(String supplierId,String pkMaterialId){
 
         //测试  可删
-        if (supplierId!=null){
-            supplierId="1001A110000000002857";
-        }
-        if (pkMaterialId!=null){
-            pkMaterialId="1001A11000000000AIOH";
-        }
+//        if (supplierId!=null){
+//            supplierId="1001A110000000002857";
+//        }
+//        if (pkMaterialId!=null){
+//            pkMaterialId="1001A11000000000AIOH";
+//        }
         //测试
 
         Ucharts u=negotiatedService.getBigData(supplierId,pkMaterialId);
         return ServiceResult.success(u);
     }
+
+
+    /**
+     * 审批中查看订单相关的推荐专家
+     * @param purId  订单id
+     * @param supplierId  供应商id
+     * @return
+     */
+    @GetMapping("/getExpert")
+    public ServiceResult getExpert(String purId,String supplierId){
+        List<ExpertRecommend> erList=negotiatedService.findExpertList(purId,supplierId);
+        List<ExpertUser> euList=null;
+        if (erList!=null && erList.size()>0){
+             euList=negotiatedService.findExpertUserList(erList);
+            return ServiceResult.success(euList);
+        }else {
+            return ServiceResult.success("没有专家推荐该报价",euList);
+        }
+    }
+
 
     /**
      * 保存待议价界面提交的对应数据
