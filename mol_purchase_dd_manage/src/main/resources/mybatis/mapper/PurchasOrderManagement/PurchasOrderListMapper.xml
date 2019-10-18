@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.ddmanage.mapper.PurchasOrderManagement.PurchasOrderListMapper">
+
+    <select id="PurchasOrderListShow" parameterType="java.lang.String" resultType="com.mol.ddmanage.Ben.PurchasOrderManagement.PurchasOrderListben">
+        select
+        (select bd_marbasclass.name from bd_marbasclass where fy_purchase.pk_marbasclass=bd_marbasclass.pk_marbasclass)marbasclass_name,
+        (select app_user.user_name from app_user where fy_purchase.staff_id=app_user.dd_user_id)user_name,
+        fy_purchase.*
+        from fy_purchase
+        <if test="buy_channel_id != 100">
+            where fy_purchase.buy_channel_id=#{buy_channel_id}
+        </if>
+        <if test="buy_channel_id == 100">
+            where 0=0
+        </if>
+
+
+
+    </select>
+</mapper>

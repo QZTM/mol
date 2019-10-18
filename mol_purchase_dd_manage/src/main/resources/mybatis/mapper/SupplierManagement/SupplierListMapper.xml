@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.ddmanage.mapper.SupplierManagement.SupplierListMapper">
+
+    <select id="SupplierListbenShow" resultType="com.mol.ddmanage.Ben.SupplierManagement.SupplierListben">
+      select * from  bd_supplier where
+      <if test="supplier_type == 0">
+         0=0
+      </if>
+        <if test="supplier_type == 1">
+            if_attr_normal=1
+        </if>
+        <if test="supplier_type == 2">
+            if_attr_strategy=1
+        </if>
+        <if test="supplier_type == 3">
+            if_attr_single=1
+        </if>
+    </select>
+</mapper>

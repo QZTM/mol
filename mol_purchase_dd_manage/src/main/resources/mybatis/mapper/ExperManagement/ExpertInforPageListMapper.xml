@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.ddmanage.mapper.ExperManagement.ExpertInforPageListMapper">
+
+    <select id="ExpertInforPageListShow" resultType="com.mol.ddmanage.Ben.ExperManagement.ExpertInforPageListben">
+      select expert_user.*,
+      (select bd_marbasclass.name from bd_marbasclass where bd_marbasclass.pk_marbasclass=expert_user.major)
+      from expert_user
+      <if test="expert_grade!=100">
+          where expert_user.expert_grade=expert_grade
+      </if>
+        <if test="expert_grade==100">
+            where 1=1;
+        </if>
+
+    </select>
+</mapper>

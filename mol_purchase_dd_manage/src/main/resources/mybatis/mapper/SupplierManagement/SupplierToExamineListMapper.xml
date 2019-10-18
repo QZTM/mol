@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.ddmanage.mapper.SupplierManagement.SupplierToExamineListMapper">
+
+    <select id="SupplierToExamineListbenShow" resultType="com.mol.ddmanage.Ben.SupplierManagement.SupplierToExamineListben">
+        select * from  bd_supplier where
+        <if test="n==0">
+            supstate_normal=#{supplier_type}
+        </if>
+        <if test="n==1">
+            supstate_strategy=#{supplier_type}
+        </if>
+        <if test="n==2">
+            supstate_single=#{supplier_type}
+        </if>
+    </select>
+</mapper>
