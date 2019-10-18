@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mol.expert.mapper.newMysql.dingding.approve.ApproveMapper">
+
+	<update id="updateStatus" parameterType="com.mol.expert.entity.dingding.approve.PurchaseApprove">
+		update fy_purchase set `status`=#{status} where process_instance_id=#{processInstanceId}
+	</update>
+</mapper>

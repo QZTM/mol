@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.expert.mapper.newMysql.expert.ExpertRecomendMapper">
+    <select id="findPurAndAdopt" parameterType="java.lang.String" resultType="com.mol.expert.entity.dingding.solr.fyPurchase">
+        select
+         fp.* ,er.adopt
+        from expert_recommend er
+        left join fy_purchase fp on fp.id=er.purchase_id
+        WHERE
+        er.expert_id=#{expertId}
+        <if test="adopt!=null">
+            and adopt=#{adopt}
+        </if>
+    </select>
+
+</mapper>

@@ -68,7 +68,8 @@ public class MachiningService {
         String technicalSupportTelephone = pageArray.getTechnicalSupportTelephone();
         //专家评审
         String expertReview = pageArray.getExpertReview();
-
+        //评审奖励
+        String expertReward = pageArray.getExpertReward();
         ServiceResult result = null;
 
         //保存到表中
@@ -117,6 +118,7 @@ public class MachiningService {
         stObj.setPayMent(payMent);
         stObj.setTechnicalSupportTelephone(technicalSupportTelephone);
         stObj.setExpertReview(expertReview);
+        stObj.setExpertReward(expertReward);
         stObj.setQuoteCounts(0+"");
 
 

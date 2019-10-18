@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
 
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
@@ -40,14 +40,18 @@
 <div>
     <p th:text="${pur.applyCause}" style="text-align: center;font-size: 16px;font-weight: bold;height: 36px;padding-top: 14px"></p>
     <!--    <p style="text-align: center;font-size: 22px;font-weight: bold;">采购信息</p>-->
+    <!-- 评审费  -->
+    <div th:if="${expertReview=='true'}" style="float: right;margin-right: 10px">
+        需支付专家评审费：<text th:text="${expertReward}" style="color: red">200</text>元
+    </div>
     <!--产品名称开始-->
-    <div style="text-align: center;border: 1px solid #eeeeee;font-size: 14px;padding-top: 6px">
+    <div style="text-align: center;border: 1px solid #eeeeee;font-size: 14px;padding-top: 6px;clear: both;">
 
-<!--        <div  class="col-xs-4 col-md-4">-->
-<!--            <p style="text-align: center;">已报价商家:<span style="color: red;" th:text="${quoteCount}">-->
-<!--				14-->
-<!--			</span></p>-->
-<!--        </div>-->
+        <!--        <div  class="col-xs-4 col-md-4">-->
+        <!--            <p style="text-align: center;">已报价商家:<span style="color: red;" th:text="${quoteCount}">-->
+        <!--				14-->
+        <!--			</span></p>-->
+        <!--        </div>-->
         <div >
             <p style="text-align: center;">发布日期:<span style="color: red;" th:text="${pur.createTime}">
 
@@ -146,7 +150,7 @@
 
     <div style="padding-left: 14px;font-size: 12px;clear: both;padding-top: 10px">
 
-            <p>单一来源供应商&nbsp;:&nbsp;<span >公司id</span></p>
+        <p>单一来源供应商&nbsp;:&nbsp;<span >公司id</span></p>
 
     </div>
 
@@ -159,7 +163,7 @@
     </div>
     <!-- 备注结束 -->
     <!--我要报价开始-->
-<!--    单一供应商  报价条件还未确定----------------------------------------------------------------------------------->
+    <!--    单一供应商  报价条件还未确定----------------------------------------------------------------------------------->
     <div th:if="${pur.status=='正在询价'}" style="text-align: right;position: absolute;bottom: 6px;right: 6px;">
         <a type="button" class="btn btn-primary" th:href="@{'/index/quote?id='+${pur.id}}">我要报价</a>
     </div>

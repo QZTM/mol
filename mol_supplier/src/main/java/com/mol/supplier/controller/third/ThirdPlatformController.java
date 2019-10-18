@@ -286,6 +286,11 @@ public class ThirdPlatformController {
         String technicalSupportTelephone = pageArray.getTechnicalSupportTelephone();
         modelMap.addAttribute("tst", technicalSupportTelephone);
         //专家评审
+        String expertReview = pageArray.getExpertReview();
+        modelMap.addAttribute("expertReview",expertReview);
+        //专家评审费
+        String expertReward = pageArray.getExpertReward();
+        modelMap.addAttribute("expertReward",expertReward);
 
 
         if (purchase.getBuyChannelId() == 4) {
@@ -362,8 +367,10 @@ public class ThirdPlatformController {
         if (quotes == null) {
             return null;
         }
+        //通过ddid查询对应人员id
+        Salesman salesman=platformService.findSalesManId(ddUserId);
 
-        platformService.saveQuote(quotes, supplierId, ddUserId);
+        platformService.saveQuote(quotes, supplierId, salesman);
         //添加报价记录
         platformService.addQuoteCountsByPkMaterialId(quotes.getQuotes().get(0).getFyPurchaseId());
         //return "redirect:/index/findAll";

@@ -1,9 +1,11 @@
 package com.mol.purchase.service.dingding.purchase;
-
+import com.mol.purchase.entity.Supplier;
+import com.mol.purchase.entity.SupplierSalesman;
+import com.mol.purchase.mapper.newMysql.BdSupplierSalesmanMapper;
+import com.mol.purchase.mapper.newMysql.dingding.purchase.BdMarbasclassMapper;
 import com.alibaba.fastjson.JSON;
 import com.mol.purchase.mapper.newMysql.FyPurchaseEsMapper;
-import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseDetailMapper;
-import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
+import com.mol.purchase.mapper.newMysql.dingding.purchase.*;
 import com.mol.purchase.config.BuyChannelResource;
 import com.mol.purchase.config.OrderStatus;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PageArray;
@@ -11,19 +13,24 @@ import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseA
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj;
 import com.mol.purchase.mapper.fyOracle.dingding.purchase.EnquiryOraclMapper;
-import com.mol.purchase.mapper.newMysql.dingding.purchase.EnquiryPurMapper;
+import com.mol.purchase.util.FindFirstMarbasclassByMaterialUtils;
 import com.mol.purchase.util.robot.Cread_PDF;
+import entity.BdMarbasclass;
 import entity.ServiceResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 import util.IdWorker;
 import util.TimeUtil;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.locks.AbstractQueuedSynchronizer;
+import java.util.concurrent.locks.Condition;
 
 import static com.mol.purchase.config.Constant.orederStartNum;
 
@@ -53,12 +60,25 @@ public class EnquiryPurchaseService {
     @Autowired
     private IdWorker idWorker;
 
+    @Resource
+    private BdSupplierMapper supplierMapper;
 
-    public ServiceResult<String> save(PageArray pageArray, String staId, String orgId)  {
+    @Autowired
+    private BdMarbasclassMapper bdMarbasclassMapper;
+
+    @Autowired
+    FindFirstMarbasclassByMaterialUtils find;
+
+    @Autowired
+    private BdSupplierSalesmanMapper bdSupplierSalesmanMapper;
+
+    public StraregyObj save(PageArray pageArray, String staId, String orgId)  {
         //申请事由
         String applyCause = pageArray.getApplyCause();
         //采购详情
         List<PurchaseArray> purchaseList = pageArray.getPurchaseArray();
+        BdMarbasclass firstMarbasclass = find.getFirstMarbasclass(purchaseList.get(0).getMaterialId());
+
         //报价商家
         int quoteSellerNum = pageArray.getQuoteSellerNum();
         //零配件供应商数
@@ -75,12 +95,14 @@ public class EnquiryPurchaseService {
         String technicalSupportTelephone = pageArray.getTechnicalSupportTelephone();
         //专家评审
         String expertReview = pageArray.getExpertReview();
-
+        //评审奖励
+        String expertReward=pageArray.getExpertReward();
         ServiceResult result = null;
         //存入purchase表
         StraregyObj stObj = new StraregyObj();
-        stObj.setId(idWorker.nextId() + "");
+        stObj.setId(new IdWorker(1, 1).nextId() + "");
         stObj.setBuyChannelId(BuyChannelResource.ENQUIRY);
+        stObj.setPkMarbasclass(firstMarbasclass.getPkMarbasclass());
         stObj.setGoodsType(purchaseList.get(0).getTypeName());
         stObj.setGoodsBrand(purchaseList.get(0).getBrandName());
         stObj.setGoodsName(purchaseList.get(0).getItemName());
@@ -102,6 +124,7 @@ public class EnquiryPurchaseService {
         stObj.setPayMent(payMent);
         stObj.setTechnicalSupportTelephone(technicalSupportTelephone);
         stObj.setExpertReview(expertReview);
+        stObj.setExpertReward(expertReward);
         stObj.setQuoteCounts(0+"");
 
         //生成pdf
@@ -138,8 +161,7 @@ public class EnquiryPurchaseService {
             //修改
             fyPurchaseEsMapper.updata(stObj);
         }
-        result = new ServiceResult(true, "200", "物品添加成功");
-        return result;
+        return stObj;
     }
 
     /**
@@ -202,4 +224,33 @@ public class EnquiryPurchaseService {
         return orderNum;
     }
 
+    public List<Supplier> findSupplierByPur(StraregyObj stobj) {
+
+        Example e=new Example(Supplier.class);
+        Example.Criteria and = e.and();
+        and.andEqualTo("industryFirst",stobj.getPkMarbasclass()).andEqualTo("ifAttrNormal",1);
+        return  supplierMapper.selectByExample(e);
+
+    }
+
+
+    public List<String> findSaleList(List<Supplier> list) {
+        List<String > ssL=new ArrayList<>();
+        if (list!=null && list.size()>0){
+//            SupplierSalesman e =new SupplierSalesman();
+            Example e=new Example(SupplierSalesman.class);
+            for (Supplier supplier : list) {
+                e.and().andEqualTo("pkSupplier",supplier.getPkSupplier());
+                List<SupplierSalesman> supplierSalesmenlist = bdSupplierSalesmanMapper.selectByExample(e);
+                if (supplierSalesmenlist!=null && supplierSalesmenlist.size()>0){
+                    for (SupplierSalesman supplierSalesman : supplierSalesmenlist) {
+                        ssL.add(supplierSalesman.getDdUserId());
+                    }
+                }
+            }
+        }else {
+            return ssL;
+        }
+        return ssL;
+    }
 }

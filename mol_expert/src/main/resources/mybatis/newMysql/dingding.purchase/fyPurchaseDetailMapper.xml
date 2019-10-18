@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.expert.mapper.newMysql.dingding.purchase.fyPurchaseDetailMapper">
+    <insert id="insert" parameterType="com.mol.expert.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail">
+        insert into fy_purchase_detail (id,fy_purchase_id,pk_material,goods_quantity) values (#{id},#{fyPurchaseId},#{pkMaterial},#{goodsQuantity})
+    </insert>
+    <select id="getFyPurchaseDetailListByMarbasClassList" parameterType="java.util.List" resultType="com.mol.expert.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail">
+        SELECT
+        fpd.*
+        from
+        fy_purchase_detail fpd,
+        (select * from bd_material where pk_marbasclass in
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item.pkMarbasclass}
+        </foreach>
+
+        ) t1
+        where
+        fpd.pk_material =t1.pk_material
+    </select>
+    <update id="updataQuoteIdByPurIdAndPkMatId" parameterType="java.lang.String">
+        UPDATE fy_purchase_detail set quote_id =#{quoteId} where  fy_purchase_id =#{purId} and pk_material=#{materId}
+    </update>
+    <select id="findPurchaseDetailList" parameterType="java.lang.String" resultType="com.mol.expert.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail">
+        SELECT * FROM `fy_purchase_detail` WHERE fy_purchase_id=#{id}
+    </select>
+    <select id="findPurchaseDetailByPurIdAndQuoteId" resultType="com.mol.expert.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail" parameterType="java.lang.String">
+        SELECT * FROM `fy_purchase_detail` where fy_purchase_id = #{id} and quote_id = #{quoteId}
+    </select>
+</mapper>

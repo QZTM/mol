@@ -22,5 +22,6 @@ public class PageArray {
     private String technicalSupportTelephone;
     //专家评审
     private String expertReview;
-
+    //评审奖励
+    private String expertReward;
 }

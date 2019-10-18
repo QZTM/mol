@@ -117,6 +117,7 @@
     <div class="list"   th:each="er:${list}">
         <a th:href="@{'/index/selectOne?id='+${er.id}}" style="text-decoration: none;color: black;">
             <p style="font-size: 16px;font-weight: bold;" th:text="${er.applyCause}"></p>
+            <span style="float: right;margin-right: 6px" th:if="${er.expertReview=='true'}">需支付评审奖励<text th:text="${er.expertReward}" style="color: red;"></text>元</span>
             <p th:switch="${er.buyChannelId}">单号&nbsp;&nbsp;&nbsp;<span th:text="${er.orderNumber}">0000001</span>&nbsp;&nbsp;&nbsp;&nbsp;类型&nbsp;&nbsp;&nbsp;<span th:case="3">战略采购</span><span th:case="4">询价采购</span><span th:case="5">单一采购</span><span th:case="6">加工维修</span></p>
             <span class="label label-primary " th:text="${er.goodsType}"></span>
             <span class="label label-warning " th:text="${er.status}"></span>
@@ -189,15 +190,29 @@
                         if (data[i].buyChannelId==6){
                             chann="加工维修"
                         }
-                        var _h="<div class=\"list\">\n" +
-                            "            <a href=\"/index/selectOne?id="+data[i].id+"\" style=\"text-decoration: none;color: black;\">\n" +
-                            "                <p style=\"font-size: 16px;font-weight: bold;\">"+data[i].title+"</p>\n" +
-                            "                <p>单号&nbsp;&nbsp;&nbsp;<span>"+data[i].orderNumber+"</span>&nbsp;&nbsp;&nbsp;&nbsp;类型&nbsp;&nbsp;&nbsp;<span>"+chann+"</span></p>\n" +
-                            "                <span class=\"label label-primary \">"+data[i].goodsType+"</span>\n" +
-                            "                <span class=\"label label-warning \">"+data[i].status+"</span>\n" +
-                            "                <span class=\" glyphicon-time list_down\" aria-hidden=\"true\">"+data[i].createTime+"</span>\n" +
-                            "            </a>\n" +
-                            "        </div>"
+                        var h="";
+                        if (data[i].expertReward ==null || data[i].expertReward==""){
+                            h="<div class=\"list\">\n" +
+                                "        <a href=\"/index/selectOne?id="+data[i].id+"\" style=\"text-decoration: none;color: black;\">\n" +
+                                "            <p style=\"font-size: 16px;font-weight: bold;\">"+data[i].applyCause+"</p>\n" +
+                                "            <p>单号:&nbsp;<span>"+data[i].orderNumber+"</span>&nbsp;类型:&nbsp;<span>"+chann+"</span></p>\n" +
+                                "            <span class=\"label label-primary \">"+data[i].goodsType+"</span>\n" +
+                                "            <span class=\"label label-warning \">"+data[i].status+"</span>\n" +
+                                "            <span style=\"float: right;margin-right: 18px\" class=\"glyphicon-time list_down\" aria-hidden=\"true\">"+data[i].createTime+"</span>\n" +
+                                "        </a>\n" +
+                                "    </div>"
+                        } else {
+                            h="<div class=\"list\">\n" +
+                                "        <a href=\"/index/selectOne?id="+data[i].id+"\" style=\"text-decoration: none;color: black;\">\n" +
+                                "            <p style=\"font-size: 16px;font-weight: bold;\">"+data[i].applyCause+"</p>\n" +
+                                "            <span style=\"float: right;margin-right: 6px\">需支付评审奖励<text style=\"color: red;\">"+data[i].expertReward+"</text>元</span>\n" +
+                                "            <p>单号:&nbsp;<span>"+data[i].orderNumber+"</span>&nbsp;类型:&nbsp;<span>"+chann+"</span></p>\n" +
+                                "            <span class=\"label label-primary \">"+data[i].goodsType+"</span>\n" +
+                                "            <span class=\"label label-warning \">"+data[i].status+"</span>\n" +
+                                "            <span style=\"float: right;margin-right: 18px\" class=\"glyphicon-time list_down\" aria-hidden=\"true\">"+data[i].createTime+"</span>\n" +
+                                "        </a>\n" +
+                                "    </div>"
+                        }
                         _html+=_h;
                     }
                     $("#refreshContainer").html("")
@@ -281,15 +296,29 @@
                         if (data[i].buyChannelId==6){
                             chann="加工维修"
                         }
-                        var re="<div class=\"list\">\n" +
-                            "            <a href=\"/index/selectOne?id="+data[i].id+"\" style=\"text-decoration: none;color: black;\">\n" +
-                            "                <p style=\"font-size: 16px;font-weight: bold;\">"+data[i].title+"</p>\n" +
-                            "                <p>单号&nbsp;&nbsp;&nbsp;<span>"+data[i].orderNumber+"</span>&nbsp;&nbsp;&nbsp;&nbsp;类型&nbsp;&nbsp;&nbsp;<span>"+chann+"</span></p>\n" +
-                            "                <span class=\"label label-primary \">"+data[i].goodsType+"</span>\n" +
-                            "                <span class=\"label label-warning \">"+data[i].status+"</span>\n" +
-                            "                <span class=\"glyphicon-time list_down\" aria-hidden=\"true\">"+data[i].createTime+"</span>\n" +
-                            "            </a>\n" +
-                            "        </div>";
+                        var re="";
+                        if (data[i].expertReward ==null || data[i].expertReward==""){
+                            re="<div class=\"list\">\n" +
+                                "        <a href=\"/index/selectOne?id="+data[i].id+"\" style=\"text-decoration: none;color: black;\">\n" +
+                                "            <p style=\"font-size: 16px;font-weight: bold;\">"+data[i].applyCause+"</p>\n" +
+                                "            <p>单号:&nbsp;<span>"+data[i].orderNumber+"</span>&nbsp;类型:&nbsp;<span>"+chann+"</span></p>\n" +
+                                "            <span class=\"label label-primary \">"+data[i].goodsType+"</span>\n" +
+                                "            <span class=\"label label-warning \">"+data[i].status+"</span>\n" +
+                                "            <span style=\"float: right;margin-right: 18px\" class=\"glyphicon-time list_down\" aria-hidden=\"true\">"+data[i].createTime+"</span>\n" +
+                                "        </a>\n" +
+                                "    </div>"
+                        } else {
+                            re="<div class=\"list\">\n" +
+                                "        <a href=\"/index/selectOne?id="+data[i].id+"\" style=\"text-decoration: none;color: black;\">\n" +
+                                "            <p style=\"font-size: 16px;font-weight: bold;\">"+data[i].applyCause+"</p>\n" +
+                                "            <span style=\"float: right;margin-right: 6px\">需支付评审奖励<text style=\"color: red;\">"+data[i].expertReward+"</text>元</span>\n" +
+                                "            <p>单号:&nbsp;<span>"+data[i].orderNumber+"</span>&nbsp;类型:&nbsp;<span>"+chann+"</span></p>\n" +
+                                "            <span class=\"label label-primary \">"+data[i].goodsType+"</span>\n" +
+                                "            <span class=\"label label-warning \">"+data[i].status+"</span>\n" +
+                                "            <span style=\"float: right;margin-right: 18px\" class=\"glyphicon-time list_down\" aria-hidden=\"true\">"+data[i].createTime+"</span>\n" +
+                                "        </a>\n" +
+                                "    </div>"
+                        }
                         refresh+=re;
                     }
                 }

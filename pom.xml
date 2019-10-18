@@ -9,13 +9,15 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>mol_common</module>
+        <module>mol_cache</module>
+        <module>mol_sms</module>
+        <module>mol_oos</module>
+        <module>mol_quartz</module>
         <module>mol_purchase</module>
         <module>mol_supplier</module>
         <module>mol_purchase_dd_manage</module>
-        <module>mol_sms</module>
         <module>mol_expert</module>
-        <module>mol_oos</module>
-        <module>mol_cache</module>
+        <module>mol_notification</module>
         <module>mol_pay</module>
     </modules>
     <packaging>pom</packaging>

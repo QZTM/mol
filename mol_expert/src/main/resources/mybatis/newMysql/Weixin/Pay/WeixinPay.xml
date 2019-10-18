@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mol.expert.mapper.newMysql.Weixin.Pay.WeixinPayMapper">
+    <insert id="add_order" parameterType="com.mol.expert.entity.dingding.Pay.pui_supplier_deposit">
+             insert into pui_supplier_deposit (order_id,supplier_id,money,cread_time,pay_type,return_money,tradeNo) values (#{orderId},#{supplierId},#{Money},#{CreadTime},#{payType},#{returnMoney},#{tradeNo})
+        </insert>
+
+    <select id="select_order" resultType="com.mol.expert.entity.dingding.Pay.pui_supplier_deposit">
+          select * from pui_supplier_deposit where order_id=#{order_id} and pay_type=#{payType}
+         </select>
+    <select id="select_supplier" resultType="com.mol.expert.entity.dingding.Pay.pui_supplier_deposit">
+          select * from pui_supplier_deposit where supplier_id=#{supplier_id}
+         </select>
+
+    <update id="update_order">
+             update pui_supplier_deposit set
+        <if test="supplierId!=null and supplierId!=''">
+            supplier_id=#{supplierId},
+        </if>
+        <if test="Money!=null and Money!=''">
+            money=#{Money},
+        </if>
+
+        <if test="returnMoney!=null and returnMoney!=''">
+            return_money=#{returnMoney},
+        </if>
+        <if test="returnMoneyTime!=null and returnMoneyTime!=''">
+            return_money_time=#{returnMoneyTime},
+        </if>
+        <if test="payType!=null and payType!=''">
+            pay_type=#{payType},
+        </if>
+        <if test="tradeNo!=null and tradeNo!=''">
+            tradeNo=#{tradeNo},
+        </if>
+        cread_time=#{CreadTime} where order_id=#{orderId}
+         </update>
+    <delete id="Delete_Pay"><!--删除-->
+           delete from pui_supplier_deposit where supplier_id=#{supplierId} and money=#{Money}
+    </delete>
+
+
+</mapper>

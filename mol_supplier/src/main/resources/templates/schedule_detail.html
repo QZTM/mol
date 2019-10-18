@@ -38,8 +38,12 @@
 <div>
     <p th:text="${pur.applyCause}" style="text-align: center;font-size: 16px;font-weight: bold;height: 36px;padding-top: 14px"></p>
     <!--    <p style="text-align: center;font-size: 22px;font-weight: bold;">采购信息</p>-->
+    <!-- 评审费  -->
+    <div th:if="${expertReview=='true'}" style="float: right;margin-right: 10px">
+        需支付专家评审费：<text th:text="${expertReward}" style="color: red">200</text>元
+    </div>
     <!--产品名称开始-->
-    <div style="text-align: center;border: 1px solid #eeeeee;font-size: 14px;padding-top: 6px">
+    <div style="text-align: center;border: 1px solid #eeeeee;font-size: 14px;padding-top: 6px;clear: both;">
 
         <div  class="col-xs-4 col-md-4">
             <p style="text-align: center;">已报价商家:<span style="color: red;" th:text="${quoteCount}">
@@ -152,7 +156,7 @@
                 <td></td>
                 <td colspan="2">
                     供货周期：
-                 </td>
+                </td>
                 <td th:text="${supplyCycle}"></td>
             </tr>
             <tr>
@@ -203,6 +207,16 @@
 
             </table>
         </div>
+        <div >
+            <span style="float: left;">
+                专家评审费：
+            </span>
+            <span style="float: left;"  th:text="${expertReward}">
+            </span>
+            <span style="width: 14%;float: right">
+                <button  id="basic-addon1" style="background-color: #5B9BD5;text-align: center" onclick="pay()">支付</button>
+            </span>
+        </div>
     </div>
     <!-- 中标结果结束-->
 
@@ -215,6 +229,9 @@
 
 </div>
 <script>
+    function pay() {
+        alert("正在更新")
+    }
 </script>
 </body>
 

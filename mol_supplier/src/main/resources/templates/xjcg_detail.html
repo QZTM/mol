@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <meta charset="UTF-8">
@@ -37,9 +37,13 @@
 <body>
 <div>
     <p th:text="${pur.applyCause}" style="text-align: center;font-size: 16px;font-weight: bold;height: 36px;padding-top: 14px"></p>
-<!--    <p style="text-align: center;font-size: 22px;font-weight: bold;">采购信息</p>-->
+    <!--    <p style="text-align: center;font-size: 22px;font-weight: bold;">采购信息</p>-->
+    <!-- 评审费  -->
+    <div th:if="${expertReview=='true'}" style="float: right;margin-right: 10px">
+        需支付专家评审费：<text th:text="${expertReward}" style="color: red">200</text>元
+    </div>
     <!--产品名称开始-->
-    <div style="text-align: center;border: 1px solid #eeeeee;font-size: 14px;padding-top: 6px">
+    <div style="text-align: center;border: 1px solid #eeeeee;font-size: 14px;padding-top: 6px;clear: both;">
 
         <div  class="col-xs-4 col-md-4">
             <p style="text-align: center;">已报价商家:<span style="color: red;" th:text="${quoteCount}">
@@ -55,10 +59,10 @@
     <!--产品名称结束-->
     <!--发布日期开始-->
     <div style="padding-top: 6px" >
-<!--        <div  class="col-xs-3 col-md-3">-->
-<!--            <p style="text-align: center;">要求商家:<span style="color: red;" th:text="${quoNum}">-->
-<!--			</span></p>-->
-<!--        </div>-->
+        <!--        <div  class="col-xs-3 col-md-3">-->
+        <!--            <p style="text-align: center;">要求商家:<span style="color: red;" th:text="${quoNum}">-->
+        <!--			</span></p>-->
+        <!--        </div>-->
 
         <span style="float:left;font-size: 12px;padding-left: 10px;width: 24%">
             <p style="color: blue;">类型:<span th:text="${pur.goodsType}" style="color: black;"></span></p>
@@ -75,21 +79,21 @@
         <span style="font-size: 12px;float: left;width: 24%" >
             <p style="color: blue;">&nbsp;供货周期:<span th:text="${supplyCycle}" style="color: black;"></span><span style="color: black;">天</span></p>
         </span>
-<!--        <div  class="col-xs-4 col-md-4">-->
-<!--            <p style="text-align: center;">付款方式:<span style="color: red;" th:text="${payMent}">-->
-<!--				货到付款-->
-<!--			</span></p>-->
-<!--        </div>-->
-<!--        <div  class="col-xs-4 col-md-4">-->
-<!--        <p style="text-align: center;">供货周期:<span style="color: red;" th:text="${supplyCycle}">-->
-<!--				30-->
-<!--			</span>天</p>-->
-<!--        </div>-->
-<!--        <div class="col-xs-6 col-md-6">-->
-<!--            <p style="text-align: center;">发布日期:<span style="color: red;" th:text="${pur.createTime}">-->
+        <!--        <div  class="col-xs-4 col-md-4">-->
+        <!--            <p style="text-align: center;">付款方式:<span style="color: red;" th:text="${payMent}">-->
+        <!--				货到付款-->
+        <!--			</span></p>-->
+        <!--        </div>-->
+        <!--        <div  class="col-xs-4 col-md-4">-->
+        <!--        <p style="text-align: center;">供货周期:<span style="color: red;" th:text="${supplyCycle}">-->
+        <!--				30-->
+        <!--			</span>天</p>-->
+        <!--        </div>-->
+        <!--        <div class="col-xs-6 col-md-6">-->
+        <!--            <p style="text-align: center;">发布日期:<span style="color: red;" th:text="${pur.createTime}">-->
 
-<!--			</span></p>-->
-<!--        </div>-->
+        <!--			</span></p>-->
+        <!--        </div>-->
 
     </div>
     <!--发布日期结束-->
@@ -102,8 +106,8 @@
         </span>
         <span style="font-size: 12px;float: right;padding-right: 72px;padding-top: 6px" >
 <!--            -->
-<!--    查询到的专家的电话号码放到此处        -->
-<!--            -->
+            <!--    查询到的专家的电话号码放到此处        -->
+            <!--            -->
             <p>技术支持&nbsp;: &nbsp;<span  th:text="${tst}" style="color: blue;">11111</span></p>
         </span>
     </div>
@@ -152,12 +156,12 @@
     <!-- 备注结束 -->
     <!--我要报价开始-->
     <div th:if="${pur.status=='正在询价' &amp;&amp; quoteOrNot == false} " style="text-align: right;position: absolute;bottom: 6px;right: 6px;">
-<!--        <div th:if="${ pur.quoteOrNot =='false'}">-->
-            <a type="button" class="btn btn-primary" th:href="@{'/index/quote?id='+${pur.id}}">我要报价</a>
-<!--        </div>-->
+        <!--        <div th:if="${ pur.quoteOrNot =='false'}">-->
+        <a type="button" class="btn btn-primary" th:href="@{'/index/quote?id='+${pur.id}}">我要报价</a>
+        <!--        </div>-->
 
     </div>
-<!--   加一个提示：该公司已报价 /-->
+    <!--   加一个提示：该公司已报价 /-->
     <div th:if="${ quoteOrNot == true} ">
         <div style="color:red;text-align: right;position: absolute;bottom: 10px;right: 6px;">您的公司已参与该订单报价</div>
     </div>

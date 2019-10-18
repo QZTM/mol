@@ -2,25 +2,24 @@ package com.mol.purchase.service.dingding.purchase;
 
 
 import com.alibaba.fastjson.JSON;
+import com.mol.purchase.entity.Supplier;
+import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.*;
 import com.mol.purchase.mapper.newMysql.FyPurchaseEsMapper;
-import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
+import com.mol.purchase.mapper.newMysql.dingding.purchase.*;
 import com.mol.purchase.config.BuyChannelResource;
 import com.mol.purchase.config.OrderStatus;
-import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PageArray;
-import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseArray;
-import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
-import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj;
 import com.mol.purchase.mapper.fyOracle.dingding.purchase.EnquiryOraclMapper;
-import com.mol.purchase.mapper.newMysql.dingding.purchase.EnquiryPurMapper;
-import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseDetailMapper;
 import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
+import com.mol.purchase.util.FindFirstMarbasclassByMaterialUtils;
 import com.mol.purchase.util.robot.Cread_PDF;
+import entity.BdMarbasclass;
 import entity.ServiceResult;
 import org.dom4j.DocumentException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 import util.IdWorker;
 import util.TimeUtil;
 
@@ -54,12 +53,18 @@ public class StrategyPurchaseService {
     @Autowired
     private IdWorker idWorker;
 
+    @Autowired
+    FindFirstMarbasclassByMaterialUtils find;
 
-    public ServiceResult<String> save(PageArray pageArray, String orgId, String staffId) throws DocumentException, IllegalAccessException, IOException {
+    @Resource
+    private BdSupplierMapper supplierMapper;
+
+    public StraregyObj save(PageArray pageArray, String orgId, String staffId) throws DocumentException, IllegalAccessException, IOException {
         //申请事由
         String applyCause = pageArray.getApplyCause();
         //采购详情
         List<PurchaseArray> purchaseList = pageArray.getPurchaseArray();
+        BdMarbasclass firstMarbasclass = find.getFirstMarbasclass(purchaseList.get(0).getMaterialId());
         //报价商家
         int quoteSellerNum = pageArray.getQuoteSellerNum();
         //零配件供应商数
@@ -76,11 +81,14 @@ public class StrategyPurchaseService {
         String technicalSupportTelephone = pageArray.getTechnicalSupportTelephone();
         //专家评审
         String expertReview = pageArray.getExpertReview();
+        //评审奖励
+        String expertReward = pageArray.getExpertReward();
         ServiceResult result = null;
         //存入purchase表
         StraregyObj stObj = new StraregyObj();
         stObj.setId(idWorker.nextId() + "");
         stObj.setBuyChannelId(BuyChannelResource.STRATEGY);
+        stObj.setPkMarbasclass(firstMarbasclass.getPkMarbasclass());
         stObj.setGoodsType(purchaseList.get(0).getTypeName());
         stObj.setGoodsBrand(purchaseList.get(0).getBrandName());
         stObj.setGoodsName(purchaseList.get(0).getItemName());
@@ -102,6 +110,7 @@ public class StrategyPurchaseService {
         stObj.setPayMent(payMent);
         stObj.setTechnicalSupportTelephone(technicalSupportTelephone);
         stObj.setExpertReview(expertReview);
+        stObj.setExpertReward(expertReward);
         stObj.setQuoteCounts(0+"");
         String []page_text={"申请理由："+applyCause,"报价商家："+quoteSellerNum,"零配件供应商数："+supplierSellerNum,"备注："+remarks};
 
@@ -136,7 +145,7 @@ public class StrategyPurchaseService {
             fyPurchaseEsMapper.updata(stObj);
         }
         result = new ServiceResult(true, "200", "物品添加成功");
-        return result;
+        return stObj;
     }
 
     /**
@@ -199,4 +208,10 @@ public class StrategyPurchaseService {
         return orderNum;
     }
 
+    public List<Supplier> findSupplierByPur(StraregyObj stobj) {
+        Example e=new Example(Supplier.class);
+        Example.Criteria and = e.and();
+        and.andEqualTo("industryFirst",stobj.getPkMarbasclass()).andEqualTo("ifAttrStrategy",1);
+        return  supplierMapper.selectByExample(e);
+    }
 }

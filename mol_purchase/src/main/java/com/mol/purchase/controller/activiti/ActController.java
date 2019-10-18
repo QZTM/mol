@@ -1,12 +1,13 @@
 package com.mol.purchase.controller.activiti;
 
+import com.mol.config.Constant;
+import com.mol.notification.SendNotification;
+import com.mol.notification.SendNotificationImp;
 import com.mol.purchase.service.activiti.ActService;
-import com.mol.purchase.service.activiti.SendMessageService;
 import com.mol.purchase.entity.dingding.login.AppAuthOrg;
 import com.mol.purchase.entity.dingding.login.AppUser;
-import com.mol.purchase.service.activiti.ActService;
+import com.mol.purchase.service.token.TokenService;
 import com.mol.purchase.util.JWTUtil;
-import com.mol.purchase.service.activiti.SendMessageService;
 import entity.ServiceResult;
 import entity.dd.DDUser;
 import org.activiti.bpmn.model.BpmnModel;
@@ -33,9 +34,12 @@ public class ActController {
     @Autowired
     ActService actService;
 
-    @Autowired
-    private SendMessageService sendMessageService;
 
+    @Autowired
+    SendNotification sendNotificationImp;
+
+    @Autowired
+    private TokenService tokenService;
 
 
     @RequestMapping(value = "/hello",method = RequestMethod.GET)
@@ -91,7 +95,7 @@ public class ActController {
         actService.startProcessInstance(processKey,businessKey);
         //发送通知
         DDUser user = JWTUtil.getUserByRequest(request);
-        sendMessageService.sendMessage(user.getUserid());
+        sendNotificationImp.sendOaFromE(user.getUserid(),user.getName(),tokenService.getToken(), Constant.AGENTID);
         System.out.println("------工作流已启动-------");
         return ServiceResult.success("流程实例已启动");
     }
@@ -138,7 +142,7 @@ public class ActController {
             }
             if (sendUserId!=null){
                 AppUser appUserById = actService.findAppUserById(sendUserId);
-                sendMessageService.sendMessage(appUserById.getDdUserId());
+                sendNotificationImp.sendOaFromE(appUserById.getDdUserId(),appUserById.getUserName(),tokenService.getToken(),Constant.AGENTID);
             }
         }
 

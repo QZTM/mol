@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <meta charset="UTF-8">
@@ -60,24 +60,24 @@
     </div>
 </div>
 <div >
-<!--    <form action="/index/getQuoteFromForm" method="post" id="form1" onsubmit="return checkForm(this.id)">-->
+    <!--    <form action="/index/getQuoteFromForm" method="post" id="form1" onsubmit="return checkForm(this.id)">-->
     <form id="form1"  name="form1" onsubmit="return false" >
         <div th:each="er,in:${purList}" style="height: 130px;" class="each">
             <span class="col-xs-1 col-md-1 bor"  th:text="${in.index}+1" >1</span>
             <span class="col-xs-2 col-md-2 bor"  th:text="${er.itemName}" style="font-size: 12px">名称</span>
             <span class="col-xs-2 col-md-2 bor"  th:text="${er.norms}" style="font-size: 12px">规格</span>
-<!--            数量-->
+            <!--            数量-->
             <span class="col-xs-2 col-md-2 bor" ><input  th:value="${er.count}" readonly="readonly" th:id="co+${in.index}" style="width: 100%;outline: snow;border: none;"/></span>
-<!--            报价-->
+            <!--            报价-->
             <span class="col-xs-3 col-md-3 bor"><input class="capital" th:name="${'quotes['+in.index+'].quote'}"  th:id="in+${in.index}" style="width: 100%;border: none;"  onblur="inputBlur(this.id)"  onclick="clic(this.id)" value="0.00"/></span>
-<!--            总计-->
+            <!--            总计-->
             <span class="col-xs-2 col-md-2 bor"  style="font-size: 12px" th:id="sum+${in.index}"></span>
-<!--            id-->
+            <!--            id-->
             <input type="hidden" th:id="id+${in.index}" th:name="${'quotes['+in.index+'].pkMaterialId'}"  th:value="${er.materialId}" style="clear: both;float: left;height: 1px;"/>
             <!--物品id-->
             <input type="hidden" th:id="pur+${in.index}" th:name="${'quotes['+in.index+'].fyPurchaseId'}"  th:value="${er.fyPurchaseId}" style="clear: both;float: left;height: 1px;"/>
-            <!--            品均价-->
-            <input type="hidden" th:id="avg+${in.index}" th:value="${er.avgPriceHistory}" style="float: right;height: 1px;"/>
+            <!--            上次报价-->
+            <input type="hidden" th:name="${'quotes['+in.index+'].lastQuotePrice'}" th:id="avg+${in.index}" th:value="${er.avgPriceHistory}" style="float: right;height: 1px;"/>
             <input class="col-xs-12 col-md-12 " th:name="${'quotes['+in.index+'].reason'}" th:id="bei+${in.index}" type="hidden"  placeholder="该报价高于您往期的报价，如价格上调请备注说明"/>
             <hr style="height:3px;border:none;border-top:3px double dodgerblue;" />
             <input type="hidden"  th:id="size+${in.index}" th:value="${in.size}" style="float: right;height: 1px;"/>
@@ -88,12 +88,12 @@
             <input type="hidden" th:id="saleman+${in.index}" th:name="${'quotes['+in.index+'].supplierSalesmanId'}" style="float: right;height: 1px;">
 
         </div>
-<!--        供货周期-->
+        <!--        供货周期-->
         <div class="input-group">
             <span class="input-group-addon" id="basic-addon1">供货周期</span>
             <input type="text" class="form-control" placeholder="请输入供货周期" aria-describedby="basic-addon1" th:name="${'quotes[0].supplyCycle'}">
         </div>
-<!--        <input type="submit" value="提交">-->
+        <!--        <input type="submit" value="提交">-->
         <button  class="btn btn-primary" style="margin-left: 42%;margin-top: 12px;" onclick="sub()" id="subBtn">提交</button>
         <!-- 公司id-->
         <input type="hidden" id="purId"  th:value="${purId}" style="float: right;height: 1px;">
@@ -110,22 +110,22 @@
         }
         var _purId=$("#purId").val();
         var i=false ;
-            $.ajax({
-                type: "post",
-                url: "/index/getQuoteFromForm",
-                data: $('#form1').serialize(),
-                async:false,
-                dataType:'json',
-                success:function (data) {
-                    alert(data.result);
-                    // window.location.reload()
-                    // location.href="/index/selectOne?id="+_purId;
-                    window.history.go(-2)
-                },
-                fail:function (data) {
-                    console.log(data)
-                }
-            })
+        $.ajax({
+            type: "post",
+            url: "/index/getQuoteFromForm",
+            data: $('#form1').serialize(),
+            async:false,
+            dataType:'json',
+            success:function (data) {
+                alert(data.result);
+                // window.location.reload()
+                // location.href="/index/selectOne?id="+_purId;
+                window.history.go(-2)
+            },
+            fail:function (data) {
+                console.log(data)
+            }
+        })
 
     }
 
