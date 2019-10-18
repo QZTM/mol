@@ -3,5 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mol.quartz.mapper.PurchaseMapper">
-    
+    <select id="compareQuoteSellerNumAndSellerCountById" parameterType="String" resultType="Integer">
+        select ifnull(quote_counts, 0)-ifnull(quote_seller_num, 0)>=0 from fy_purchase where id=#{id}
+    </select>
 </mapper>

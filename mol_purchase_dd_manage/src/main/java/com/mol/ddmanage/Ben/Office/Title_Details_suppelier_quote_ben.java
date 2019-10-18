@@ -7,6 +7,7 @@ public class Title_Details_suppelier_quote_ben
     private  String materialspec;//规格
     private String quote;//报价
     private String unit;//单位
+    private String company;//公司
 
     public String getNumber() {
         return number;
@@ -46,5 +47,13 @@ public class Title_Details_suppelier_quote_ben
 
     public void setUnit(String unit) {
         this.unit = unit;
+    }
+
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
     }
 }

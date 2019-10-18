@@ -6,7 +6,7 @@ public class Push_history_list_ben
     private String goods_type;//类型
     private String title;//标题
     private String id;//订单编号
-    private String pk_supplier;//供应商
+    private String supplier_name;//供应商
     private String create_time;//创建时间
 
     private String staff_id;//申请人
@@ -39,13 +39,6 @@ public class Push_history_list_ben
         this.id = id;
     }
 
-    public String getPk_supplier() {
-        return pk_supplier;
-    }
-
-    public void setPk_supplier(String pk_supplier) {
-        this.pk_supplier = pk_supplier;
-    }
 
     public String getCreate_time() {
         return create_time;
@@ -86,5 +79,13 @@ public class Push_history_list_ben
 
     public void setUser_name(String user_name) {
         this.user_name = user_name;
+    }
+
+    public String getSupplier_name() {
+        return supplier_name;
+    }
+
+    public void setSupplier_name(String supplier_name) {
+        this.supplier_name = supplier_name;
     }
 }

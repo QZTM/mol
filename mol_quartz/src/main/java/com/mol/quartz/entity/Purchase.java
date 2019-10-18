@@ -1,4 +1,4 @@
-package com.mol.quartz.bean;
+package com.mol.quartz.entity;
 
 import lombok.Data;
 import java.io.Serializable;
@@ -43,11 +43,11 @@ public class Purchase implements Serializable {
     private String pkSupplier;
     //订单号
     private String orderNumber;
-    //报价商家数
+    //采购方要求报价的最小商家数
     private String quoteSellerNum;
     //pdf_url
     private String reqfileurl;
-    //订单报价的公司数量
+    //实际报价的商家数量
     private String quoteCounts;
     //截止时间
     private String deadLine;

@@ -14,9 +14,11 @@
         <div style="margin-left: 12px;float: left;">
             <a style="font-size: 24px;"><font size="3">基础分类：</font></a>
             <select style="font-size: 12px;width: 120px; height: 26px;" onchange="select_change(this)">
-                <option value ="item1">未审核</option>
-                <option value="item2">已通过</option>
-                <option value="item3">已拒绝</option>
+                <option value ="item1">全部</option>
+                <option value="item2">未认证</option>
+                <option value="item3">审核中</option>
+                <option value="item4">认证成功</option>
+                <option value="item5">认证失败</option>
             </select>
         </div>
 
@@ -64,14 +66,32 @@
         document.getElementById("Details").style.display="none";
     }
 
-    function select_change(e)//下拉选择的相应事件
+
+    function select_change(e)//认证   0=未认证 1 =审核中 2=认证成功 3=认证失败
     {
-/*        if (e.selectedIndex===0)//未审核
+        if (e.selectedIndex==0)//全部
         {
-        }*/
+            LandingTable(100)
+        }
+        else if(e.selectedIndex==1)//未认证
+        {
+            LandingTable(0)
+        }
+        else if(e.selectedIndex==2)//审核中
+        {
+            LandingTable(1)
+        }
+        else if(e.selectedIndex==3)//认证成功
+        {
+            LandingTable(2)
+        }
+        else if(e.selectedIndex==4)//认证失败
+        {
+            LandingTable(3)
+        }
     }
 
-    layui.use('table', function(){
+/*    layui.use('table', function(){
         var table = layui.table;
         var Data=[{"id":"BeJson","item1":"销售主管","item2":true,"item3":"12","item4":"12","item5":"12"},{"id":"BeJson","item1":"销售主管","item2":true,"item3":"12","item4":"12","item5":"12"},{"id":"BeJson","item1":"销售主管","item2":true,"item3":"12","item4":"12","item5":"12"}]
         table.render({
@@ -114,7 +134,67 @@
                 document.getElementById("Details").style.display="block";
             }
         });
-    });
+    });*/
+
+
+    function LandingTable(authentication)
+    {
+        var table = layui.table;
+        $.ajax({
+            type: 'POST',
+            url: '/ExperManagement/ExperApprovalList/ShowList',
+            dataType: 'json',
+            data:{authentication:authentication},
+            // headers:{  'eticket': app.globalData.eticket},
+            success: function (data) {
+
+                var Data = data
+                table.render({
+                    elem: '#test'
+                    // ,url:'data.json'//json路径
+                    , data:Data
+                    ,toolbar: '#toolbarDemo'
+                    ,title: '用户数据表'
+                    ,cols: [
+                        [
+                            {field:'number', title:'ID', width:100, fixed: 'left', unresize: true, sort: true}
+                            ,{field:'name', title:'姓名', width:100, edit: 'text'}
+                            ,{field:'birthday', title:'出生日期', width:150, edit: 'text'}
+                            ,{field:'id_number', title:'身份证', width:200}
+                            ,{field:'industry', title:'所属行业', width:100}
+                            ,{field:'work_life', title:'工作年限', width:100}
+                            ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:260}
+                        ]
+                    ]
+                    ,page: true
+                });
+            },
+            error: function (data) {
+                alert("获取审核议价信息失败")
+            }
+        });
+
+
+        //监听行工具事件
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+            //console.log(obj)
+            if(obj.event === 'del'){
+                layer.confirm('真的删除行么', function(index){
+                    obj.del();
+                    layer.close(index);
+                });
+            }
+            else if(obj.event === 'edit2')//点击查看按钮
+            {
+                document.getElementById("datagridview").style.display="none";
+                document.getElementById("subWin").src="/Home/SetExperApprovalPage";//?JobName="+data.item1;//跳转到合同详情 传送一个合同编号
+                document.getElementById("Details").style.display="block";
+            }
+        });
+    }
+
+    layui.use('table',LandingTable(100));
 </script>
 
 </body>

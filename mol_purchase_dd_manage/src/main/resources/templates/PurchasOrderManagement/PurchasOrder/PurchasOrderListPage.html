@@ -12,13 +12,12 @@
 <div id="datagridview">
     <div style="margin: 16px;">
         <a style="font-size: 22px;"><font size="3">基础分类：</font></a>
-        <select style="font-size: 12px;width: 7%; height: 26px;" onchange="select_change()"><!--width: 120px-->
+        <select style="font-size: 12px;width: 7%; height: 26px;" onchange="select_change(this)"><!--width: 120px-->
             <option value ="quan" >全部</option>
             <option value ="saab">询价采购</option>
             <option value="opel">战略协议采购</option>
             <option value ="quan1" >单一来源采购</option>
-            <option value ="saab2">维修</option>
-            <option value="opel3">加工</option>
+            <option value ="saab2">维修 加工</option>
         </select>
 
 
@@ -64,7 +63,7 @@
     function Start_landing()
     {
         $("#Details").animate({width:"50%"}, 0);//收起
-        layui.use('table', function(){
+/*        layui.use('table', function(){
             var table = layui.table;
             var Data = [{"l1":"1","l2":"询价","l3":"计算机采购","l4":"2019080711","l5":"山东XXX有限公司","l6":"2019-08-06","l7":"王XX","l8":"查看"}]
             table.render({
@@ -106,8 +105,94 @@
                 }
                 $("#Details").animate({width:"100%"}, 500);//展开
             });
-        });
+        });*/
     }
+
+    function select_change(e)//下拉选择的相应事件
+    {
+        var buy_channel_id=100;
+        if (e.selectedIndex==1)//战略采购
+        {
+            buy_channel_id=3;
+        }
+        else if (e.selectedIndex==2)//询价采购
+        {
+            buy_channel_id=4;
+        }
+        else if (e.selectedIndex==3)//单一采购
+        {
+            buy_channel_id=5;
+        }
+        else if (e.selectedIndex==4)//加工 维修
+        {
+            buy_channel_id=6;
+        }
+        LandingTable(buy_channel_id)
+    }
+
+    function LandingTable(buy_channel_id)
+    {
+        var table = layui.table;
+
+        $.ajax({
+            type: 'POST',
+            url: '/PurchasOrderManagement/PurchasOrderList/ShowList',
+            dataType: 'json',
+            data:{buy_channel_id:buy_channel_id},
+            // headers:{  'eticket': app.globalData.eticket},
+            success: function (data) {
+
+                var Data = data
+                    table.render({
+                    elem: '#test1'
+                    , data:Data
+                    ,cols: [
+                        [
+                            {field:'number', width:80, title: '序号'}
+                            ,{field:'id', width:150, title: '订单编号'}
+                            ,{field:'buy_channel_id', width:200, title: '采购类型'}
+                            ,{field:'goods_name', width:150, title: '标题'}
+                            ,{field:'marbasclass_name', width:280,title: '行业类别', minWidth: 150}
+                            ,{field:'user_name', width:150, title: '申请人'}
+                            ,{field:'create_time', width:120, title: '日期'}
+                            ,{field:'l8', width:120,event: 'setl8', toolbar: '#barDemo',title: '操作'}
+                        ]
+                    ]
+                    ,page: true
+                });
+            },
+            error: function (data) {
+                alert("获取审核议价信息失败")
+            }
+        });
+
+
+
+        //监听单元格事件
+        table.on('tool(test1)', function(obj){//显示详情页
+            var data = obj.data;
+            console.log(data);
+
+            if( obj.event === 'setEve4' )
+            {
+                document.getElementById("datagridview").style.display="none";
+                // document.getElementById("subWin").src="/Home/Contract?Contract_number="+obj.data.l4;//跳转到供应商的合同管理
+                document.getElementById("Details").style.display="block";
+                //document.getElementById("subWin").contentWindow.document.body.innerHTML="供应商通话记录:山东XXX公司";
+            }
+            else if(obj.event === 'edit'){
+                console.log(data.type);
+                document.getElementById("datagridview").style.display="none";
+                document.getElementById("subWin").src="/Home/PurchasOrderinforPage?Oreder_number="+obj.data.l4;//跳转到合同详情 传送一个合同编号
+                document.getElementById("Details").style.display="block";
+            }
+            $("#Details").animate({width:"100%"}, 500);//展开
+        });
+
+
+    }
+
+    layui.use('table',LandingTable(100));
 
 </script>
 </body>

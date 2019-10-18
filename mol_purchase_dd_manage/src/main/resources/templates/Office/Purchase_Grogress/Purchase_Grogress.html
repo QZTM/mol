@@ -7,9 +7,10 @@
 <link rel="stylesheet" href="/layui/css/layui.css">
 <script src="/echarts.min.js"></script>
 <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js" type="text/javascript"></script>
-<body onload="Landing_call_recording()"><!--采购进度管理--><!--width 1700-->
+<body onload="Start_landing()"><!--采购合同管理--><!--width 1700-->
 
 <div id="datagridview">
+
 	<div style="margin-left: 28px;margin-top: 12px">
 		<a style="font-size: 22px;"><font size="3">基础分类：</font></a>
 		<select style="font-size: 12px;width: 7%; height: 26px;" onchange="select_change()"><!--width: 120px-->
@@ -49,14 +50,28 @@
 	<div>
 		<hr class="layui-bg-green">
 	</div>
-	<div id="list_table"><!--采购记录展示列表-->
 
+	<div>
+		<table class="layui-hide" id="test1" lay-filter="test1"></table>
+
+		<script type="text/html" id="toolbarDemo">
+			<div class="layui-btn-container">
+				<button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+				<button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+				<button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+			</div>
+		</script>
 	</div>
+
+
+	<script type="text/html" id="barDemo">
+		<a class="layui-btn layui-btn-xs" name="edit2" lay-event="edit2">查看</a>
+	</script>
 
 
 </div>
 <!--详情页显示-->
-<div id="Details" >
+<div id="Details">
 	<iframe  id="subWin"  style="width: 98.2%;height: 750px;border: none;overflow-x:hidden ;overflow-y: hidden"><!--width: 1670px-->
 
 	</iframe>
@@ -74,70 +89,114 @@
 		document.getElementById("datagridview").style.display="block";
 		document.getElementById("Details").style.display="none";
 	}
-
-	function Show_info(e)//点击详情时
-	{
-		//var div=document.getElementById("m").parentElement;//获取上一层的div
-		var div=e.parentElement;//获取上一层的div
-		var list1=div.childNodes;//获取div下面的子控件
-		var font=list1[0].textContent.toString();//获取第div里第一个控件的值
-		var number=font.substring(3);//获取此订单的编号
-		console.log(number);
-
-		document.getElementById("datagridview").style.display="none";
-		document.getElementById("subWin").src="/Home/Time_Process?Oreder_number="+number;//跳转到订单通话记录
-		document.getElementById("Details").style.display="block";
-
-		$("#Details").animate({width:"100%"}, 500);//展开
-	}
-
-	function Landing_call_recording()
+	function Start_landing()
 	{
 		$("#Details").animate({width:"50%"}, 0);//收起
-		for (var n=1;n<20;n++)
-		{
-			var element=document.createElement('div');
-			element.innerHTML=
-					'<div style="margin: 16px;">' +
-					'<div style="margin: 15px; width:95%;height: 120px; background-color: #009F95;border-radius:12px;">' +
-					'<div style="float: left;margin-top: 12px;margin-left: 12px;"><font size="5" color="#FBFBFB">斯凯孚SKF6021 轴承</font></div>' +
-					' <div style="width: 98.1%; float: left;margin-top: 6px;font-size: 15px;">' +
-					'<font  name="number" color="#FBFBFB" style="float: left;margin-left: 12px;" >编号:123456789 </font>' +
-					'    <font color="#FBFBFB" style="float: left;margin-left: 24px;" >采购类型: </font>' +
-					'<font  style="float:right;margin-right: 5px;cursor:pointer;" color="#FBFBFB"  onclick="Show_info(this)">详情</font>' +
-					'<font color="#FBFBFB" style="float:right;margin-right: 55px;">采购申请人:</font>' +
-					' </div>' +
-					'<div style="width: 98.1%; float: left;margin-top: 5px;text-align: center;color: #FBFBFB; font-size: 15px;">' +
-					'<div style="float: left;margin: 10px; width: 100px;height:26px;background-color: #01AAED; border-radius:6px;">' +
-					'<font>1222</font>' +
-					'</div>' +
-					'<div style="float: left;margin: 10px; width: 100px;height:26px;background-color: #EB7350;border-radius:6px;">' +
-					'<font>333444</font>' +
-					'</div>' +
-					'<div>' +
-					'<font style="float:right;margin-right: 5px;"  color="#FBFBFB" >申请时间:</font>' +
-					'</div>' +
-					'</div>' +
-					'</div>' +
-					'</div>'
+/*		layui.use('table', function(){
+			var table = layui.table;
+			var Data = [{"l1":"1","l2":"询价","l3":"计算机采购","l4":"2019080711","l5":"山东XXX有限公司","l6":"2019-08-06","l7":"王XX","l8":"查看","l9":"查看","l10":"查看"}]
+			table.render({
+				elem: '#test1'
+				, data:Data
+				,cols: [
+					[
+						{field:'l1', width:80, title: 'DI', sort: true}
+						,{field:'l2', width:150, title: '名称'}
+						,{field:'l3', width:200, title: '订单编号'}
+						,{field:'l5', width:280,title: '采购类型'}
+						,{field:'l6', width:150, title: '发布日期'}
+						,{field:'l7', width:120, title: '申请人'}
+						,{field:'l8', width:100, title: '类型'}
+						,{field:'l9', width:100, title: '状态'}
+						,{field:'l10', width:120,event: 'setl8', title: '详情',style:'cursor: pointer;color: #1E9FFF;'}
+					]
+				]
+				,page: true
+			});
 
-			document.getElementById("list_table").appendChild(element);
-		}
+
+			//监听单元格事件
+			table.on('tool(test1)', function(obj){//显示详情页
+				var data = obj.data;
+				console.log(data);
+
+				if( obj.event === 'setEve4' )
+				{
+					document.getElementById("datagridview").style.display="none";
+					// document.getElementById("subWin").src="/Home/Contract?Contract_number="+obj.data.l4;//跳转到供应商的合同管理
+					document.getElementById("Details").style.display="block";
+					//document.getElementById("subWin").contentWindow.document.body.innerHTML="供应商通话记录:山东XXX公司";
+				}
+				else if(obj.event === 'setl8'){
+					console.log(data.type);
+					document.getElementById("datagridview").style.display="none";
+					document.getElementById("subWin").src="/Home/Time_Process?Oreder_number="+obj.data.l3;//跳转到合同详情 传送一个合同编号/Home/Time_Process
+					document.getElementById("Details").style.display="block";
+				}
+				$("#Details").animate({width:"100%"}, 500);//展开
+			});
+		});*/
 	}
 
+	function LandingTable(e)
+	{
+		var table = layui.table;
+		$.ajax({
+			type: 'POST',
+			url: '/Office/Purchase_Grogress/ShowList',
+			dataType: 'json',
+			//data:{state:state},
+			// headers:{  'eticket': app.globalData.eticket},
+			success: function (data) {
+				var Data=data
+				table.render({
+					elem: '#test1'
+					, data:Data
+					,cols: [
+						[
+							{field:'number', width:80, title: '序号', sort: true}
+							,{field:'goods_name', width:150, title: '名称'}
+							,{field:'id', width:200, title: '订单编号'}
+							,{field:'buy_channel_id', width:280,title: '采购类型'}
+							,{field:'create_time', width:150, title: '发布日期'}
+							,{field:'user_name', width:120, title: '申请人'}
+							,{field:'goods_type', width:100, title: '类型'}
+							,{field:'status', width:100, title: '状态'}
+							,{field:'l10', width:120, toolbar: '#barDemo',title: '详情'}
+						]
+					]
+					,page: true
+				});
 
-
-	layui.use('laydate', function(){
-		var laydate = layui.laydate;
-
-		//选择起始时间
-		laydate.render({
-			elem: '#time1'
+			},
+			error: function (data) {
+				alert("获取审核议价信息失败")
+			}
 		});
-		laydate.render({
-			elem: '#time2'
+
+
+		//监听单元格事件
+		table.on('tool(test1)', function(obj){//显示详情页
+			var data = obj.data;
+			console.log(data);
+
+			if( obj.event === 'setEve4' )
+			{
+				document.getElementById("datagridview").style.display="none";
+				// document.getElementById("subWin").src="/Home/Contract?Contract_number="+obj.data.l4;//跳转到供应商的合同管理
+				document.getElementById("Details").style.display="block";
+				//document.getElementById("subWin").contentWindow.document.body.innerHTML="供应商通话记录:山东XXX公司";
+			}
+			else if(obj.event === 'edit2'){
+				//console.log(data.type);
+				document.getElementById("datagridview").style.display="none";
+				document.getElementById("subWin").src="/Home/Time_Process?Oreder_number="+obj.data.id;//跳转到合同详情 传送一个合同编号/Home/Time_Process
+				document.getElementById("Details").style.display="block";
+			}
+			$("#Details").animate({width:"100%"}, 500);//展开
 		});
-	});
+	}
+	layui.use('table',LandingTable(1));
 
 </script>
 </body>

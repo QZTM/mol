@@ -1,4 +1,4 @@
-package com.mol.quartz.bean;
+package com.mol.quartz.entity;
 
 import lombok.Data;
 

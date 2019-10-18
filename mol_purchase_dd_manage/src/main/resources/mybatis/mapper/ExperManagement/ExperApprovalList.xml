@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.ddmanage.mapper.ExperManagement.ExperApprovalListMapper">
+
+    <select id="ExpertInforPageListShow" resultType="com.mol.ddmanage.Ben.ExperManagement.ExperApprovalListben">
+      select expert_user.*,
+        (select bd_marbasclass.name from bd_marbasclass where expert_user.major=bd_marbasclass.pk_marbasclass)industry
+      from expert_user
+      <if test="authentication!=100">
+          where expert_user.authentication=#{authentication}
+      </if>
+      <if test="authentication==100">
+          where 1=1
+      </if>
+
+
+    </select>
+</mapper>

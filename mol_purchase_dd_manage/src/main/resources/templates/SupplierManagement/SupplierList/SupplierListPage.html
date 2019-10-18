@@ -67,36 +67,47 @@
 
     function select_change(e)//下拉选择的相应事件
     {
-        /*        if (e.selectedIndex===0)//未审核
-                {
-                }*/
+        LandingTable(e.selectedIndex)
     }
 
-    layui.use('table', function(){
-        var table = layui.table;
-        var Data=[{"id":"BeJson","item1":"销售主管","item2":true,"item3":"12","item4":"12","item5":"12","item6":"12"},{"id":"BeJson","item1":"销售主管","item2":true,"item3":"12","item4":"12","item5":"12","item6":"12"},{"id":"BeJson","item1":"销售主管","item2":true,"item3":"12","item4":"12","item5":"12","item6":"12"}]
-        table.render({
-            elem: '#test'
-            // ,url:'data.json'//json路径
-            , data:Data
-            ,toolbar: '#toolbarDemo'
-            ,title: '用户数据表'
-            ,cols: [
-                [
-                    {type: 'checkbox', fixed: 'left'}
-                    ,{field:'id', title:'ID', width:100, fixed: 'left'}
-                    ,{field:'item1', title:'供应商名称', width:100}
-                    ,{field:'item2', title:'类型', width:150}
-                    ,{field:'item3', title:'行业类别', width:200}
-                    ,{field:'item4', title:'法人', width:100}
-                    ,{field:'item5', title:'联系方式', width:100}
-                    ,{field:'item6', title:'注册时间', width:100}
-                    ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:260}
-                ]
-            ]
-            ,page: true
-        });
 
+    function LandingTable(supplier_type)//supplier_type 0全部供应商 1基础供应商 2战略供应商 3单一供应商
+    {
+        var table = layui.table;
+
+        $.ajax({
+            type: 'POST',
+            url: '/SupplierMangement/SupplierList/ShowList',
+            dataType: 'json',
+            data:{supplier_type:supplier_type},
+            // headers:{  'eticket': app.globalData.eticket},
+            success: function (data) {
+                var Data=data
+                table.render({
+                    elem: '#test'
+                    // ,url:'data.json'//json路径
+                    , data:Data
+                    ,toolbar: '#toolbarDemo'
+                    ,title: '用户数据表'
+                    ,cols: [
+                        [
+                            {field:'number', title:'ID', width:100, fixed: 'left'}
+                            ,{field:'name', title:'供应商名称', width:100}
+                            ,{field:'supprop', title:'类型', width:150}
+                            ,{field:'industry', title:'行业类别', width:200}
+                            ,{field:'legalbody_name', title:'法人', width:100}
+                            ,{field:'telephone', title:'联系方式', width:100}
+                            ,{field:'regist_time', title:'注册时间', width:100}
+                            ,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:260}
+                        ]
+                    ]
+                    ,page: true
+                });
+            },
+            error: function (data) {
+                alert("获取审核议价信息失败")
+            }
+        });
 
 
         //监听行工具事件
@@ -116,7 +127,9 @@
                 document.getElementById("Details").style.display="block";
             }
         });
-    });
+    }
+
+    layui.use('table',LandingTable(0));
 </script>
 
 </body>

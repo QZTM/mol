@@ -14,7 +14,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.mol.quartz.bean.DuridBean;
+import com.mol.quartz.entity.DuridBean;
 
 import tk.mybatis.spring.annotation.MapperScan;
 

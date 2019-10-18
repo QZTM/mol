@@ -116,7 +116,7 @@
 							,{field:'goods_type', title:'类型',event: 'setType',  width:220}
 							,{field:'title', title:'对应标题',event: 'setTitl',width:280,style:'cursor: pointer;color: #1E9FFF;'}
 							,{field:'id', title:'订单编号', width:200}
-							,{field:'pk_supplier', title:'确认供应商'}
+							,{field:'supplier_name', title:'确认供应商'}
 							,{field:'create_time', title:'日期', width:150}
 							,{field:'user_name', title:'申请人', width:150}
 							,{field:'status', title:'状态', width:150}
@@ -156,7 +156,7 @@
 				// 	});
 				// });
 				document.getElementById("datagridview").style.display="none";
-				document.getElementById("subWin").src="/Home/Title_Details?titl="+obj.data.title+"&Order="+obj.data.id+"&people="+obj.data.user_name+"&create_time="+obj.data.create_time;
+				document.getElementById("subWin").src="/Home/Title_Details?titl="+obj.data.title+"&Order="+obj.data.id+"&people="+obj.data.user_name+"&create_time="+obj.data.create_time+"&supplier_name="+obj.data.supplier_name;
 				document.getElementById("Details").style.display="block";
 
 				$("#Details").animate({width:"100%"}, 500);//展开

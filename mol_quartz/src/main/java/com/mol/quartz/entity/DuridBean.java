@@ -1,4 +1,4 @@
-package com.mol.quartz.bean;
+package com.mol.quartz.entity;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

@@ -1,18 +1,15 @@
-package com.mol.quartz.bean;
+package com.mol.quartz.entity;
 
 import java.util.Map;
-
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
 import com.mol.quartz.config.MolJob;
-
 import lombok.Data;
 
 @Data
 @Table(name="job_entity")
-public class AppQuartz {
+public class Quartz {
 
 	@Id
 	@Column(name="id")

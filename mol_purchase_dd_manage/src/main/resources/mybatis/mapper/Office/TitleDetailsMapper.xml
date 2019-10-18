@@ -10,9 +10,30 @@
       SELECT fy_purchase_detail.goods_quantity,bd_material.* ,(bd_measdoc.name)measdoc FROM fy_purchase_detail,bd_material,bd_measdoc WHERE fy_purchase_detail.pk_material=bd_material.pk_material AND fy_purchase_detail.fy_purchase_id=#{purchase_id} and bd_measdoc.pk_measdoc=bd_material.pk_measdoc
     </select>
 
+    <!--    <select id="SupplierQuoteMapper" resultType="com.mol.ddmanage.Ben.Office.Title_Details_suppelier_quote_ben">
+            SELECT fy_quote.*,bd_material.`name`,bd_material.materialspec,(bd_measdoc.`name`)unit FROM fy_quote,bd_material,bd_measdoc WHERE fy_quote.pkMaterialId=bd_material.pk_material AND bd_material.pk_measdoc=bd_measdoc.pk_measdoc AND fy_quote.fyPurchaseId=#{purchase_id}
+        </select>-->
+
     <select id="SupplierQuoteMapper" resultType="com.mol.ddmanage.Ben.Office.Title_Details_suppelier_quote_ben">
-        SELECT fy_quote.*,bd_material.`name`,bd_material.materialspec,(bd_measdoc.`name`)unit FROM fy_quote,bd_material,bd_measdoc WHERE fy_quote.pkMaterialId=bd_material.pk_material AND bd_material.pk_measdoc=bd_measdoc.pk_measdoc AND fy_quote.fyPurchaseId=#{purchase_id}
+
+        SELECT
+        fy_purchase_detail.goods_quantity,
+        bd_material.`name`,
+        materialspec,
+        bd_material.materialspec,
+        (bd_measdoc.`name`)unit,
+        fy_quote.pk_supplier_id,
+        (SELECT bd_supplier.`name` FROM bd_supplier WHERE bd_supplier.pk_supplier=fy_quote.pk_supplier_id)company,
+        fy_quote.*
+        FROM fy_purchase_detail,fy_quote,bd_material,bd_measdoc
+        WHERE fy_purchase_detail.quote_id=fy_quote.id
+        AND fy_purchase_detail.pk_material=bd_material.pk_material
+        AND bd_material.pk_measdoc=bd_measdoc.pk_measdoc
+        AND fy_quote.id=fy_purchase_detail.quote_id
+        and fy_quote.fy_purchase_id=#{purchase_id}
+
     </select>
+
 
 
 </mapper>

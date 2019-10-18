@@ -84,7 +84,8 @@ public class New_file {
         model.addAttribute("titl","查看审批记录:"+map.get("titl").toString());//标题
         model.addAttribute("Order","订单编号:"+map.get("Order").toString());//订单编号
         model.addAttribute("people","采购申请人:"+map.get("people").toString());//申请人
-        model.addAttribute("create_time","发布日期:"+map.get("create_time").toString());//申请人
+        model.addAttribute("create_time","发布日期:"+map.get("create_time").toString());//
+        model.addAttribute("supplier_name","公司名称:"+map.get("supplier_name").toString());
         model.addAttribute("quoteSellerNum","已报价商家数"+ titleDetailsService.Purchase(map.get("Order").toString()).get("quoteSellerNum"));
         return "Office/Push_history/Title_Details";
     }
@@ -156,10 +157,10 @@ public class New_file {
         return "MemberManagement/DepartmentManagement/JobEditPage";
     }
 
-    @RequestMapping("/ExpertinforPage")//专家信息管理
-    public String ExpertinforPage()
+    @RequestMapping("/ExpertInforPageList")//专家信息管理
+    public String ExpertInforPageList()
     {
-        return "ExpertManagement/ExpertInfor/ExpertInforPage";
+        return "ExpertManagement/ExpertInfor/ExpertInforPageList";
     }
 
     @RequestMapping("/EditExperInforPage")//专家信息编辑
