@@ -7,32 +7,35 @@
         insert into fy_quote values(#{id} ,#{fyPurchaseId},#{pkMaterialId},#{quote},#{reason},#{pkSupplierId},#{supplierSalesmanId},#{creationtime},#{supplyCycle},#{expertRecommendation},#{lastQuotePrice})
     </insert>
     <select id="getListBySupplier" parameterType="java.lang.String" resultType="java.lang.String">
-        SELECT DISTINCT fyPurchaseId FROM `fy_quote` where pkSupplierId=1 ORDER BY creationtime
+        SELECT DISTINCT fy_purchase_id FROM `fy_quote` where pk_supplier_id=1 ORDER BY creationtime
     </select>
     <select id="findFypurchaseIdListById" parameterType="java.lang.String" resultType="java.lang.String">
     SELECT DISTINCT
-        pkSupplierId
+        pk_supplier_id
     FROM
         fy_quote
     WHERE
-        fyPurchaseId =#{id}
+        fy_purchase_id =#{id}
     </select>
     <select id="findQuoteBySupplierIdAndPurchaseId" parameterType="java.lang.String" resultType="com.mol.expert.entity.thirdPlatform.FyQuote">
-        select * from fy_quote where fyPurchaseId=#{id} and pkSupplierId=#{supplierId}
+        select * from fy_quote where fy_purchase_id=#{id} and pk_supplier_id=#{supplierId}
     </select>
     <select id="findIdByPurIdAndPkMatIdAndSupplierId" parameterType="java.lang.String" resultType="java.lang.String">
-        SELECT id FROM `fy_quote` e where e.fyPurchaseId=#{purId} and e.pkMaterialId=#{materId} and e.pkSupplierId=#{supplierId}
+        SELECT id FROM `fy_quote` e where e.fy_purchase_id=#{purId} and e.pk_material_id=#{materId} and e.pk_supplier_id=#{supplierId}
     </select>
     <select id="findFypurchaseIdListBySupplierId" parameterType="java.lang.String" resultType="java.lang.String">
-        SELECT DISTINCT fyPurchaseId FROM `fy_quote` where pkSupplierId=#{id}
+        SELECT DISTINCT fy_purchase_id FROM `fy_quote` where pk_supplier_id=#{id}
     </select>
     <select id="findQuoteByid" parameterType="java.lang.String" resultType="com.mol.expert.entity.thirdPlatform.FyQuote">
         select * from fy_quote where id=#{quoteId}
     </select>
     <select id="findQuoteByPurchaseId" parameterType="java.lang.String" resultType="com.mol.expert.entity.thirdPlatform.FyQuote">
-        select * from fy_quote where fyPurchaseId=#{id}
+        select * from fy_quote where fy_purchase_id=#{id}
     </select>
     <update id="updateExpertRecommendByPurIdAndSupplierId" parameterType="java.lang.String">
-        update fy_quote set expert_recommendation="1" where fyPurchaseId=#{purchaseId} and pkSupplierId =#{supplierId}
+        update fy_quote set expert_recommendation="1" where fy_purchase_id=#{purchaseId} and pk_supplier_id =#{supplierId}
+    </update>
+    <update id="updateExpertAgreeCountsByPurIdAndSupplierId" parameterType="java.lang.String">
+        update fy_quote set expert_agree_counts=#{expertAgreeCounts} where fy_purchase_id=#{fyPurchaseId} and pk_supplier_id =#{pkSupplierId}
     </update>
 </mapper>

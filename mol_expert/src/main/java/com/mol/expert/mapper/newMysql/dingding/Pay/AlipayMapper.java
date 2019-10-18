@@ -1,11 +1,13 @@
 package com.mol.expert.mapper.newMysql.dingding.Pay;
 
 import com.mol.expert.entity.dingding.Pay.pui_supplier_deposit;
+import org.apache.ibatis.annotations.Mapper;
 import tk.mybatis.spring.annotation.MapperScan;
 
 import java.util.List;
 
 @MapperScan
+@Mapper
 public interface AlipayMapper
 {
       void add_order(pui_supplier_deposit deposit);//insert

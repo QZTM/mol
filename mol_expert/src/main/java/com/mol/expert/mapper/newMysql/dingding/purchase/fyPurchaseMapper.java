@@ -57,7 +57,7 @@ public interface fyPurchaseMapper extends BaseMapper<fyPurchase> {
 
     List<fyPurchase> findPurchaseByIdList(List<String> arr);
 
-    List<fyPurchase> findListByStatusAndExpertReview(String status, String exper);
+    List<fyPurchase> findListByStatusAndExpertReview(String pkMarbasclasss,String status, String exper);
 
     void updateBudgetById(String budget, String id);
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.purchase.mapper.newMysql.ExpertUserMapper">
+    <select id="findExpertUserById" parameterType="java.lang.String" resultType="com.mol.purchase.entity.ExpertUser">
+        select id,name,avatar,mobile,expert_grade from expert_user where id=#{expertId}
+    </select>
+</mapper>

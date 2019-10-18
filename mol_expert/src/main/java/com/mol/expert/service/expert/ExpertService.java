@@ -2,6 +2,7 @@ package com.mol.expert.service.expert;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.mol.expert.config.ExpertStatus;
 import com.mol.expert.entity.dingding.login.AppAuthOrg;
 import com.mol.expert.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseArray;
 import com.mol.expert.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
@@ -21,9 +22,11 @@ import com.mol.expert.mapper.newMysql.third.BdMarbasclassMapper;
 import com.mol.expert.mapper.newMysql.third.FyQuoteMapper;
 import com.mol.expert.util.IdWorker;
 import com.mol.expert.util.TimeUtil;
+import entity.BdMarbasclass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -94,33 +97,22 @@ public class ExpertService {
      * @param exper
      * @return
      */
-    public List<fyPurchase> findPurList(String status, String exper) {
-        return purchaseMapper.findListByStatusAndExpertReview(status,exper);
+    public List<fyPurchase> findPurList(String pkMarbasclasss,String status, String exper) {
+        Example o = new Example(fyPurchase.class);
+        o.and().andEqualTo("pkMarbasclass",pkMarbasclasss).andEqualTo("status",status).andEqualTo("expertReview",exper);
+        return purchaseMapper.selectByExample(o);
     }
 
 
     /**
-     * 比较两个list集合，找出满足条件
+     * 预算
      * @param byCodeLike
      * @param purList
      * @return
      */
-    public List<fyPurchase> findSelectionList(List<BdMarbasclass> byCodeLike, List<fyPurchase> purList) {
-        List<fyPurchase> newList=new ArrayList<>();
-        for(int i=0 ;i<purList.size();i++){
-            for (int j=0 ;j<byCodeLike.size();j++){
-                if (purList.get(i).getGoodsType().equals(byCodeLike.get(j).getName())){
-                    newList.add(purList.get(i));
-                    continue;
-                }
-            }
-        }
-        for (fyPurchase pur : newList) {
-            //查询公司名称
-            AppAuthOrg appAuthOrg = getOrg(pur.getOrgId());
-            pur.setOrgId(appAuthOrg.getOrgName());
-            //时间
-            pur.setCreateTime(pur.getCreateTime().split(" ")[0]);
+    public List<fyPurchase> findSelectionList( List<fyPurchase> purList) {
+        for (fyPurchase pur : purList) {
+
             //采购预算
             //数量，物料id
             //先查在加
@@ -149,7 +141,7 @@ public class ExpertService {
 
 
         }
-        return newList;
+        return purList;
     }
 
     /**
@@ -228,8 +220,8 @@ public class ExpertService {
         er.setId(new IdWorker(1,1).nextId()+"");
         er.setExpertId(user.getId());
         er.setCreateTime(TimeUtil.getNowDateTime());
-        er.setAdopt(2+"");
-        er.setCommission(0+"");
+        er.setAdopt(ExpertStatus.EXPERT_ORDER_WAITADOPTED+"");
+        er.setCommission(ExpertStatus.EXPERT_MONEY_NOTDISTRIBUTION+"");
         //佣金不知道是订单的还是赚取的，没写
         expertRecomendMapper.insert(er);
         return er;
@@ -255,7 +247,32 @@ public class ExpertService {
         PageBean pb = new PageBean();
         pb.setPageSize(1);
         pb.setCurrentPage(5);
-        return purchaseMapper.findListByStatusAndExpertReview(status,exper);
+        return purchaseMapper.findListByStatusAndExpertReview("",status,exper);
     }
 
+    public void findExpertAuthentication(ExpertUser user) {
+    }
+
+    public void addCiShu(String purchaseId,String supplierId) {
+
+        FyQuote quote = new FyQuote();
+        quote.setFyPurchaseId(purchaseId);
+        quote.setPkSupplierId(supplierId);
+
+        List<FyQuote> list = fyQuoteMapper.select(quote);
+        if (list!=null && list.size()>0){
+            FyQuote quo=list.get(0);
+            String expertAgreeCounts = quo.getExpertAgreeCounts();
+
+            if (expertAgreeCounts == null || expertAgreeCounts =="0"){
+                expertAgreeCounts=1+"";
+                quo.setExpertAgreeCounts(expertAgreeCounts);
+            }else {
+                expertAgreeCounts=Integer.valueOf(expertAgreeCounts)+1+"";
+                quo.setExpertAgreeCounts(expertAgreeCounts);
+            }
+            fyQuoteMapper.updateExpertAgreeCountsByPurIdAndSupplierId(expertAgreeCounts,quo.getFyPurchaseId(),quo.getPkSupplierId());
+
+        }
+    }
 }

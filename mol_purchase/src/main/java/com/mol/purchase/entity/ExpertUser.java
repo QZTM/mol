@@ -1,8 +1,9 @@
-package com.mol.expert.entity.expert;
+package com.mol.purchase.entity;
 
 import lombok.Data;
 
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 /**
  * ClassName:ExpertUser
@@ -43,5 +44,9 @@ public class  ExpertUser {
     private String workLife;
     private String marId;
     private String idNumber;
+
+    //推荐理由
+    @Transient
+    private String recommendReason;
 
 }

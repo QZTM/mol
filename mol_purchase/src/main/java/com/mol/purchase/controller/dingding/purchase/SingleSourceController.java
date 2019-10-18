@@ -2,12 +2,16 @@ package com.mol.purchase.controller.dingding.purchase;
 
 import com.mol.config.Constant;
 import com.mol.notification.SendNotification;
+import com.mol.purchase.entity.SupplierSalesman;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj;
 import com.mol.purchase.service.dingding.purchase.EnquiryPurchaseService;
 import com.mol.purchase.service.dingding.purchase.SingleSourceService;
 import com.mol.purchase.entity.dingding.purchase.strategPurchaseEntity.PageArray;
 import com.mol.purchase.entity.dingding.purchase.strategPurchaseEntity.subObj;
 import com.mol.purchase.service.token.TokenService;
+import com.mol.sms.SendMsmHandler;
+import com.mol.sms.XiaoNiuMsm;
+import com.mol.sms.XiaoNiuMsmTemplate;
 import entity.ServiceResult;
 import com.mol.purchase.entity.Supplier;
 import org.dom4j.DocumentException;
@@ -41,6 +45,9 @@ public class SingleSourceController {
 
     @Autowired
     private TokenService tokenService;
+
+    private SendMsmHandler sendMsmHandler = SendMsmHandler.getSendMsmHandler();
+
     /**
      * 保存单一采购的采购物品
      * @param obj
@@ -58,13 +65,21 @@ public class SingleSourceController {
         StraregyObj stobj = singleSourceService.save(pageArray,staid,orgId);
         //所属行业供应商
         List<Supplier> list=singleSourceService.findSupplierByPur(stobj);
-        //查询供应商下的人员的ddid
-        List<String> manList= shoppingService.findSaleList(list);
-        //发送通知消息
-        for (String s : manList) {
-            sendNotification.sendOaFromThird(s, Constant.AGENTID_THIRDPLAT,tokenService.getMicroToken());
+        if (list.size()>0 && list!=null){
+            //查询供应商下的人员
+            List<SupplierSalesman> saleManList = shoppingService.findSaleManList(list);
+            //查询人员的ddId
+            List<String> manIdList=shoppingService.findSaleIdList(saleManList);
+            //发送通知消息
+            for (String s : manIdList) {
+                sendNotification.sendOaFromThird(s, Constant.AGENTID_THIRDPLAT,tokenService.getMicroToken());
+            }
+            //查询人员的电话
+            List<String> manPhoneList= shoppingService.findSalePhoneList(saleManList);
+            for (String phone : manPhoneList) {
+                sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, XiaoNiuMsmTemplate.提醒供应商报价模板(),phone);
+            }
         }
-
         return ServiceResult.success("成功");
     }
 

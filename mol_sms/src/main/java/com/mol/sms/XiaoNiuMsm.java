@@ -74,6 +74,8 @@ public class XiaoNiuMsm implements SendMsmHandler{
             log.warning("模板ID不能为空");
             return "短信发送失败";
         }
+        log.info("短信发送模板："+template.getName());
+        log.info("短信发送电话号码："+phoneNumber);
         String oldPhoneCode = cacheHandle.getStr(phoneNumber);
         if(oldPhoneCode == null){
             oldPhoneCode = RandomStr.getRandom(6, RandomStr.TYPE.NUMBER);
@@ -81,6 +83,7 @@ public class XiaoNiuMsm implements SendMsmHandler{
 
         try {
             SendSmsResponse response = this.sendSms(signName,template.getId(),phoneNumber,oldPhoneCode);
+            log.info("短信发送响应结果："+response.getMessage());
             if("OK".equals(response.getMessage())){
                 return "短信发送成功"+oldPhoneCode;
             }

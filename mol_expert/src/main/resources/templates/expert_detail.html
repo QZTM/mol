@@ -191,6 +191,14 @@
         }
     }
     function submit() {
+        //判断是否认证
+        var auth=[[${authen}]];
+        if (auth == "0"){
+            console.log("未认证");
+            alert("请先认证专家身份");
+            return;
+        }
+        //判断是否是认证的行业
         //判断是否选中
         var checked="";
         var item = $(":radio:checked");

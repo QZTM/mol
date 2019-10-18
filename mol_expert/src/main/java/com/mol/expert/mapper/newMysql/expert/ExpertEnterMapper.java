@@ -2,6 +2,7 @@ package com.mol.expert.mapper.newMysql.expert;
 
 import com.mol.expert.base.BaseMapper;
 import com.mol.expert.entity.expert.ExpertEnter;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * ClassName:ExpertEnterMapper
@@ -11,5 +12,6 @@ import com.mol.expert.entity.expert.ExpertEnter;
  * @date:2019/9/29 14:58
  * @author:yangjiangyan
  */
+@Mapper
 public interface ExpertEnterMapper extends BaseMapper<ExpertEnter> {
 }

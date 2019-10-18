@@ -4,6 +4,8 @@ package com.mol.purchase.service.dingding.workBean;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.mol.purchase.config.OrderStatus;
+import com.mol.purchase.entity.ExpertRecommend;
+import com.mol.purchase.entity.ExpertUser;
 import com.mol.purchase.entity.FyQuote;
 import com.mol.purchase.entity.dingding.login.AppUser;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
@@ -13,6 +15,8 @@ import com.mol.purchase.entity.dingding.purchase.workBench.UchartsSeries;
 import com.mol.purchase.entity.dingding.purchase.workBench.toBeNegotiated.MaterIdToSupplierId;
 import com.mol.purchase.entity.dingding.purchase.workBench.toBeNegotiated.NegotiatIng;
 import com.mol.purchase.entity.dingding.solr.fyPurchase;
+import com.mol.purchase.mapper.newMysql.ExpertRecommendMapper;
+import com.mol.purchase.mapper.newMysql.ExpertUserMapper;
 import com.mol.purchase.mapper.newMysql.FyQuoteMapper;
 import com.mol.purchase.mapper.newMysql.dingding.purchase.BdSupplierMapper;
 import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseDetailMapper;
@@ -22,6 +26,7 @@ import com.mol.purchase.mapper.newMysql.dingding.workBench.PoOrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.swing.plaf.SeparatorUI;
 import java.lang.reflect.Type;
@@ -58,6 +63,12 @@ public class TobeNegotiatedService {
 
     @Autowired
     private PoOrderMapper poOrderMapper;
+
+    @Autowired
+    private ExpertRecommendMapper expertRecommendMapper;
+
+    @Autowired
+    private ExpertUserMapper expertUserMapper;
 
 
     public List<String> getListBelongsSupplier(String supplierId) {
@@ -213,5 +224,26 @@ public class TobeNegotiatedService {
     //通过业务id集合 查询待审批订单集合
     public List<fyPurchase> findFyPurchaseByIdArr(List<String> arr) {
          return fyPurchaseMapper.findPurchaseByIdList(arr);
+    }
+
+    //查询订单中供应商的推荐专家
+    public List<ExpertRecommend> findExpertList(String purId, String supplierId) {
+        Example o = new Example(ExpertRecommend.class);
+        o.and().andEqualTo("purchaseId",purId).andEqualTo("supplierId",supplierId);
+        List<ExpertRecommend> expertRecommends = expertRecommendMapper.selectByExample(o);
+        return expertRecommends;
+    }
+
+    public List<ExpertUser> findExpertUserList(List<ExpertRecommend> erList) {
+        List<ExpertUser> list = new ArrayList<>();
+        for (ExpertRecommend er : erList) {
+//            ExpertUser t = new ExpertUser();
+//            t.setId(er.getExpertId());
+            ExpertUser t2 = expertUserMapper.findExpertUserById(er.getExpertId());
+            t2.setRecommendReason(er.getRecommendReason());
+
+            list.add(t2);
+        }
+        return list;
     }
 }

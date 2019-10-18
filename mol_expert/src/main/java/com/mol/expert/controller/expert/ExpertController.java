@@ -10,11 +10,13 @@ import com.mol.expert.entity.expert.ExpertDetail;
 import com.mol.expert.entity.expert.ExpertEnter;
 import com.mol.expert.entity.expert.ExpertRecommend;
 import com.mol.expert.entity.expert.ExpertUser;
+import com.mol.expert.entity.thirdPlatform.FyQuote;
 import com.mol.expert.service.dingding.workBean.TobeNegotiatedService;
 import com.mol.expert.service.expert.ExpertService;
 import com.mol.expert.service.expert.SchuleService;
 import com.mol.expert.util.ServiceResult;
 import com.mol.expert.util.StatusUtils;
+import entity.BdMarbasclass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -58,8 +60,10 @@ public class ExpertController {
         modelMap.addAttribute("enterList",eeList);
 
         //查询最新的5个需求
-        List<fyPurchase>list=es.findPurListByPageBean(OrderStatus.UnderReview+"","true");
+        List<fyPurchase>list=es.findPurListByPageBean(OrderStatus.EXPERTREVIEW+"","true");
         list=schuleService.changeOrgNameToZhongwen(list);
+        //预算
+        list=es.findSelectionList(list);
         modelMap.addAttribute("purList",list);
         return "expert_index";
     }
@@ -77,25 +81,27 @@ public class ExpertController {
         }
         //查询最高级分类，获取id
         List<BdMarbasclass> marclassList=es.findMarbasclassTopLevel();
-        String code="";
+        String pkMarbasclasss="";
         //同pageName 匹配，分配 code ,模糊查询 code like "code%"
         for (BdMarbasclass bdMarbasclass : marclassList) {
             if (pageName.equals(bdMarbasclass.getName())){
-                code=bdMarbasclass.getCode();
+                pkMarbasclasss=bdMarbasclass.getPkMarbasclass();
                 break;
             }
         }
         //查询下属所有物料
-        List<BdMarbasclass> byCodeLike=es.findMarbasclassByCodeLike(code+"%");
+        //List<BdMarbasclass> byCodeLike=es.findMarbasclassByCodeLike(code+"%");
 
         //查询订单，状态为4 专家评审为true
         //根据订单中第一个物料，那个物料id，查询出 对应的pkmaterclass
-        String status = OrderStatus.UnderReview+"";
+        String status = OrderStatus.EXPERTREVIEW+"";
         String  exper="true";
-        List<fyPurchase> purList=es.findPurList(status,exper);
-        //相同，则属于
-        List<fyPurchase> seleList=es.findSelectionList(byCodeLike,purList);
-        map.addAttribute("pList",seleList);
+        List<fyPurchase> purList=es.findPurList(pkMarbasclasss,status,exper);
+//        //相同，则属于
+//        List<fyPurchase> seleList=es.findSelectionList(byCodeLike,purList);
+        purList=schuleService.changeOrgNameToZhongwen(purList);
+        purList=es.findSelectionList(purList);
+        map.addAttribute("pList",purList);
         return "expert_list";
     }
 
@@ -113,6 +119,8 @@ public class ExpertController {
         purchase.setOrgId(org.getOrgName());
         purchase = StatusUtils.getStatusIntegerToString(purchase);
         map.addAttribute("pur",purchase);
+
+
         //定义最后要传递到页面的list
         List<PurchaseArray> purList = new ArrayList<>();
         //解析json字段
@@ -139,9 +147,15 @@ public class ExpertController {
 
         //是否已经报价
         Boolean reBoolean=false;
-        //查询有没有报价
         ExpertUser user = (ExpertUser) session.getAttribute("user");
+        //查询有没有报价
         ExpertRecommend exre = es.findRecommendByPurIdAndUserId(purId, user.getId());
+        //认证状态
+        String authentication = user.getAuthentication();
+        map.addAttribute("authen",authentication);
+
+
+
         if (exre!=null){
             //不为空已经报价
            reBoolean=true;
@@ -156,11 +170,12 @@ public class ExpertController {
     @ResponseBody
     public ServiceResult save(ExpertRecommend er, HttpSession session){
         ExpertUser user = (ExpertUser) session.getAttribute("user");
-
         //根据订单id，专家id  查询是否已经报过价
         er = es.saveExRecommend(er, user);
         //该公司报价专家推荐设置 1
         es.changeExpertRecommend(er);
+        //报价中专家数量加 一
+        es.addCiShu(er.getPurchaseId(),er.getSupplierId());
         return ServiceResult.success("推荐成功");
     }
 

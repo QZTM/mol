@@ -1,5 +1,6 @@
 package com.mol.expert.mapper.newMysql.third;
 
+import com.mol.expert.base.BaseMapper;
 import com.mol.expert.entity.thirdPlatform.FyQuote;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -14,7 +15,7 @@ import java.util.List;
  * @author:yangjiangyan
  */
 @Mapper
-public interface FyQuoteMapper {
+public interface FyQuoteMapper extends BaseMapper<FyQuote> {
 
     //保存报价信息
     void saveQuote(FyQuote fyQuote);
@@ -35,4 +36,6 @@ public interface FyQuoteMapper {
     List<FyQuote> findQuoteByPurchaseId(String id);
 
     void updateExpertRecommendByPurIdAndSupplierId(String purchaseId, String supplierId);
+
+    void updateExpertAgreeCountsByPurIdAndSupplierId(String expertAgreeCounts,String fyPurchaseId, String pkSupplierId);
 }

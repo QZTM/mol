@@ -6,6 +6,7 @@ import com.mol.expert.entity.expert.ExpertUser;
 import com.mol.expert.mapper.newMysql.expert.ExpertRecomendMapper;
 import com.mol.expert.mapper.newMysql.expert.ExpertUserMapper;
 import com.mol.expert.mapper.newMysql.third.BdMarbasclassMapper;
+import entity.BdMarbasclass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -55,5 +56,9 @@ public class MyService {
 
     public List<fyPurchase> getHistroy(ExpertRecommend er) {
         return expertRecomendMapper.findPurAndAdopt(null,er.getExpertId());
+    }
+
+    public ExpertUser getMyInfo(String id) {
+        return expertUserMapper.selectByPrimaryKey(id);
     }
 }
