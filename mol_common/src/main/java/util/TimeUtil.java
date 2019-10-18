@@ -38,7 +38,7 @@ public class TimeUtil {
 
 
     /**
-     * 把LocalDateTime格式的时间转换为String·类型的时间
+     * LocalDateTime  ==>   String
      * @param ldt           需要转换的时间
      * @param formatType    想要转换成啥样
      * @return              转换好的时间字符串
@@ -100,7 +100,7 @@ public class TimeUtil {
     }
 
     /**
-     * 把字符串类型的日期时间转换为LocalDateTime类型
+     * String   ===>   LocalDateTime
      * @param timeStr               字符串型的日期、时间
      * @param format                转换的格式
      * @return
@@ -126,6 +126,11 @@ public class TimeUtil {
             formatTimeStr = sdf.format(date);
         }
         return formatTimeStr;
+    }
+
+    public static String getCron(String time){
+        LocalDateTime timeL = getLocalDataTimeFromStr(time,dateFormaterDateTime);
+        return getCron(LocalDateTimeToDate(timeL));
     }
 
 

@@ -37,22 +37,24 @@ public class QuoteEndJob implements Job{
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		// TODO Auto-generated method stub
 		JobDataMap data=context.getTrigger().getJobDataMap();
-		Map invokeParam = (Map)data.get("invokeParam");
-		System.out.print("JobTwo执行,参数：");
-		Set set = invokeParam.keySet();
+
+		Set set = data.keySet();
 		Iterator iterator = set.iterator();
 		if(iterator.hasNext()){
 			String mapKey = iterator.next().toString();
-			System.out.println("key:"+mapKey+",,,"+invokeParam.get(mapKey));
+			System.out.println("key:"+mapKey+",,,"+data.get(mapKey));
 		}
 
-		Object orderIdObj = invokeParam.get("orderId");
-		if(orderIdObj == null){
+		Object orderIdObj = data.get("orderId");
+		String orderId = "";
+		if(orderIdObj != null){
+			orderId = (String) orderIdObj;
+		}else{
 			log.warning("报价结束定时任务------找不到orderId");
 			throw new RuntimeException("需要处理的报价结束任务参数异常------找不到orderId");
 		}
-		String orderId = (String)orderIdObj;
-
+		System.out.print("JobTwo执行,参数：");
+		System.out.println("orderId:"+orderId);
 		Purchase purchase = purchaseMapper.selectByPrimaryKey(orderId);
 		System.out.println("订单"+orderId+"根据主键查询到的purchase:");
 		System.out.println(purchase);
@@ -82,7 +84,7 @@ public class QuoteEndJob implements Job{
 			Purchase updatePurchase = new Purchase();
 			updatePurchase.setId(orderId);
 			updatePurchase.setStatus("3");
-			purchaseMapper.updateByPrimaryKey(updatePurchase);
+			purchaseMapper.updateByPrimaryKeySelective(updatePurchase);
 			return ;
 		}else{
 			//判断是否需要专家评审
@@ -98,7 +100,7 @@ public class QuoteEndJob implements Job{
 				Purchase updatePurchase = new Purchase();
 				updatePurchase.setId(orderId);
 				updatePurchase.setStatus("4");
-				purchaseMapper.updateByPrimaryKey(updatePurchase);
+				purchaseMapper.updateByPrimaryKeySelective(updatePurchase);
 				return ;
 			}
 		}

@@ -1,6 +1,10 @@
 package com.mol.quartz.controller;
 
+import com.mol.quartz.config.MolJob;
 import com.mol.quartz.entity.Quartz;
+import com.mol.quartz.handler.AddJobHandler;
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,8 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.mol.quartz.entity.ReturnMsg;
 import com.mol.quartz.service.QuartzService;
 import com.mol.quartz.service.JobService;
+import util.TimeUtil;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class JobController {
@@ -20,6 +27,19 @@ public class JobController {
     private JobService jobService;    
     @Autowired
     private QuartzService appQuartzService;
+
+    @Autowired
+    private AddJobHandler addJobHandler;
+
+
+    @RequestMapping("/testAdd")
+    public void test(){
+        try{
+            addJobHandler.addExpertReviewEndJob("1184292704515919872","2019-10-18 16:12");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     
     
     //添加一个job
@@ -35,20 +55,7 @@ public class JobController {
         }
     }
 
-
-    public static void main(String[] args) {
-        String orderId = "1184292704515919872";
-        String quoteEndDate = "2019-10-18 10:40";
-        System.out.println(quoteEndDate.length());
-        if(quoteEndDate.length()<17){
-            quoteEndDate = quoteEndDate+":00";
-        }
-        Quartz quartz = new Quartz();
-        //quartz.setQuartzId(System.currentTimeMillis());
-    }
-
-    
-    //暂停job    
+    //暂停job
     @RequestMapping(value="/pauseJob",method=RequestMethod.POST)
     public ReturnMsg pausejob(@RequestBody Integer[]quartzIds) throws Exception {    
         Quartz quartz =null;

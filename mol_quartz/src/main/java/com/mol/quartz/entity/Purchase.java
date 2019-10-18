@@ -46,7 +46,7 @@ public class Purchase implements Serializable {
     //采购方要求报价的最小商家数
     private String quoteSellerNum;
     //pdf_url
-    private String reqfileurl;
+    private String reqFileUrl;
     //实际报价的商家数量
     private String quoteCounts;
     //截止时间

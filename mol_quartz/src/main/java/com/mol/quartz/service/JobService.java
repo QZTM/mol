@@ -1,10 +1,16 @@
 package com.mol.quartz.service;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.mol.quartz.entity.Quartz;
 import com.mol.quartz.job.QuoteEndJob;
+import lombok.extern.java.Log;
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.quartz.CronExpression;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
@@ -19,14 +25,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.mol.quartz.config.MolJob;
 import com.mol.quartz.job.JobTwo;
+import util.TimeUtil;
 
 @Service
+@Log
 public class JobService {
 
 	
 	@Autowired
     private Scheduler scheduler;
-	
+
+
+
+
 	
 	 /**
      * 新建一个任务
@@ -50,12 +61,13 @@ public class JobService {
            }
                    
            //表达式调度构建器(即任务执行的时间,不立即执行)
-           CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(quartz.getCronExpression()).withMisfireHandlingInstructionDoNothing();
+           CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(quartz.getCronExpression()).withMisfireHandlingInstructionFireAndProceed();
 
            //按新的cronExpression表达式构建一个新的trigger
            CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(quartz.getJobName(), quartz.getJobGroup().name()).startAt(date)
                    .withSchedule(scheduleBuilder).build();
-                                
+
+            System.out.println(quartz.getInvokeParam());
            //传递参数
            if(quartz.getInvokeParam()!=null && !"".equals(quartz.getInvokeParam())) {
                trigger.getJobDataMap().putAll(quartz.getInvokeParam());
@@ -71,7 +83,7 @@ public class JobService {
          * @return
          * @throws SchedulerException
          */
-        public String getJobState(String jobName, String jobGroup) throws SchedulerException {             
+        public String getJobState(String jobName, String jobGroup) throws SchedulerException {
             TriggerKey triggerKey = new TriggerKey(jobName, jobGroup);    
             return scheduler.getTriggerState(triggerKey).name();
           }
@@ -82,7 +94,7 @@ public class JobService {
          }
        
        //暂停任务
-       public String pauseJob(String jobName, String jobGroup) throws SchedulerException {            
+       public String pauseJob(String jobName, String jobGroup) throws SchedulerException {
            JobKey jobKey = new JobKey(jobName, jobGroup);
            JobDetail jobDetail = scheduler.getJobDetail(jobKey);
            if (jobDetail == null) {
@@ -95,7 +107,7 @@ public class JobService {
        }
        
        //恢复所有任务
-       public void resumeAllJob() throws SchedulerException {            
+       public void resumeAllJob() throws SchedulerException {
            scheduler.resumeAll();
        }
        
@@ -153,6 +165,17 @@ public class JobService {
            }    
            
        }
+
+
+
+
+
+
+
+
+
+
+
 	
 	
 }

@@ -18,7 +18,7 @@ spring:
       type: com.alibaba.druid.pool.DruidDataSource
       filters: stat
       driver-class-name: com.mysql.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/quartz?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&autoReconnect=true&useSSL=false
+      url: jdbc:mysql://localhost:3306/zkfy?serverTimezone=UTC&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&autoReconnect=true&useSSL=false
       username: root
       password: root
       initial-size: 1
@@ -40,7 +40,7 @@ spring:
     auto-startup: true
     jdbc:
       initialize-schema: never
-    overwrite-existing-jobs: false
+    overwrite-existing-jobs: true
 #    properties:
 #      org:
 #        quartz:
@@ -60,10 +60,13 @@ spring:
 #            useProperties: true
 #            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
 #            tablePrefix: QRTZ_
-          
-    
-    
-    
 
-    
-     
+
+
+
+
+
+
+logging:
+  level:
+    com.mol.quartz.mapper: debug
