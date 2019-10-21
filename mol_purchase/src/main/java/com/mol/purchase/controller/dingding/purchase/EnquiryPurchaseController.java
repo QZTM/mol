@@ -11,6 +11,7 @@ import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.StraregyO
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.SubObj;
 import com.mol.purchase.service.dingding.purchase.EnquiryPurchaseService;
 import com.mol.purchase.service.token.TokenService;
+import com.mol.quartz.handler.AddJobHandler;
 import com.mol.sms.SendMsmHandler;
 import com.mol.sms.XiaoNiuMsm;
 import com.mol.sms.XiaoNiuMsmTemplate;
@@ -45,6 +46,8 @@ public class EnquiryPurchaseController {
     @Autowired
     private TokenService tokenService;
 
+    private AddJobHandler addJobHandler = new AddJobHandler().getInstance();
+
 
     private SendMsmHandler sendMsmHandler = SendMsmHandler.getSendMsmHandler();
 
@@ -55,6 +58,8 @@ public class EnquiryPurchaseController {
         String staid=obj.getStaffId();
         String orgId=obj.getOrgId();
         StraregyObj stobj = shoppingService.save(pageArray, staid, orgId);
+        //添加定时任务：
+        addJobHandler.addQuoteEndJob(stobj.getId(),stobj.getDeadLine());
         //所属行业供应商
         List<Supplier> list=shoppingService.findSupplierByPur(stobj);
         if (list.size()>0 && list!=null){
