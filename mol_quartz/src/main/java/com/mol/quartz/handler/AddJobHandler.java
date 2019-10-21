@@ -18,6 +18,13 @@ import java.util.Map;
 @Log
 public class AddJobHandler {
 
+
+
+    //public static final Long EXPERTREVIEWDELAY = 2*24*60*60L;
+
+    public static final Long EXPERTREVIEWDELAY = 90L;
+
+
     @Autowired
     private Scheduler scheduler;
 
@@ -26,14 +33,20 @@ public class AddJobHandler {
     private JobService jobService;
 
 
+
+    public AddJobHandler getInstance(){
+        return this;
+    }
+
+
     /**
-     * 添加供应商报价截止计划事件
+     * 添加供应商报价截止事件
      * @param orderId               采购订单ID
      * @param quoteEndDate          供应商报价截止时间，格式为   XXXX-XX-XX XX:XX   或者  XXXX-XX-XX XX:XX:XX两种格式
      * @return                      添加成功会返回success
      * @throws Exception
      */
-    public String addQuoteEndJob(String orderId,String quoteEndDate) throws Exception {
+    public String addQuoteEndJob(String orderId,String quoteEndDate)  {
         log.info("添加供应商报价截止事件：orderId:"+orderId+",quoteEndDate:"+quoteEndDate);
         if(StringUtils.isEmpty(orderId)){
             log.warning("添加供应商报价截止事件出错，orderId为空");
@@ -45,13 +58,18 @@ public class AddJobHandler {
         System.out.println("quoteEndDate:"+quoteEndDate);
         Map paraMap = new HashMap();
         paraMap.put("orderId",orderId);
-        jobService.addJob(new Quartz()
-                .setQuartzId(RandomStringUtils.random(10)+"----"+orderId)
-                .setJobName("订单报价截止事件--"+orderId)
-                .setStartTime(TimeUtil.getNow())
-                .setCronExpression(TimeUtil.getCron(quoteEndDate))
-                .setJobGroup(MolJob.QUOTEENDJOB)
-                .setInvokeParam(paraMap));
+        try {
+            jobService.addJob(new Quartz()
+                    .setQuartzId(RandomStringUtils.random(10)+"----"+orderId)
+                    .setJobName("订单报价截止事件--"+orderId)
+                    .setStartTime(TimeUtil.getNow())
+                    .setCronExpression(TimeUtil.getCron(quoteEndDate))
+                    .setJobGroup(MolJob.QUOTEENDJOB)
+                    .setInvokeParam(paraMap));
+        } catch (Exception e) {
+            log.warning("添加定时任务出错... orderId:"+orderId+",quoteEndDate:"+quoteEndDate);
+            e.printStackTrace();
+        }
         log.info("添加供应商报价截止事件：orderId:"+orderId+"成功！");
         return "success";
     }
@@ -64,7 +82,7 @@ public class AddJobHandler {
      * @return                      添加成功返回"success"
      * @throws Exception
      */
-    public String addExpertReviewEndJob(String orderId,Long delaySeconds) throws Exception {
+    public String addExpertReviewEndJob(String orderId,Long delaySeconds) {
         log.info("添加专家推荐截止事件：orderId:"+orderId+",延时:"+delaySeconds+"秒执行");
         if(StringUtils.isEmpty(orderId)){
             log.warning("添加专家推荐截止事件出错，orderId为空");
@@ -76,13 +94,18 @@ public class AddJobHandler {
         }
         Map paraMap = new HashMap();
         paraMap.put("orderId",orderId);
-        jobService.addJob(new Quartz()
-                .setQuartzId(RandomStringUtils.random(10)+"----"+orderId)
-                .setJobName("专家推荐截止事件--"+orderId)
-                .setStartTime(TimeUtil.getNowDateTime())
-                .setCronExpression(TimeUtil.getCron(TimeUtil.LocalDateTimeToDate(LocalDateTime.now().plusSeconds(delaySeconds))))
-                .setJobGroup(MolJob.EXPERTREVIEWJOB)
-                .setInvokeParam(paraMap));
+        try {
+            jobService.addJob(new Quartz()
+                    .setQuartzId(RandomStringUtils.random(10)+"----"+orderId)
+                    .setJobName("专家推荐截止事件--"+orderId)
+                    .setStartTime(TimeUtil.getNowDateTime())
+                    .setCronExpression(TimeUtil.getCron(TimeUtil.LocalDateTimeToDate(LocalDateTime.now().plusSeconds(delaySeconds))))
+                    .setJobGroup(MolJob.EXPERTREVIEWJOB)
+                    .setInvokeParam(paraMap));
+        } catch (Exception e) {
+            log.warning("添加专家推荐截止事件出错....orderId:"+orderId);
+            e.printStackTrace();
+        }
         log.info("添加专家推荐截止事件：orderId:"+orderId+"成功！");
         return "success";
     }

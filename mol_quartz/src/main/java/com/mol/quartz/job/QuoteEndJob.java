@@ -1,6 +1,7 @@
 package com.mol.quartz.job;
 
 import com.mol.quartz.entity.Purchase;
+import com.mol.quartz.handler.AddJobHandler;
 import com.mol.quartz.mapper.PurchaseMapper;
 import com.mol.quartz.service.PurchaseService;
 import lombok.extern.java.Log;
@@ -13,10 +14,7 @@ import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import tk.mybatis.mapper.entity.Example;
-
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 
 @PersistJobDataAfterExecution
@@ -31,6 +29,9 @@ public class QuoteEndJob implements Job{
 
 	@Autowired
 	private PurchaseMapper purchaseMapper;
+
+	@Autowired
+	private AddJobHandler addJobHandler;
 
 
 	@Override
@@ -94,11 +95,16 @@ public class QuoteEndJob implements Job{
 				throw new RuntimeException("订单"+orderId+"是否需要专家评审为空");
 			}
 			log.info("订单"+orderId+",expertReview:"+expertReview);
+			Purchase updatePurchase = new Purchase();
+			updatePurchase.setId(orderId);
 			if("true".equals(expertReview)){
 				//调用另一个定时任务
+				updatePurchase.setStatus("5");
+				purchaseMapper.updateByPrimaryKeySelective(updatePurchase);
+				addJobHandler.addExpertReviewEndJob(orderId,AddJobHandler.EXPERTREVIEWDELAY);
+
 			}else{
-				Purchase updatePurchase = new Purchase();
-				updatePurchase.setId(orderId);
+
 				updatePurchase.setStatus("4");
 				purchaseMapper.updateByPrimaryKeySelective(updatePurchase);
 				return ;

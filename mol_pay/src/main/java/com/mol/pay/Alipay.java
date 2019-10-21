@@ -148,7 +148,9 @@ public class Alipay {
 
     public static void main(String[] args) {
         String orderId = TimeUtil.getNow(TimeUtil.payOrderFormat);
-        Alipay alipay = new Alipay("orderId","专家认证费用","认证","30m","http://fyycg66.vaiwan.com/Check_Alipay","200.00","QUICK_MSECURITY_PAY");
+        System.out.println("orderId:");
+        System.out.println(orderId);
+        Alipay alipay = new Alipay(orderId,"专家认证费用","认证","30m","http://fyycg66.vaiwan.com/Check_Alipay","200.00","QUICK_MSECURITY_PAY");
         try {
             alipay.pay();
         } catch (AlipayApiException e) {

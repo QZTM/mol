@@ -2,6 +2,7 @@ package com.mol.purchase.controller.dingding.purchase;
 
 import com.mol.config.Constant;
 import com.mol.notification.SendNotification;
+import com.mol.purchase.client.QuartzClient;
 import com.mol.purchase.entity.SupplierSalesman;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj;
 import com.mol.purchase.service.dingding.purchase.EnquiryPurchaseService;
@@ -9,6 +10,7 @@ import com.mol.purchase.service.dingding.purchase.SingleSourceService;
 import com.mol.purchase.entity.dingding.purchase.strategPurchaseEntity.PageArray;
 import com.mol.purchase.entity.dingding.purchase.strategPurchaseEntity.subObj;
 import com.mol.purchase.service.token.TokenService;
+//import com.mol.quartz.handler.AddJobHandler;
 import com.mol.sms.SendMsmHandler;
 import com.mol.sms.XiaoNiuMsm;
 import com.mol.sms.XiaoNiuMsmTemplate;
@@ -46,7 +48,12 @@ public class SingleSourceController {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private QuartzClient quartzClient;
+
     private SendMsmHandler sendMsmHandler = SendMsmHandler.getSendMsmHandler();
+
+    //private AddJobHandler addJobHandler = new AddJobHandler().getInstance();
 
     /**
      * 保存单一采购的采购物品
@@ -63,6 +70,8 @@ public class SingleSourceController {
         String staid=obj.getStaffId();
         String orgId=obj.getOrgId();
         StraregyObj stobj = singleSourceService.save(pageArray,staid,orgId);
+        //添加定时任务：
+        quartzClient.addquoteendjobwithendtime(stobj.getId(),stobj.getDeadLine());
         //所属行业供应商
         List<Supplier> list=singleSourceService.findSupplierByPur(stobj);
         if (list.size()>0 && list!=null){

@@ -3,6 +3,7 @@ package com.mol.purchase.controller.dingding.purchase;
 
 import com.mol.config.Constant;
 import com.mol.notification.SendNotification;
+import com.mol.purchase.client.QuartzClient;
 import com.mol.purchase.entity.Supplier;
 import com.mol.purchase.entity.SupplierSalesman;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PageArray;
@@ -12,6 +13,7 @@ import com.mol.purchase.service.dingding.purchase.EnquiryPurchaseService;
 import com.mol.purchase.service.dingding.purchase.StrategyPurchaseService;
 import com.mol.purchase.service.token.TokenService;
 import com.mol.purchase.util.JWTUtil;
+//import com.mol.quartz.handler.AddJobHandler;
 import com.mol.sms.SendMsmHandler;
 import com.mol.sms.XiaoNiuMsm;
 import com.mol.sms.XiaoNiuMsmTemplate;
@@ -48,6 +50,11 @@ public class StrategyPurController {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private QuartzClient quartzClient;
+
+    //private AddJobHandler addJobHandler = new AddJobHandler().getInstance();
+
     private SendMsmHandler sendMsmHandler = SendMsmHandler.getSendMsmHandler();
 
     @RequestMapping(value = "/start",method = RequestMethod.POST)
@@ -60,6 +67,9 @@ public class StrategyPurController {
         String orgId = obj.getOrgId();
         String staffId = obj.getStaffId();
         StraregyObj stobj =strategyPurchaseService.save(pageArray,orgId,staffId);
+
+        //添加定时任务：
+        quartzClient.addquoteendjobwithendtime(stobj.getId(),stobj.getDeadLine());
         //所属行业供应商
         List<Supplier> list=strategyPurchaseService.findSupplierByPur(stobj);
         if (list.size()>0 && list!=null){

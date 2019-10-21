@@ -1,17 +1,11 @@
 package com.mol.quartz.service;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.mol.quartz.entity.Quartz;
 import com.mol.quartz.job.ExpertReviewEndJob;
 import com.mol.quartz.job.QuoteEndJob;
 import lombok.extern.java.Log;
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.StringUtils;
 import org.quartz.CronExpression;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
@@ -25,8 +19,6 @@ import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.mol.quartz.config.MolJob;
-import com.mol.quartz.job.JobTwo;
-import util.TimeUtil;
 
 @Service
 @Log

@@ -1,26 +1,18 @@
 package com.mol.quartz.controller;
 
-import com.mol.quartz.config.MolJob;
 import com.mol.quartz.entity.Quartz;
 import com.mol.quartz.handler.AddJobHandler;
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.mol.quartz.entity.ReturnMsg;
 import com.mol.quartz.service.QuartzService;
 import com.mol.quartz.service.JobService;
-import util.TimeUtil;
-
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
+@RequestMapping("/moljob")
 public class JobController {
 
 	@Autowired
@@ -32,8 +24,8 @@ public class JobController {
     private AddJobHandler addJobHandler;
 
 
-    @RequestMapping("/testAdd")
-    public void test(String orderId,String endTime){
+    @RequestMapping("/addquoteendjobwithendtime")
+    public void addquoteendjobwithendtime(String orderId,String endTime){
         try{
             addJobHandler.addQuoteEndJob(orderId,endTime);
         }catch (Exception e){
@@ -41,8 +33,8 @@ public class JobController {
         }
     }
 
-    @RequestMapping("/testAdd2")
-    public void test2(String orderId,String endTime){
+    @RequestMapping("addexpertreviewendjobwithendtime")
+    public void addexpertreviewendjobwithendtime(String orderId,String endTime){
         try{
             addJobHandler.addExpertReviewEndJob(orderId,endTime);
         }catch (Exception e){
@@ -50,8 +42,8 @@ public class JobController {
         }
     }
 
-    @RequestMapping("/testAdd3")
-    public void test3(String orderId,Long delaySeconds){
+    @RequestMapping("addexpertreviewendjobwithdelaySeconds")
+    public void addexpertreviewendjobwithdelaySeconds(String orderId,Long delaySeconds){
         try{
             addJobHandler.addExpertReviewEndJob(orderId,delaySeconds);
         }catch (Exception e){
