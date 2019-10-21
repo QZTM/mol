@@ -20,8 +20,8 @@
         where
         fpd.pk_material =t1.pk_material
     </select>
-    <update id="updataQuoteIdByPurIdAndPkMatId" parameterType="java.lang.String">
-        UPDATE fy_purchase_detail set quote_id =#{quoteId} where  fy_purchase_id =#{purId} and pk_material=#{materId}
+    <update id="updataQuoteIdAndExpertIdByPurIdAndPkMatId" parameterType="java.lang.String">
+        UPDATE fy_purchase_detail set quote_id =#{quoteId},expert_id=#{expertId} where  fy_purchase_id =#{purId} and pk_material=#{materId}
     </update>
     <select id="findPurchaseDetailList" parameterType="java.lang.String" resultType="com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail">
         SELECT * FROM `fy_purchase_detail` WHERE fy_purchase_id=#{id}

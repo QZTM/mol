@@ -2,12 +2,17 @@ package com.mol.purchase.entity;
 
 import lombok.Data;
 
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /**
  * 木耳易购
  * 报价页面提交的数据
  */
 @Data
+@Table(name = "fy_quote")
 public class FyQuote {
+    @Id
     private String id;
     private String fyPurchaseId;
     private String pkMaterialId;

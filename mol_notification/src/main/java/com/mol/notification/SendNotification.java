@@ -7,6 +7,8 @@ public interface SendNotification {
 
     public ServiceResult sendOaFromThird(String userIdList,Long agentId,String token);
 
+    public ServiceResult sendOaFromExpert(String userIdList,Long agentId,String token);
+
     public static SendNotification getSendNotification(){
         return  SendNotificationImp.getSendNotification();
     }

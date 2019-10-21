@@ -49,4 +49,7 @@ public class  ExpertUser {
     @Transient
     private String recommendReason;
 
+    @Transient
+    private Boolean checked;
+
 }

@@ -107,4 +107,43 @@ public class SendNotificationImp implements SendNotification{
         }
     }
 
+    /**
+     * 专家平台
+     * @param userIdList 发送人id的string ，如 111,222
+     * @param agentId 应用agentId
+     * @param token
+     * @return
+     */
+    @Override
+    public ServiceResult sendOaFromExpert(String userIdList,Long agentId,String token){
+        DingTalkClient client = new DefaultDingTalkClient(URLConstant.MESSAGE_ASYNCSEND);
+
+        OapiMessageCorpconversationAsyncsendV2Request messageRequest = new OapiMessageCorpconversationAsyncsendV2Request();
+        messageRequest.setUseridList(userIdList);
+        messageRequest.setAgentId(agentId);
+        messageRequest.setToAllUser(false);
+
+        OapiMessageCorpconversationAsyncsendV2Request.Msg msg = new OapiMessageCorpconversationAsyncsendV2Request.Msg();
+        msg.setOa(new OapiMessageCorpconversationAsyncsendV2Request.OA());
+        msg.getOa().setMessageUrl("http://fyycg2.vaiwan.com/index/findAll");
+        msg.getOa().setHead(new OapiMessageCorpconversationAsyncsendV2Request.Head());
+        msg.getOa().getHead().setText("摩尔易购");
+        msg.getOa().setBody(new OapiMessageCorpconversationAsyncsendV2Request.Body());
+        msg.getOa().getBody().setContent(TimeUtil.getNowDateTime()+"有新的采购订单来了，快去报价吧！");
+        msg.getOa().getBody().setImage("http://140.249.22.202:8082/static/upload/imgs/supplier/ask.png");
+        msg.getOa().getBody().setTitle("新订单");
+        msg.setMsgtype("oa");
+        messageRequest.setMsg(msg);
+
+//        OapiMessageCorpconversationAsyncsendV2Response rsp = client.execute(messageRequest,microTokenService.getToken(MicroTokenService.MICROAPPTOKENKEY));
+        OapiMessageCorpconversationAsyncsendV2Response rsp = null;
+        try {
+            rsp = client.execute(messageRequest,token);
+            return ServiceResult.success("发送成功");
+        } catch (ApiException e) {
+            e.printStackTrace();
+            return ServiceResult.failure("发送失败");
+        }
+    }
+
 }

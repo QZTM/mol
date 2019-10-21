@@ -2,6 +2,7 @@ package com.mol.purchase.controller.dingding.workBench;
 
 import com.mol.purchase.entity.ExpertRecommend;
 import com.mol.purchase.entity.ExpertUser;
+import com.mol.purchase.entity.FyQuote;
 import com.mol.purchase.entity.dingding.login.AppAuthOrg;
 import com.mol.purchase.entity.dingding.login.AppUser;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
@@ -198,9 +199,30 @@ public class TobeNegotiatedController {
     public ServiceResult getExpert(String purId,String supplierId){
         List<ExpertRecommend> erList=negotiatedService.findExpertList(purId,supplierId);
         List<ExpertUser> euList=null;
+        //查询报价id
+        List<FyQuote > quote=negotiatedService.getFyQuoteByPurIdAndSupplierId(purId,supplierId);
+        //查询订单详情
+        PurchaseDetail detail=negotiatedService.getPurchaseDetailByPurIdAndQuoteId(purId,quote);
         if (erList!=null && erList.size()>0){
-             euList=negotiatedService.findExpertUserList(erList);
-            return ServiceResult.success(euList);
+            //判断订单详情表中是否有确认专家id
+            if (detail!=null){
+                //已完成议价
+                euList=negotiatedService.findExpertUserList(erList);
+                String expertId = detail.getExpertId();
+                String[] split = expertId.split(",");
+                for (int i=0;i<euList.size();i++){
+                    for (int j=0;j<split.length;j++){
+                        if (euList.get(i).getId().equals(split[j])){
+                            euList.get(i).setChecked(true);
+                        }
+                    }
+                }
+                return ServiceResult.success(euList);
+            }else {
+                //未议价
+                euList=negotiatedService.findExpertUserList(erList);
+                return ServiceResult.success(euList);
+            }
         }else {
             return ServiceResult.success("没有专家推荐该报价",euList);
         }

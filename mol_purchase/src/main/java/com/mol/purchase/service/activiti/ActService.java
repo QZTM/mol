@@ -1,8 +1,21 @@
 package com.mol.purchase.service.activiti;
 
+import com.mol.purchase.entity.ExpertUser;
+import com.mol.purchase.entity.FyQuote;
+import com.mol.purchase.entity.SupplierSalesman;
+import com.mol.purchase.entity.activiti.ActHiProcinst;
 import com.mol.purchase.entity.activiti.TaskDTO;
 import com.mol.purchase.entity.dingding.login.AppAuthOrg;
 import com.mol.purchase.entity.dingding.login.AppUser;
+import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
+import com.mol.purchase.entity.dingding.solr.fyPurchase;
+import com.mol.purchase.mapper.newMysql.BdSupplierSalesmanMapper;
+import com.mol.purchase.mapper.newMysql.ExpertUserMapper;
+import com.mol.purchase.mapper.newMysql.FyQuoteMapper;
+import com.mol.purchase.mapper.newMysql.dingding.activiti.ActHiCommentMapper;
+import com.mol.purchase.mapper.newMysql.dingding.activiti.ActHiProcinstMapper;
+import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseDetailMapper;
+import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
@@ -57,6 +70,18 @@ public class ActService {
     private AppOrgMapper appOrgMapper;
     @Autowired
     private AppUserMapper appUserMapper;
+    @Autowired
+    private ActHiProcinstMapper actHiProcinstMapper;
+    @Autowired
+    private fyPurchaseMapper purchaseMapper;
+    @Autowired
+    private fyPurchaseDetailMapper purchaseDetailMapper;
+    @Autowired
+    private ExpertUserMapper expertUserMapper;
+    @Autowired
+    FyQuoteMapper quoteMapper;
+    @Autowired
+    BdSupplierSalesmanMapper supplierSalesmanMapper;
 
     /**
      * 部署流程实例
@@ -408,5 +433,39 @@ public class ActService {
         AppUser user = new AppUser();
         user.setId(sendUserId);
         return  appUserMapper.selectOne(user);
+    }
+
+    public ActHiProcinst getActHiprocinstByProcInstId(String processInsId) {
+        ActHiProcinst t=new ActHiProcinst();
+        t.setProcInstId(processInsId);
+        return actHiProcinstMapper.selectOne(t);
+    }
+
+    public fyPurchase findPurchaseById(String businessKey) {
+        return purchaseMapper.findOneById(businessKey);
+    }
+
+    public List<PurchaseDetail> findPurchaseDetailListByPurId(String id) {
+        PurchaseDetail t=new PurchaseDetail();
+        t.setFyPurchaseId(id);
+        return purchaseDetailMapper.select(t);
+    }
+
+    public ExpertUser findExpertById(String s) {
+        ExpertUser t = new ExpertUser();
+        t.setId(s);
+        return expertUserMapper.selectOne(t);
+    }
+
+    public FyQuote findQuoteById(String s) {
+        FyQuote t=new FyQuote();
+        t.setId(s);
+        return quoteMapper.selectOne(t);
+    }
+
+    public SupplierSalesman findSupplierById(String supplierSalesmanId) {
+        SupplierSalesman t=new SupplierSalesman();
+        t.setId(supplierSalesmanId);
+        return supplierSalesmanMapper.selectOne(t);
     }
 }

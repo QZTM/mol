@@ -20,5 +20,6 @@ public class NegotiatIng {
     private String explain;
     //物料对应供应商集合
     private List<MaterIdToSupplierId> materIdToSupplierId;
-
+    //选中的推荐商家
+    private List <SupplierIdToExpertId> supplierToExpert;
 }

@@ -1,5 +1,6 @@
 package com.mol.purchase.mapper.newMysql;
 
+import com.mol.base.BaseMapper;
 import com.mol.purchase.entity.FyQuote;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -14,7 +15,7 @@ import java.util.List;
  * @author:yangjiangyan
  */
 @Mapper
-public interface FyQuoteMapper {
+public interface FyQuoteMapper extends BaseMapper<FyQuote> {
 
     //保存报价信息
     void saveQuote(FyQuote fyQuote);

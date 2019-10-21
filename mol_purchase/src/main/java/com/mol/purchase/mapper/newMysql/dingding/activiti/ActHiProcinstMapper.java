@@ -1,5 +1,6 @@
 package com.mol.purchase.mapper.newMysql.dingding.activiti;
 
+import com.mol.base.BaseMapper;
 import com.mol.purchase.entity.activiti.ActHiProcinst;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -12,7 +13,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @author:yangjiangyan
  */
 @Mapper
-public interface ActHiProcinstMapper {
+public interface ActHiProcinstMapper extends BaseMapper<ActHiProcinst> {
 
     ActHiProcinst getProByPurId(String purId);
 }

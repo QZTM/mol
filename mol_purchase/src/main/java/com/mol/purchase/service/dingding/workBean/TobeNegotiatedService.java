@@ -14,6 +14,7 @@ import com.mol.purchase.entity.dingding.purchase.workBench.Ucharts;
 import com.mol.purchase.entity.dingding.purchase.workBench.UchartsSeries;
 import com.mol.purchase.entity.dingding.purchase.workBench.toBeNegotiated.MaterIdToSupplierId;
 import com.mol.purchase.entity.dingding.purchase.workBench.toBeNegotiated.NegotiatIng;
+import com.mol.purchase.entity.dingding.purchase.workBench.toBeNegotiated.SupplierIdToExpertId;
 import com.mol.purchase.entity.dingding.solr.fyPurchase;
 import com.mol.purchase.mapper.newMysql.ExpertRecommendMapper;
 import com.mol.purchase.mapper.newMysql.ExpertUserMapper;
@@ -200,16 +201,61 @@ public class TobeNegotiatedService {
         //更改订单状态为等待审核结果
         fyPurchaseMapper.updateStatusById(purId, OrderStatus.EndOfBargaining+"");
         //对应关系
-        List<MaterIdToSupplierId> materIdToSupplierId = negotiatIng.getMaterIdToSupplierId();
-        for (MaterIdToSupplierId idToSupplierId : materIdToSupplierId) {
-            String materId = idToSupplierId.getMaterId();
-            String supplierId = idToSupplierId.getSupplierId();
-            //保存物料对应关系
-            //根据物料，订单，公司查询报价记录id
-            String quoteId=fyQuoteMapper.findIdByPurIdAndPkMatIdAndSupplierId(purId,materId,supplierId);
-            //根据订单id，物料id，保存选中的报价id
-            fyPurchaseDetailMapper.updataQuoteIdByPurIdAndPkMatId(purId,materId,quoteId);
+        List<MaterIdToSupplierId> mts = negotiatIng.getMaterIdToSupplierId();
+
+        List<SupplierIdToExpertId> ste = negotiatIng.getSupplierToExpert();
+
+//        for (MaterIdToSupplierId idToSupplierId : mts) {
+//            String materId = idToSupplierId.getMaterId();
+//            String supplierId = idToSupplierId.getSupplierId();
+//            //保存物料对应关系
+//            //根据物料，订单，公司查询报价记录id
+//            String quoteId=fyQuoteMapper.findIdByPurIdAndPkMatIdAndSupplierId(purId,materId,supplierId);
+//            //根据订单id，物料id，保存选中的报价id
+//            fyPurchaseDetailMapper.updataQuoteIdByPurIdAndPkMatId(purId,materId,quoteId);
+//        }
+
+        //合并
+        for(int k=0;k<mts.size();k++){
+            for (int v=0;v<ste.size();v++){
+                if (mts.get(k).getSupplierId().equals(ste.get(v).getSupplierId())){
+                    //专家id 字符串
+                    List<ExpertUser> expertList = ste.get(v).getExpertList();
+                    String idString="";
+                    for (int i=0;i<expertList.size();i++){
+                        if (i==expertList.size()-1){
+                            idString+=expertList.get(i).getId();
+                        }else {
+                            idString+=expertList.get(i).getId();
+                            idString+=",";
+                        }
+                    }
+
+                    String materId = mts.get(k).getMaterId();
+                    String supplierId = mts.get(k).getSupplierId();
+                    //保存物料对应关系
+                    //根据物料，订单，公司查询报价记录id
+                    String quoteId=fyQuoteMapper.findIdByPurIdAndPkMatIdAndSupplierId(purId,materId,supplierId);
+                    //根据订单id，物料id，保存选中的报价id
+                    fyPurchaseDetailMapper.updataQuoteIdAndExpertIdByPurIdAndPkMatId(purId,materId,quoteId,idString);
+                }
+            }
         }
+        //保存推荐专家
+
+//            for (SupplierIdToExpertId ste : supplierToExpert) {
+//            String supplierId = ste.getSupplierId();
+//            List<ExpertUser> expertList = ste.getExpertList();
+//            String idString="";
+//            for (int i=0;i<expertList.size();i++){
+//                if (i==expertList.size()-1){
+//                    idString+=expertList.get(i).getId();
+//                }else {
+//                    idString+=expertList.get(i).getId();
+//                    idString+=",";
+//                }
+//            }
+//        }
     }
 
     //查询订单详情表中具体物料选中的具体公司
@@ -245,5 +291,34 @@ public class TobeNegotiatedService {
             list.add(t2);
         }
         return list;
+    }
+
+    public List<FyQuote> getFyQuoteByPurIdAndSupplierId(String purId, String supplierId) {
+        FyQuote t = new FyQuote();
+        t.setFyPurchaseId(purId);
+        t.setPkSupplierId(supplierId);
+        return fyQuoteMapper.select(t);
+    }
+
+    public PurchaseDetail getPurchaseDetailByPurIdAndQuoteId(String purId, List<FyQuote > quote) {
+        PurchaseDetail pd=null;
+        if (quote!=null &&quote.size()>0){
+            for (int i=0;i<quote.size();i++){
+                PurchaseDetail t = new PurchaseDetail();
+                t.setFyPurchaseId(purId);
+                t.setQuoteId(quote.get(i).getId());
+                PurchaseDetail purchaseDetail = fyPurchaseDetailMapper.selectOne(t);
+                if (purchaseDetail!=null){
+                    return purchaseDetail;
+                }else {
+                    if (i==quote.size()-1){
+                        return pd;
+                    }
+                }
+            }
+        }else {
+            return pd;
+        }
+        return pd;
     }
 }

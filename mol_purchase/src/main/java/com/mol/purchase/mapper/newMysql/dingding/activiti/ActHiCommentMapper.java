@@ -1,5 +1,6 @@
 package com.mol.purchase.mapper.newMysql.dingding.activiti;
 
+import com.mol.base.BaseMapper;
 import com.mol.purchase.entity.activiti.ActHiComment;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -14,7 +15,7 @@ import java.util.List;
  * @author:yangjiangyan
  */
 @Mapper
-public interface ActHiCommentMapper {
+public interface ActHiCommentMapper extends BaseMapper<ActHiComment> {
 
     List<ActHiComment> getComByProDfId(String procInstId);
 }
