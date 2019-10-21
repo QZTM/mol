@@ -1,5 +1,5 @@
 server:
-  port: 8888
+  port: 8701
   tomcat:
     uri-encoding: utf-8
     max-http-post-size: 1048576000
@@ -41,6 +41,15 @@ spring:
     jdbc:
       initialize-schema: never
     overwrite-existing-jobs: true
+  application:
+    name: mol-quartz
+#注册中心地址
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8700/eureka/
+  instance:
+    prefer-ip-address: true
 #    properties:
 #      org:
 #        quartz:
@@ -60,7 +69,6 @@ spring:
 #            useProperties: true
 #            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
 #            tablePrefix: QRTZ_
-
 
 
 

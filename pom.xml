@@ -19,6 +19,7 @@
         <module>mol_expert</module>
         <module>mol_notification</module>
         <module>mol_pay</module>
+        <module>mol_eureka</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -34,6 +35,18 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>Greenwich.SR2</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 
 
