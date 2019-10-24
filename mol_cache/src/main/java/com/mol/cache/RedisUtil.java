@@ -32,6 +32,8 @@ public class RedisUtil {
             jedisPoolConfig.setMaxWaitMillis(1000*200);
             // 在borrow一个jedis实例时，是否提前进行validate操作；如果为true，则得到的jedis实例均是可用的；
             jedisPoolConfig.setTestOnBorrow(true);
+            jedisPoolConfig.setTestWhileIdle(true);
+            jedisPoolConfig.setTestOnReturn(true);
             //pool = new JedisPool(jedisPoolConfig, ip, port, 10000, password);
             // redis 未设置密码
             pool = new JedisPool(jedisPoolConfig, ip, port, 10000 ,password);
