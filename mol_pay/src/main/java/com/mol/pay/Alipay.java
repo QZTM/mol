@@ -15,12 +15,11 @@ import util.TimeUtil;
 @Data
 public class Alipay {
 
-    private volatile static Alipay alipay;
     private Alipay(){
 
     }
 
-    private Alipay(String orderId,String body,String subject,String timeoutExpress,String callbackUrl,String totalAmount,String productCode){
+    public Alipay(String orderId,String body,String subject,String timeoutExpress,String callbackUrl,String totalAmount,String productCode){
         this.orderId = orderId;
         this.body = body;
         this.subject = subject;
