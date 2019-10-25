@@ -2,6 +2,7 @@ package com.mol.purchase.entity.activiti;
 
 import lombok.Data;
 
+import javax.persistence.Id;
 import java.util.Date;
 
 /**
@@ -14,6 +15,7 @@ import java.util.Date;
  */
 @Data
 public class ActHiProcinst {
+    @Id
     private String id;
     private String procInstId;
     private String businessKey;

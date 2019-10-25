@@ -196,7 +196,7 @@
                     <td style="width: 15%">总计</td>
 
                 </tr>
-                <tr th:each="en,f:${purList}">
+                <tr th:each="en,f:${okList}">
                     <td th:text="${f.index+1}" style="width: 9%">序号</td>
                     <td th:text="${en.itemName}" style="width: 27%;">名称</td>
                     <td th:text="${en.typeName}"  style="width: 27%;">规格</td>
@@ -231,6 +231,9 @@
 <script>
     function pay() {
         alert("正在更新")
+        //支付完成，修改expert-recommend  commission = 1
+        //      commission-money 字段
+        //E完成后再E应用  显示可以联系供应商
     }
 </script>
 </body>

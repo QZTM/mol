@@ -66,9 +66,12 @@ public class SchuleService {
         for (fyPurchase pur : purList) {
             //公司名称
             AppAuthOrg appAuthOrg = expertService.getOrg(pur.getOrgId());
-            pur.setOrgId(appAuthOrg.getOrgName());
-            //时间
-            pur.setCreateTime(pur.getCreateTime().split(" ")[0]);
+            if (appAuthOrg!=null){
+                pur.setOrgId(appAuthOrg.getOrgName());
+                //时间
+                pur.setCreateTime(pur.getCreateTime().split(" ")[0]);
+            }
+
         }
         return purList;
     }

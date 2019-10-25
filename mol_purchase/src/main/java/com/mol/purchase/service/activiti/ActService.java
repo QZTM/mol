@@ -1,5 +1,8 @@
 package com.mol.purchase.service.activiti;
 
+import com.mol.config.Constant;
+import com.mol.notification.SendNotification;
+import com.mol.purchase.config.ExecutorConfig;
 import com.mol.purchase.entity.ExpertUser;
 import com.mol.purchase.entity.FyQuote;
 import com.mol.purchase.entity.SupplierSalesman;
@@ -10,12 +13,18 @@ import com.mol.purchase.entity.dingding.login.AppUser;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
 import com.mol.purchase.entity.dingding.solr.fyPurchase;
 import com.mol.purchase.mapper.newMysql.BdSupplierSalesmanMapper;
+import com.mol.purchase.mapper.newMysql.ExpertRecommendMapper;
 import com.mol.purchase.mapper.newMysql.ExpertUserMapper;
 import com.mol.purchase.mapper.newMysql.FyQuoteMapper;
 import com.mol.purchase.mapper.newMysql.dingding.activiti.ActHiCommentMapper;
 import com.mol.purchase.mapper.newMysql.dingding.activiti.ActHiProcinstMapper;
 import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseDetailMapper;
 import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
+import com.mol.purchase.service.token.TokenService;
+import com.mol.sms.SendMsmHandler;
+import com.mol.sms.XiaoNiuMsm;
+import com.mol.sms.XiaoNiuMsmTemplate;
+import entity.dd.DDUser;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
@@ -31,15 +40,18 @@ import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ProcessValidatorFactory;
 import org.activiti.validation.ValidationError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import com.mol.purchase.mapper.newMysql.dingding.org.AppOrgMapper;
 import com.mol.purchase.mapper.newMysql.dingding.user.AppUserMapper;
+import org.springframework.util.concurrent.ListenableFuture;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * ClassName:ActService
@@ -79,10 +91,19 @@ public class ActService {
     @Autowired
     private ExpertUserMapper expertUserMapper;
     @Autowired
+    private ExpertRecommendMapper expertRecommendMapper;
+    @Autowired
     FyQuoteMapper quoteMapper;
     @Autowired
     BdSupplierSalesmanMapper supplierSalesmanMapper;
+    @Autowired
+    SendNotification sendNotificationImp;
+    @Autowired
+    private TokenService tokenService;
 
+
+
+    private  Logger actLogger = LoggerFactory.getLogger(ActService.class);
     /**
      * 部署流程实例
      * @param model 流程模型
@@ -436,9 +457,7 @@ public class ActService {
     }
 
     public ActHiProcinst getActHiprocinstByProcInstId(String processInsId) {
-        ActHiProcinst t=new ActHiProcinst();
-        t.setProcInstId(processInsId);
-        return actHiProcinstMapper.selectOne(t);
+        return actHiProcinstMapper.getProByProId(processInsId);
     }
 
     public fyPurchase findPurchaseById(String businessKey) {
@@ -451,10 +470,9 @@ public class ActService {
         return purchaseDetailMapper.select(t);
     }
 
-    public ExpertUser findExpertById(String s) {
-        ExpertUser t = new ExpertUser();
-        t.setId(s);
-        return expertUserMapper.selectOne(t);
+    public ExpertUser findExpertById(String id) {
+
+        return expertUserMapper.findExpertUserById(id);
     }
 
     public FyQuote findQuoteById(String s) {
@@ -467,5 +485,113 @@ public class ActService {
         SupplierSalesman t=new SupplierSalesman();
         t.setId(supplierSalesmanId);
         return supplierSalesmanMapper.selectOne(t);
+    }
+
+    public String getNextSendUserId(DDUser user) {
+        AppUser appUser=getAppUserByUserDingId(user.getUserid());
+        AppAuthOrg org =findappAuthOrgByOrgId(appUser.getAppAuthOrgId());
+        String approveString = org.getPurchaseApproveList();
+        String sendUserId="";
+        //String userid=user.getUserid();
+        if (approveString !=null){
+            String[] split = approveString.split(",");
+            for(int i=0;i<split.length;i++){
+                if (split[i].equals(appUser.getId())){
+                    if (i ==split.length-1){
+                        break;
+                    }else {
+                        sendUserId=split[i+1];
+                        break;
+                    }
+
+                }
+            }
+        }
+        return sendUserId;
+    }
+
+    //4.专家
+    @Async
+    public ListenableFuture<Integer> getExpertSendMessage(List<PurchaseDetail> detailList,SendMsmHandler sendMsmHandler,XiaoNiuMsmTemplate templateName) {
+        Set<String> expetSet = new HashSet<>();
+        for (PurchaseDetail purchaseDetail : detailList) {
+            String[] split = purchaseDetail.getExpertId().split(",");
+            for (String s : split) {
+                expetSet.add(s);
+            }
+        }
+        List <ExpertUser> userList=new ArrayList<>();
+        for (String s : expetSet) {
+            ExpertUser exertUser=findExpertById(s);
+            userList.add(exertUser);
+        }
+        try{
+            for (ExpertUser expertUser : userList) {
+                //发送钉钉通知
+                sendNotificationImp.sendOaFromExpert(expertUser.getId(), Constant.AGENTID_EXPERT,tokenService.getToken());
+                //发送短信通知
+                sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, templateName,expertUser.getMobile());
+            }
+            return new AsyncResult<>(1);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new AsyncResult<>(0);
+        }
+
+    }
+
+    //报价人员
+    @Async
+    public ListenableFuture<Integer> getSaleManSendMessage(List<PurchaseDetail> detailList, SendMsmHandler sendMsmHandler, XiaoNiuMsmTemplate templateName) {
+
+        Set<String> supplierSet=new HashSet<>();
+        for (PurchaseDetail purchaseDetail : detailList) {
+            supplierSet.add(purchaseDetail.getQuoteId());
+        }
+        List<SupplierSalesman> saleManList=new ArrayList<>();
+        for (String s : supplierSet) {
+            FyQuote quo=findQuoteById(s);
+            SupplierSalesman salesman =findSupplierById(quo.getSupplierSalesmanId());
+            saleManList.add(salesman);
+        }
+        try{
+            for (SupplierSalesman salesman : saleManList) {
+                //发送钉钉通知
+                sendNotificationImp.sendOaFromThird(salesman.getDdUserId(),Constant.AGENTID_THIRDPLAT,tokenService.getToken());
+                //发送短信通知
+                sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, XiaoNiuMsmTemplate.推送未中标结果模板(),salesman.getPhone());
+            }
+            return new AsyncResult<>(1);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new AsyncResult<>(0);
+        }
+    }
+
+    @Async
+    public ListenableFuture<Integer> getAuSendMessage(String staffId,SendMsmHandler sendMsmHandler,XiaoNiuMsmTemplate templateName) {
+        AppUser au = findAppUserById(staffId);
+        try{
+            //发送钉钉通知
+            sendNotificationImp.sendOaFromE(au.getId(),au.getUserName(),tokenService.getToken(),Constant.AGENTID_EXPERT);
+            //发送短信通知
+            sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, templateName,au.getMobile());
+            return new AsyncResult<>(1);
+        }catch (Exception e){
+            e.printStackTrace();
+            return new AsyncResult<>(0);
+        }
+    }
+
+    public void updataExpertRecommendChecked(String  pur, List<PurchaseDetail> detailList) {
+        String expertIdString = detailList.get(0).getExpertId();
+        String[] expertIdArr = expertIdString.split(",");
+        for (String expertId : expertIdArr) {
+            expertRecommendMapper.updataAdoptByPurIdAndExpertId(pur,expertId);
+        }
+    }
+
+    public void updataExpertRecommendNotChecked(String pur) {
+        expertRecommendMapper.updataAdoptNotChecked(pur);
     }
 }

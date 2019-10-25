@@ -16,4 +16,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface ActHiProcinstMapper extends BaseMapper<ActHiProcinst> {
 
     ActHiProcinst getProByPurId(String purId);
+    ActHiProcinst getProByProId(String proId);
 }

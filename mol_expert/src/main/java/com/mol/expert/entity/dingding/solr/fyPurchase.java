@@ -67,6 +67,12 @@ public class fyPurchase implements Serializable {
     //参与订单评审的专家数量
     private String expertCounts;
     //推荐状态
+
+    //推荐历史中使用
     @Transient
     private String adopt;
+
+    //订单分配给某个专家的佣金（佣金明细中使用）
+    @Transient
+    private String commissionMoney;
 }

@@ -1,12 +1,16 @@
 package com.mol.expert.controller.my;
 
+import com.mol.expert.controller.microApp.ExpertLoginController;
 import com.mol.expert.entity.dingding.solr.fyPurchase;
 import com.mol.expert.entity.expert.ExpertRecommend;
 import com.mol.expert.entity.expert.ExpertUser;
+import com.mol.expert.mapper.newMysql.expert.ExpertRecomendMapper;
 import com.mol.expert.service.expert.MyService;
 import com.mol.expert.service.expert.SchuleService;
 import com.mol.expert.util.ServiceResult;
 import entity.BdMarbasclass;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -37,6 +41,8 @@ public class MyController {
     @Autowired
     private SchuleService schuleService;
 
+    private Logger logger = LoggerFactory.getLogger(MyController.class);
+
     //身份证正面
     private static final String FRONT_OF_IDCARD="frontOfId";
 
@@ -58,6 +64,26 @@ public class MyController {
     @GetMapping("/one")
     public String getMyMessage(HttpSession session, ModelMap map){
         ExpertUser user = (ExpertUser) session.getAttribute("user");
+        //查询参与评审
+        int reviewCount=myService.selectReviewRecommend(user.getId());
+        //查询成功的
+        int successCount=myService.selectSuccessRecommend(user.getId());
+        //查询参与的所有已完成的订单
+        int suAndFaCount=myService.selectSuccessAndFailRecommend(user.getId());
+        Double rate=(double)successCount/suAndFaCount*100;
+        if (Integer.valueOf(user.getReviewNumber())!=reviewCount){
+            logger.info("设置session中的user");
+            //保存到数据库
+            myService.updataExpertUser(user.getId(),reviewCount,successCount,suAndFaCount);
+
+
+            user.setReviewNumber(reviewCount+"");
+            user.setPass(successCount+"");
+            user.setPassRate(rate+"");
+            session.setAttribute("user",user);
+        }
+
+
         map.addAttribute("my",user);
         return "expert_my";
     }
@@ -176,11 +202,7 @@ public class MyController {
     public String getMoneySumDetail(HttpSession session,ModelMap map){
         ExpertUser user = (ExpertUser) session.getAttribute("user");
 
-        ExpertRecommend er = new ExpertRecommend();
-        er.setExpertId(user.getId());
-        er.setAdopt(1+"");
-
-        List<fyPurchase> list=myService.getExpertRecommendByExpertIdAndAdopt(er);
+        List<fyPurchase> list=myService.getExpertRecommendByExpertIdAndAdopt(user.getId());
         list=schuleService.changeOrgNameToZhongwen(list);
         map.addAttribute("list",list);
         return "expert_moneyDetail";
@@ -189,11 +211,9 @@ public class MyController {
     @GetMapping("/reHistory")
     public String reHistory(HttpSession session,ModelMap map){
         ExpertUser user = (ExpertUser) session.getAttribute("user");
+        String expertId = user.getId();
 
-        ExpertRecommend er = new ExpertRecommend();
-        er.setExpertId(user.getId());
-
-        List<fyPurchase> list=myService.getHistroy(er);
+        List<fyPurchase> list=myService.getHistroy(expertId);
         list=schuleService.changeOrgNameToZhongwen(list);
         map.addAttribute("list",list);
         return "expert_history";

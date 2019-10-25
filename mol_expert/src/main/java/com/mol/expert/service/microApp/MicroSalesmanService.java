@@ -36,23 +36,29 @@ public class MicroSalesmanService {
         return expertUserMapper.selectOneByExample(example);
     }
 
-    public void save(DDUser ddUser, DDDept org) {
+    public ExpertUser save(DDUser ddUser) {
 
         ExpertUser t =new ExpertUser();
         t.setId(new IdWorker().nextId()+"");
         t.setName(ddUser.getName());
         t.setAvatar(ddUser.getAvatar());
+        t.setDdId(ddUser.getDingId());
         t.setMobile(ddUser.getMobile());
-        t.setOrgId(org.getName());
         t.setCreateTime(TimeUtil.getNowDateTime());
         t.setLastUpdateTime(TimeUtil.getNowDateTime());
         t.setLastSigninTime(TimeUtil.getNowDateTime());
         t.setAuthentication(0+"");
+        t.setExpertGrade(0+"");
         t.setReviewNumber(0+"");
         t.setPass(0+"");
         t.setPassRate(0+"");
         t.setAward(0+"");
-        expertUserMapper.insert(t);
+        int insert = expertUserMapper.insert(t);
+        if (insert==1){
+            return t;
+        }else {
+            return null;
+        }
     }
 
     public void updataSignInTime(ExpertUser expertUser) {
@@ -60,5 +66,9 @@ public class MicroSalesmanService {
         u.setId(expertUser.getId());
         u.setLastSigninTime(TimeUtil.getNowDateTime());
         expertUserMapper.updateByPrimaryKeySelective(u);
+    }
+
+    public ExpertUser findExpertUser(String userDdId) {
+        return expertUserMapper.findExpertByDdId(userDdId);
     }
 }

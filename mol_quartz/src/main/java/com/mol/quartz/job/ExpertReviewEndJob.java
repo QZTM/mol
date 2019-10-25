@@ -36,6 +36,6 @@ public class ExpertReviewEndJob implements Job {
         Purchase updatePurchase = new Purchase();
         updatePurchase.setId(orderId);
         updatePurchase.setStatus("4");
-        purchaseMapper.updateByPrimaryKey(updatePurchase);
+        purchaseMapper.updateByPrimaryKeySelective(updatePurchase);
     }
 }

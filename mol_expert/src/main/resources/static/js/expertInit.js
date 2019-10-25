@@ -81,7 +81,7 @@ function getUserAndOrgByEnvWithdd(){
     layer.msg("获取用户信息中...",{time:1000});
     return new Promise(function(resolve,reject){
         $.ajax({
-            url: '/microApp/login/initUserInfo',
+            url: '/microApp/login/expertInfo',
             data: {
                 code:access_code
             },

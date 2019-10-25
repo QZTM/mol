@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.expert.mapper.newMysql.expert.ExpertUserMapper">
+    <select id="findExpertByDdId" resultType="com.mol.expert.entity.expert.ExpertUser" parameterType="java.lang.String">
+        select id,name,avatar,dd_id,mobile,last_signin_time,authentication,expert_grade,review_number,pass,pass_rate,major,award from expert_user where dd_id=#{ddId}
+    </select>
+    <update id="updataReviewAndPassAndRateById" parameterType="java.lang.String">
+        update expert_user set review_number=#{reviewCount},pass=#{successCount},pass_rate=#{suAndFaCount} where id=#{id}
+    </update>
+</mapper>

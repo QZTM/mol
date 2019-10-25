@@ -50,15 +50,40 @@ public class MyService {
         return expertUserMapper.updateByPrimaryKeySelective(eu);
     }
 
-    public List<fyPurchase> getExpertRecommendByExpertIdAndAdopt(ExpertRecommend er) {
-        return expertRecomendMapper.findPurAndAdopt(er.getAdopt(),er.getExpertId());
+    public List<fyPurchase> getExpertRecommendByExpertIdAndAdopt(String expertId) {
+        return expertRecomendMapper.findPur(expertId);
     }
 
-    public List<fyPurchase> getHistroy(ExpertRecommend er) {
-        return expertRecomendMapper.findPurAndAdopt(null,er.getExpertId());
+    public List<fyPurchase> getHistroy(String expertId) {
+        return expertRecomendMapper.findPurAndAdoptSuccessOrFail(expertId);
     }
 
     public ExpertUser getMyInfo(String id) {
         return expertUserMapper.selectByPrimaryKey(id);
+    }
+
+    public int selectReviewRecommend(String id) {
+        ExpertRecommend t=new ExpertRecommend();
+        t.setExpertId(id);
+        return expertRecomendMapper.selectCount(t);
+    }
+
+    public int selectSuccessRecommend(String id) {
+        ExpertRecommend t=new ExpertRecommend();
+        t.setExpertId(id);
+        t.setAdopt(1+"");
+        return expertRecomendMapper.selectCount(t);
+    }
+
+    public int selectSuccessAndFailRecommend(String id) {
+        Example o=new Example(ExpertRecommend.class);
+        o.and().andEqualTo("expertId",id);
+        o.or().andEqualTo("adopt",1).andEqualTo("adopt",0);
+        return expertRecomendMapper.selectCountByExample(o);
+    }
+
+    public void updataExpertUser(String id,int reviewCount, int successCount, int suAndFaCount) {
+
+        expertUserMapper.updataReviewAndPassAndRateById(id,reviewCount+"",successCount+"",suAndFaCount+"");
     }
 }

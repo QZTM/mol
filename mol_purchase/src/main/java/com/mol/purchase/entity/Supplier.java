@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 
 /**
@@ -104,5 +105,8 @@ public class Supplier implements Serializable {
     //最后修改人
     private String lastUpdateUser;
 
+    //E应用进度页面使用，是否支付完成所有的专家推荐费用
+    @Transient
+    private Boolean payAllExpert;
 
 }

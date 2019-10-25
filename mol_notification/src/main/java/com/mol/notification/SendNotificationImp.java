@@ -1,5 +1,4 @@
 package com.mol.notification;
-
 import com.dingtalk.api.DefaultDingTalkClient;
 import com.dingtalk.api.DingTalkClient;
 import com.dingtalk.api.request.OapiMessageCorpconversationAsyncsendV2Request;
@@ -7,10 +6,12 @@ import com.dingtalk.api.response.OapiMessageCorpconversationAsyncsendV2Response;
 import com.mol.config.URLConstant;
 import com.taobao.api.ApiException;
 import entity.ServiceResult;
+
 import util.TimeUtil;
 
 
 public class SendNotificationImp implements SendNotification{
+
 
     private static SendNotificationImp sendNotificationImp;
 

@@ -71,6 +71,7 @@
             <systemPath>${pom.basedir}/lib/client-sdk.api-1.0.2.jar</systemPath>
         </dependency>
 
+
         <dependency>
             <groupId>com.mol</groupId>
             <artifactId>mol_common</artifactId>

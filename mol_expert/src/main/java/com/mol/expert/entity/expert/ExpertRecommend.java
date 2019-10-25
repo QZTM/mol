@@ -2,6 +2,9 @@ package com.mol.expert.entity.expert;
 
 import lombok.Data;
 
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /**
  * ClassName:ExpertRecommend
  * Package:com.purchase.entity.expert
@@ -11,7 +14,9 @@ import lombok.Data;
  * @author:yangjiangyan
  */
 @Data
+@Table(name = "expert_recommend")
 public class ExpertRecommend {
+    @Id
     private String id;
     private String expertId;
     private String purchaseId;
