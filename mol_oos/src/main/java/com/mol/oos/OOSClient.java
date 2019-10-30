@@ -7,14 +7,13 @@ import com.amazonaws.services.s3.AmazonS3Client;
 
 /**
  * oos获取客户端
+ * 单例模式
  */
 public class OOSClient {
 
     private static final String OOS_ACCESS_ID = "047fd6cd7ddd816050b6";
     private static final String OOS_SECRET_ID = "f1986faca1b86e368175496f3a8563d15f2fc131";
-
     private volatile static AmazonS3 oosClient;
-
 
     private OOSClient(){
         if(oosClient == null){

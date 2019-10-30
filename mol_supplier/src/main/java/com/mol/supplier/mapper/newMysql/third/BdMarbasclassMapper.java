@@ -1,5 +1,6 @@
 package com.mol.supplier.mapper.newMysql.third;
 
+import com.mol.base.BaseMapper;
 import com.mol.supplier.entity.thirdPlatform.BdMarbasclass;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -14,7 +15,7 @@ import java.util.List;
  * @author:yangjiangyan
  */
 @Mapper
-public interface BdMarbasclassMapper {
+public interface BdMarbasclassMapper extends BaseMapper<BdMarbasclass> {
 
     List<BdMarbasclass> findMarbasFirstList();
 

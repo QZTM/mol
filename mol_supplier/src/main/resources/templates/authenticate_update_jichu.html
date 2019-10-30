@@ -47,6 +47,7 @@
         .picker .picker-panel .wheel-wrapper .wheel {
             font-size:14px!important;
         }
+
     </style>
 </head>
 <body>
@@ -57,100 +58,456 @@
 </div>
 <!-- 公司名称结束 -->
 <!-- 营业执照号开始 -->
-<div class="input-group" style="margin:10px 6px 0 10px ">
+<div class="input-group" style="margin:10px 6px 0 10px;position: relative">
     <span class="input-group-addon">营业执照号：</span>
-    <input type="text" class="form-control" placeholder="Business license number" aria-describedby="basic-addon1" id="bussinessLicenceNumInput">
+    <input type="text" class="form-control" placeholder="Business license number" aria-describedby="basic-addon1" id="bussinessLicenceNumInput" th:value="${session.supplier.buslicensenum}" disabled="disabled">
+    <span class="layui-badge" style="position: absolute;right:8px;z-index: 9999;top:24%" id="update_lisn_num_btn">修改</span>
+    <span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%" id="to_update_lisn_num_btn">保存</span>
 </div>
+<script th:inline="javascript">
+    $("#update_lisn_num_btn").on('click',function(){
+        $(this).prev().removeAttr('disabled');
+        var value = $(this).prev().val();
+        $(this).prev().focus().val(value);
+        $(this).hide();
+    })
+    $("#to_update_lisn_num_btn").on('click',function(){
+        var that = $(this);
+        var supplier = {};
+        supplier.buslicensenum = $("#bussinessLicenceNumInput").val();
+        // $.ajax({
+        //     url:'/auth/update',
+        //     data:JSON.stringify(supplier),
+        //     type:'post',
+        //     headers: {
+        //       'Content-type':'application/json'
+        //     },
+        //     dateType:'json',
+        //     success:function(res){
+        //         alertMsg(res.message);
+        //         that.prev().show();
+        //         $("#bussinessLicenceNumInput").attr('disabled','disabled');
+        //     },
+        //     fail:function(res){
+        //         alertMsg(res.message);
+        //     }
+        // })
+
+        update_supplier_active(supplier).then(function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#bussinessLicenceNumInput").attr('disabled','disabled');
+        },function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#bussinessLicenceNumInput").attr('disabled','disabled');
+        })
+    })
+
+    function update_supplier_active(supplier){
+        return new Promise(function(resolve, reject){
+            $.ajax({
+                url:'/auth/update',
+                data:JSON.stringify(supplier),
+                type:'post',
+                headers: {
+                    'Content-type':'application/json'
+                },
+                dateType:'json',
+                success:function(res){
+                    resolve(res);
+                },
+                fail:function(res){
+                    reject(res);
+                }
+            })
+        })
+    }
+
+</script>
 <!--营业执照号开始 -->
 
 <!-- 上传营业执照图片开始 -->
-<div style="margin: 10px 10px 0 10px;">
+<div style="margin: 10px 10px 0 10px;position:relative">
+        <span class="layui-badge upbtn" style="position: absolute;right:5px;z-index: 9999;top:12px" id="update_lisn_img_btn">修改</span>
+        <span class="layui-badge layui-bg-blue toupbtn" style="position: absolute;right:5px;z-index: 9998;top:12px;display: none" id="to_update_lisn_img_btn">点击图片即可修改</span>
     <ul class="nav nav-tabs">
-        <li role="presentation" class="active"><a href="#">上传营业执照图像</a></li>
+        <li role="presentation" class="active"><a href="#">营业执照图像</a></li>
     </ul>
+
     <div class="control-group uploadimg-out-div" id="div-licenceimg" style="width:100%;text-align: center;">
         <div id="preview-bussinessLicence" style="width:100%">
-            <img th:src="@{/img/upimg.png}" class="uploadimg-img input-group">
+            <img class="uploadimg-img input-group" id="bussiness_lisn_img_img">
         </div>
-        <input type="file" id="bussinessLicence" class="uploadimg-input" onchange="preview(this)"  accept="image/gif,image/jpeg,image/jpg,image/png"/>
+        <input type="file" id="bussinessLicence" class="uploadimg-input" onchange="preview(this)"  accept="image/gif,image/jpeg,image/jpg,image/png" disabled="disabled" />
     </div>
 
 </div>
+<!--修改营业执照图片-->
+<script th:inline="javascript">
+    $("#update_lisn_img_btn").on('click',function(){
+        $("#bussinessLicence").removeAttr('disabled');
+        $("#to_update_lisn_img_btn").show();
+        $(this).hide();
+    })
+    $("#to_update_lisn_img_btn").on('click',function(){
+        alertMsg("点击图片后选择新的图片即可修改");
+    })
+</script>
 <!-- 上传营业执照图片结束 -->
 <!-- 所在地开始 -->
-<div class="input-group" style="margin:10px 6px 0 10px ">
+<div class="input-group" style="margin:10px 6px 0 10px;position: relative">
     <span class="input-group-addon">所在地：</span>
-    <span class="form-control" aria-describedby="basic-addon1" id="sel_city"><span style="color:#999">点击选取省市区县</span></span>
+    <span class="form-control" aria-describedby="basic-addon1" id="sel_city" style="pointer-events: none"><span>点击选取省市区县</span></span>
+    <span class="layui-badge" style="position: absolute;right:8px;z-index: 9999;top:24%" id="update_city_num_btn">修改</span>
+    <span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%" id="to_update_city_num_btn">保存</span>
 </div>
+<script>
+    $("#update_city_num_btn").on('click',function(){
+        $("#sel_city").css('pointer-events','auto');
+        $(this).hide();
+    })
+    $("#to_update_city_num_btn").on('click',function(){
+        var that = $(this);
+        //获取新设置的所在地：
+        var supplier = {};
+        supplier.locationProvinceJsIndex = selectedIndex[0];
+        supplier.locationCityJsIndex = selectedIndex[1];
+        supplier.locationAreaJsIndex = selectedIndex[2];
+        update_supplier_active(supplier).then(function(res){
+            alertMsg(res.message);
+            $("#sel_city").css('pointer-events','none');
+            that.prev().show();
+        },function(res){
+            alertMsg(res.message);
+            $("#sel_city").css('pointer-events','none');
+            that.prev().show();
+        })
+    })
+</script>
 <!-- 所在地结束 -->
 <!-- 注册地开始 -->
-<div class="input-group" style="margin:10px 6px 0 10px;clear: both; ">
+<div class="input-group" style="margin:10px 6px 0 10px;clear: both;position: relative">
     <span class="input-group-addon">注册地：</span>
-    <input type="text" class="form-control" placeholder="Place of registration" aria-describedby="basic-addon1" id="registAddressInput">
+    <input type="text" class="form-control" placeholder="Place of registration" aria-describedby="basic-addon1" id="registAddressInput" th:value="${session.supplier.registeredAddress}" disabled="disabled">
+    <span class="layui-badge" style="position: absolute;right:8px;z-index: 9999;top:24%" id="update_registration_btn">修改</span>
+    <span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%" id="to_registration_btn">保存</span>
 </div>
+<script>
+    //注册地修改
+    $("#update_registration_btn").on('click',function(){
+        $("#registAddressInput").removeAttr("disabled");
+        $(this).hide();
+    })
+    $("#to_registration_btn").on('click',function(){
+        var registAddress = $("#registAddressInput").val();
+        if(registAddress == undefined || registAddress == ''){
+            alertMsg("请填写注册地址！");
+            $("#registAddressInput").focus();
+            location.href = "#registAddressInput";
+            return ;
+        }
+
+        var that = $(this);
+        //获取新设置的所在地：
+        var supplier = {};
+        supplier.registeredAddress = registAddress;
+        update_supplier_active(supplier).then(function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#registAddressInput").attr('disabled','disabled');
+        },function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#registAddressInput").attr('disabled','disabled');
+        })
+    })
+</script>
 <!-- 注册地结束 -->
 <!-- 所属行业开始 -->
 <div class="input-group" style="margin:10px 6px 0 10px ">
     <span class="input-group-addon">所属行业：</span>
     <!--<span class="form-control" aria-describedby="basic-addon1" id="sel_trade"><span style="color:#aaa">点击选取所属行业</span></span>-->
-    <span>
-        <select class="selectpicker form-control" id="sel_trade">
+    <span id="industry_span" style="pointer-events: none">
+        <select class="selectpicker form-control" id="itemtype_select_id" style="background-color: #1b6d85;color:#111" >
             <div th:each="itemType,itemTypeStat : ${itemTypeList}">
-                <option th:text="${itemType.name}" th:typeid="${itemType.pkMarbasclass}" class="itemType-option"></option>
+                <option th:if="${itemType.pkMarbasclass == session.supplier.industryFirst}" th:text="${itemType.name}" th:typeid="${itemType.pkMarbasclass}" class="itemType-option" selected></option>
+                <option th:if="${itemType.pkMarbasclass != session.supplier.industryFirst}" th:text="${itemType.name}" th:typeid="${itemType.pkMarbasclass}" class="itemType-option"></option>
             </div>
         </select>
     </span>
+    <span class="layui-badge" style="position: absolute;right:8px;z-index: 9999;top:24%" id="update_itemType_btn">修改</span>
+    <span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%;display: none" id="to_update_itemType_btn">保存</span>
 </div>
+<!--修改所属行业-->
+<script>
+    $("#industry_span").on('change',function(){
+        $("#to_update_itemType_btn").show();
+    })
+    $("#update_itemType_btn").on('click',function(){
+        $("#industry_span").css('pointer-events','auto');
+        $(this).hide();
+    })
+    $("#to_update_itemType_btn").on('click',function(){
+        var tradeOn = $(".selectpicker").selectpicker('val');
+        var typeId = $(".selectpicker").find("option:selected").attr("typeid");
+        console.log("所属行业：");
+        console.log(tradeOn);
+        console.log("typeid："+typeId)
+        if(!typeId){
+            alertMsg("请选择所属行业！");
+            location.href = "#sel_trade";
+            $("#sel_trade").click();
+            return ;
+        }
+        var that = $(this);
+        //获取新设置的所属行业
+        var supplier = {};
+        supplier.industryFirst = typeId;
+        update_supplier_active(supplier).then(function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#industry_span").css('pointer-events','none');
+        },function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#industry_span").css('pointer-events','none');
+        })
+    })
+</script>
 <!-- 所属行业结束 -->
 <!-- 经营范围开始 -->
-<div style="clear: both;margin:10px 6px 0 10px;" id="bussiness-scope-out-div">
+<div style="clear: both;margin:10px 6px 0 10px;position:relative" id="bussiness-scope-out-div">
     <ul class="nav nav-tabs">
         <li role="presentation" class="active"><a href="#bussiness-scope-out-div">经营范围</a></li>
     </ul>
-    <textarea style="width: 100%; " id="bussinessScopeTextarea"></textarea>
+    <textarea style="width: 100%; " id="bussinessScopeTextarea" th:text="${session.supplier.businessScope}" disabled="disabled"></textarea>
+    <span class="layui-badge" style="position: absolute;right:8px;z-index: 9999;top:24%" id="update_bussinessScope_btn">修改</span>
+    <span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%" id="to_update_bussinessScope_btn">保存</span>
 </div>
+<!--修改经营范围-->
+<script>
+    $("#update_bussinessScope_btn").on('click',function(){
+        $("#bussinessScopeTextarea").removeAttr('disabled');
+        $(this).hide();
+    })
+    $("#to_update_bussinessScope_btn").on('click',function(){
+        var bussinessScope = $("#bussinessScopeTextarea").val();
+        console.log("经营范围");
+        console.log(bussinessScope);
+        if(!bussinessScope){
+            alertMsg("请填写经营范围！");
+            location.href = "#bussinessScopeTextarea";
+            $("#bussinessScopeTextarea").focus();
+            return ;
+        }
+        var that = $(this);
+        //获取新设置的经营范围
+        var supplier = {};
+        supplier.businessScope=bussinessScope;
+        update_supplier_active(supplier).then(function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#bussinessScopeTextarea").attr('disabled','disabled');
+        },function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#bussinessScopeTextarea").attr('disabled','disabled');
+        })
+    })
+</script>
 <!-- 经营范围结束 -->
 <!-- 上传法人身份证正反面开始 -->
 <!-- 上传法人身份证正面 -->
-<div style="margin: 6px 10px 0 10px;">
+<div style="margin: 6px 10px 0 10px;position:relative" >
+    <span class="layui-badge upbtn" style="position: absolute;right:5px;z-index: 9999;top:12px" id="update_legalBodyIdFront_img_btn">修改</span>
+    <span class="layui-badge layui-bg-blue toupbtn" style="position: absolute;right:5px;z-index: 9998;top:12px;display: none" id="to_update_legalBodyIdFront_img_btn">点击图片即可修改</span>
     <ul class="nav nav-tabs">
         <li role="presentation" class="active"><a href="#">上传法人身份证图像</a></li>
     </ul>
     <div class="control-group uploadimg-out-div" id="div-legal-person-front" style="width:100%;text-align: center">
         <div id="preview-legalBodyIdFront" style="width:100%">
-            <img th:src="@{/img/upimg.png}" class="uploadimg-img input-group">
+            <img th:src="@{/img/upimg.png}" class="uploadimg-img input-group" id="legalbody_front_img_img">
         </div>
-        <input type="file" id="legalBodyIdFront" class="uploadimg-input" onchange="preview(this)"  accept="image/gif,image/jpeg,image/jpg,image/png"/>
-        <p style="position: absolute;margin: 0 auto;width:100%;height:30px;text-align: center;padding-top:6px;" class="uploadimg-p">身份证正面</p>
+        <input type="file" id="legalBodyIdFront" class="uploadimg-input" onchange="preview(this)"  accept="image/gif,image/jpeg,image/jpg,image/png" disabled="disabled" />
+        <p style="margin: 0 auto;width:100%;height:30px;text-align: center;padding-top:6px;" class="uploadimg-p">身份证正面</p>
     </div>
 
+    <span class="layui-badge upbtn" style="left:87%;z-index: 9999;top:30px" id="update_legalBodyIdBack_img_btn">修改</span>
+    <span class="layui-badge layui-bg-blue toupbtn" style="left:66%;z-index: 9998;top:30px;display: none" id="to_update_legalBodyIdBack_img_btn">点击图片即可修改</span>
     <!--上传法人身份证反面-->
     <div class="control-group uploadimg-out-div" id="div-legal-person-back" style="margin-top:40px;width:100%">
         <div id="preview-legalBodyIdBack"  style="width:100%">
-            <img th:src="@{/img/upimg.png}" class="uploadimg-img input-group">
+            <img th:src="@{/img/upimg.png}" class="uploadimg-img input-group" id="legalbody_back_img_img">
         </div>
-        <input type="file" id="legalBodyIdBack" class="uploadimg-input" onchange="preview(this)"  accept="image/gif,image/jpeg,image/jpg,image/png"/>
-        <span style="position: absolute;margin: 0 auto;width:100%;height:30px;text-align: center;padding-top:6px;" class="uploadimg-p">身份证反面</span>
+        <input type="file" id="legalBodyIdBack" class="uploadimg-input" onchange="preview(this)"  accept="image/gif,image/jpeg,image/jpg,image/png" disabled="disabled" />
+        <p style="margin: 0 auto;width:100%;height:30px;text-align: center;padding-top:6px;" class="uploadimg-p">身份证反面</p>
     </div>
 </div>
+<!--修改法人身份证图片-->
+<script>
+    $("#update_legalBodyIdFront_img_btn").on('click',function(){
+        $("#legalBodyIdFront").removeAttr('disabled');
+        $("#to_update_legalBodyIdFront_img_btn").show();
+        $(this).hide();
+    })
+    $("#to_update_lisn_img_btn").on('click',function(){
+        alertMsg("点击图片后选择新的图片即可修改");
+    })
+    $("#update_legalBodyIdBack_img_btn").on('click',function(){
+        $("#legalBodyIdBack").removeAttr('disabled');
+        $("#to_update_legalBodyIdBack_img_btn").show();
+        $(this).hide();
+    })
+    $("#to_update_legalBodyIdBack_img_btn").on('click',function(){
+        alertMsg("点击图片后选择新的图片即可修改");
+    })
+</script>
 <!-- 上传法人身份证正反面结束 -->
 <!-- 法人姓名开始 -->
 <div class="input-group" style="margin:40px 6px 0 10px ;clear: both;">
     <span class="input-group-addon">法人姓名：</span>
-    <input type="text" class="form-control" placeholder="Name of legal person" aria-describedby="basic-addon1" id="legalBodyNameInput">
+    <input type="text" class="form-control" placeholder="Name of legal person" aria-describedby="basic-addon1" id="legalBodyNameInput" th:value="${session.supplier.legalbodyName}" disabled="disabled">
+    <span class="layui-badge" style="position: absolute;right:8px;z-index: 9999;top:24%" id="update_legalBodyName_btn">修改</span>
+    <span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%" id="to_update_legalBodyName_btn">保存</span>
 </div>
+<!--法人姓名修改-->
+<script>
+    $("#update_legalBodyName_btn").on('click',function(){
+        $("#legalBodyNameInput").removeAttr("disabled");
+        $(this).hide();
+    })
+    $("#to_update_legalBodyName_btn").on('click',function(){
+        var legalBodyName = $("#legalBodyNameInput").val();
+        if(!legalBodyName){
+            alertMsg("请填写法人姓名！");
+            $("#subBtn").removeAttr('disabled');
+            location.href = "#legalBodyNameInput";
+            $("#legalBodyNameInput").focus();
+            return ;
+        }
+        var that = $(this);
+        //获取新设置的所在地：
+        var supplier = {};
+        supplier.legalbodyName = legalBodyName;
+        update_supplier_active(supplier).then(function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#legalBodyNameInput").attr('disabled','disabled');
+        },function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#legalBodyNameInput").attr('disabled','disabled');
+        })
+    })
+</script>
 <!-- 法人姓名结束 -->
 <!-- 身份证号开始 -->
-<div class="input-group" style="margin:10px 6px 0 10px ">
+<div class="input-group" style="margin:10px 6px 0 10px">
     <span class="input-group-addon">身份证号：</span>
-    <input type="text" class="form-control" placeholder="ID number" aria-describedby="basic-addon1"  id="legalBodyIdCardNumInput">
+    <input type="text" class="form-control" placeholder="ID number" aria-describedby="basic-addon1"  id="legalBodyIdCardNumInput"  th:value="${session.supplier.legalbodyIdcardNumber}" disabled="disabled">
+    <span class="layui-badge" style="position: absolute;right:8px;z-index: 9999;top:24%" id="update_legalBodyIdCardNum_btn">修改</span>
+    <span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%" id="to_update_legalBodyIdCardNum_btn">保存</span>
 </div>
+<!--修改身份证号码-->
+<script>
+    $("#update_legalBodyIdCardNum_btn").on('click',function(){
+        $("#legalBodyIdCardNumInput").removeAttr("disabled");
+        $(this).hide();
+    })
+    $("#to_update_legalBodyIdCardNum_btn").on('click',function(){
+        var legalBodyIdCardNum = $("#legalBodyIdCardNumInput").val();
+        if((!legalBodyIdCardNum)){
+            alertMsg("请填写法人身份证号码！");
+            location.href = "#legalBodyIdCardNumInput";
+            $("#legalBodyIdCardNumInput").focus();
+            return ;
+        }
+        if(!checkIdNum(legalBodyIdCardNum)){
+            alertMsg("请填写正确的身份证号码！");
+            location.href = "#legalBodyIdCardNumInput";
+            $("#legalBodyIdCardNumInput").focus();
+            return ;
+        }
+        var that = $(this);
+        //获取新设置的所在地：
+        var supplier = {};
+        supplier.legalbodyIdcardNumber = legalBodyIdCardNum;
+        update_supplier_active(supplier).then(function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#legalBodyIdCardNumInput").attr('disabled','disabled');
+        },function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#legalBodyIdCardNumInput").attr('disabled','disabled');
+        })
+    })
+</script>
 <!-- 身份证号结束 -->
 <!-- 手机号开始 -->
-<div class="input-group" style="margin:10px 6px 0 10px ">
+<div class="input-group" style="margin:10px 6px 0 10px;position: relative">
     <span class="input-group-addon">手机号：</span>
-    <input type="text" class="form-control" placeholder="Phone number" aria-describedby="basic-addon1" id="phoneNumInput-jc" th:value="${session.user.phone}">
+    <input type="text" class="form-control" placeholder="Phone number" aria-describedby="basic-addon1" id="phoneNumInput-jc" th:value="${session.supplier.authPhone}" th:oldphone="${session.supplier.authPhone}" disabled="disabled">
+    <span class="layui-badge" style="position: absolute;right:8px;z-index: 9999;top:24%" id="update_phone_btn">修改</span>
+    <span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%;display: none" id="to_update_phone_btn">保存</span>
+    <span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%;display: none" id="to_update_phone_getcheckcode_btn">获取验证码</span>
 </div>
+<!--修改手机号码-->
+<script>
+    //手机号失去焦点事件
+    $("#phoneNumInput-jc").on('blur',function(){
+        var phoneNum = $(this).val();
+        if(!isPhoneNo(phoneNum)){
+            alertMsg("手机号码输入有误");
+            $("#phoneNumInput-jc").focus();
+        }
+
+        var oldPhone = $(this).attr('oldphone');
+        if(phoneNum != oldPhone){
+            $("#to_update_phone_getcheckcode_btn").show();
+        }
+    })
+    $("#update_phone_btn").on('click',function(){
+        $("#phoneNumInput-jc").removeAttr("disabled");
+        $(this).hide();
+    })
+    $("#to_update_phone_getcheckcode_btn").on('click',function(){
+
+    })
+    $("#to_update_phone_btn").on('click',function(){
+        var phoneNum = $("#phoneNumInput-jc").val();
+        if(!phoneNum){
+            alertMsg("请填写手机号码！");
+            $("#subBtn").removeAttr('disabled');
+            location.href = "#phoneNumInput-jc";
+            $("#phoneNumInput-jc").focus();
+            return ;
+        }
+
+        if(!isPhoneNo(phoneNum)){
+            alertMsg("请填写正确的手机号码！");
+            $("#subBtn").removeAttr('disabled');
+            location.href = "#phoneNumInput-jc";
+            $("#phoneNumInput-jc").focus();
+            return ;
+        }
+
+    var that = $(this);
+    //获取新设置的所在地：
+      var supplier = {};
+        supplier.authPhone = phoneNum;
+    update_supplier_active(supplier).then(function(res){
+        alertMsg(res.message);
+        that.prev().show();
+        $("#phoneNumInput-jc").attr('disabled','disabled');
+    },function(res){
+        alertMsg(res.message);
+        that.prev().show();
+        $("#phoneNumInput-jc").attr('disabled','disabled');
+    })
+    })
+</script>
 <!-- 手机号结束 -->
 <!-- 验证码开始 -->
 <div class="input-group" style="margin:10px 6px 0 10px;">
@@ -199,7 +556,7 @@
         /*给后端指令发送短信：*/
         $.ajax({
             url:"/msg/send/",
-            data:{phone:phoneNum,msgType:'supplierAuth'},
+            data:{phone:phoneNum,msgType:'supplieUpdate'},
             type: "post",
             dataType: "json",
 
@@ -242,7 +599,94 @@
 <button type="button" class="btn btn-danger" style="margin-top: 20px;width: 100%;" id="subBtn">提交</button>
 <!-- 提交结束 -->
 </body>
-<script  th:inline="javascript">
+<script th:inline="javascript">
+
+
+
+    $(function() {
+
+        var a = changeInputFileSize;
+        a();
+
+
+
+
+        $("#legalBodyIdCardNumInput").on('blur',function(){
+            var legalBodyIdCardNum = $(this).val();
+            if(!checkIdNum(legalBodyIdCardNum)){
+                alertMsg("身份证号码输入有误");
+                $("#legalBodyIdCardNumInput").focus();
+            }
+        })
+
+        //转换图片二进制位base64
+        //营业执照图片：
+        var bussiness_img_blob = [[${session.supplier.businessLicenceImg}]];
+        if(bussiness_img_blob){
+            // blobToBase64(bussiness_img_blob).then(res => {
+            //     // 转化后的base64
+            //     console.log('base64', res)
+            // })
+            $("#bussiness_lisn_img_img").attr('src','data:image/png;base64,'+bussiness_img_blob);
+            $("#bussiness_lisn_img_img").css("width",'92%');
+            $("#bussiness_lisn_img_img").css("left",'4%');
+            $("#bussiness_lisn_img_img").css("margin-top",'20px');
+            $("#bussiness_lisn_img_img").css("margin-bottom",'20px');
+            var pervDivId = $("#bussiness_lisn_img_img").parent('div').attr('id');
+            console.log("pervDivId:"+pervDivId);
+            $("#"+pervDivId).css('background-color','#2c94ff');
+            $("#"+pervDivId).css('padding-top','1px');
+            $("#"+pervDivId).css('padding-bottom','1px');
+            $("#"+pervDivId).css('border-radius','5px');
+            setTimeout("changeInputFileSize($('#"+pervDivId+"'))",500);
+
+        }
+
+        //身份证正面：
+        var legalbody_front_img_blob = [[${session.supplier.legalbodyCardFrontImg}]];
+        if(legalbody_front_img_blob){
+            // blobToBase64(bussiness_img_blob).then(res => {
+            //     // 转化后的base64
+            //     console.log('base64', res)
+            // })
+            $("#legalbody_front_img_img").attr('src','data:image/png;base64,'+legalbody_front_img_blob);
+            $("#legalbody_front_img_img").css("width",'92%');
+            $("#legalbody_front_img_img").css("left",'4%');
+            var pervDivId = $("#legalbody_front_img_img").parent('div').attr('id');
+            console.log("pervDivId:"+pervDivId);
+            $("#"+pervDivId).css('background-color','#2c94ff');
+            $("#"+pervDivId).css('padding-top','15px');
+            $("#"+pervDivId).css('padding-bottom','15px');
+            $("#"+pervDivId).css('border-radius','5px');
+            setTimeout("changeInputFileSize($('#"+pervDivId+"'))",500);
+        }
+
+        //身份证反面：
+        var legalbody_back_img_blob = [[${session.supplier.legalbodyCardBackImg}]];
+        if(legalbody_back_img_blob){
+            // blobToBase64(bussiness_img_blob).then(res => {
+            //     // 转化后的base64
+            //     console.log('base64', res)
+            // })
+            $("#legalbody_back_img_img").attr('src','data:image/png;base64,'+legalbody_back_img_blob);
+            $("#legalbody_back_img_img").css("width",'92%');
+            $("#legalbody_back_img_img").css("left",'4%');
+            var pervDivId = $("#legalbody_back_img_img").parent('div').attr('id');
+            console.log("pervDivId:"+pervDivId);
+            $("#"+pervDivId).css('background-color','#2c94ff');
+            $("#"+pervDivId).css('padding-top','15px');
+            $("#"+pervDivId).css('padding-bottom','15px');
+            $("#"+pervDivId).css('border-radius','5px');
+            setTimeout("changeInputFileSize($('#"+pervDivId+"'))",500);
+        }
+
+
+
+
+    })
+
+
+
 
 
     $("#subBtn").on("click",function(){
@@ -441,33 +885,7 @@
 
     })
 
-    $(function() {
 
-
-
-        var a = changeInputFileSize;
-        a();
-
-        //手机号失去焦点事件
-        $("#phoneNumInput-jc").on('blur',function(){
-            var phoneNum = $(this).val();
-            if(!isPhoneNo(phoneNum)){
-                alertMsg("手机号码输入有误");
-                $("#phoneNumInput-jc").focus();
-            }
-        })
-
-
-        $("#legalBodyIdCardNumInput").on('blur',function(){
-            var legalBodyIdCardNum = $(this).val();
-            if(!checkIdNum(legalBodyIdCardNum)){
-                alertMsg("身份证号码输入有误");
-                $("#legalBodyIdCardNumInput").focus();
-            }
-        })
-
-
-    })
 
 
     /**
@@ -539,6 +957,19 @@
             }
         }
         setTimeout("changeInputFileSize($('#"+pervDivId+"'))",500);
+        //设置为不可修改状态：
+        var updateBtn = $("#"+pervDivId).parent().parent().find('.upbtn');
+        console.log("updateBtn:");
+        console.log(updateBtn);
+        updateBtn.show();
+        var toupbtn = $("#"+pervDivId).parent().parent().find('.toupbtn');
+        console.log("toupbtn:");
+        console.log(toupbtn);
+        toupbtn.hide();
+        $("#"+thisEveId).attr('disabled','disabled');
+        console.log("$(\"#\"+thisEveId):");
+        console.log($("#"+thisEveId));
+
 
     };
 
@@ -669,6 +1100,23 @@
 
     var selectedIndex = [0, 0, 0]; /* 默认选中的地区 */
 
+    //所在地：
+    var supplierlocationProvinceJsIndex = [[${session.supplier.locationProvinceJsIndex}]];
+    if(supplierlocationProvinceJsIndex){
+        selectedIndex[0] = supplierlocationProvinceJsIndex;
+    }
+    var supplierlocationCityJsIndex = [[${session.supplier.locationCityJsIndex}]];
+    if(supplierlocationCityJsIndex){
+        selectedIndex[1] = supplierlocationCityJsIndex;
+    }
+
+    var supplierlocationAreaJsIndex = [[${session.supplier.locationAreaJsIndex}]];
+    if(supplierlocationAreaJsIndex){
+        selectedIndex[2] = supplierlocationAreaJsIndex;
+    }
+
+
+
     var checked = [0, 0, 0]; /* 已选选项 */
 
     function creatList(obj, list){
@@ -697,8 +1145,14 @@
     var picker = new Picker({
         data: [first, second, third],
         selectedIndex: selectedIndex,
-        title: '地址选择'
+        title: '地址选择',
     });
+
+    var text1 = first[selectedIndex[0]].text;
+    var text2 = second[selectedIndex[1]].text;
+    var text3 = third[selectedIndex[2]] ? third[selectedIndex[2]].text : '';
+
+    nameEl.innerText = text1 + ' ' + text2 + ' ' + text3;
 
     picker.on('picker.select', function (selectedVal, selectedIndex) {
         var text1 = first[selectedIndex[0]].text;
@@ -998,7 +1452,20 @@
     //     tradePicker.show();
     // });
 
-
+    function blobToBase64(blob) {
+        console.log(typeof (blob));
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader();
+        fileReader.onload = (e) => {
+            resolve(e.target.result);
+        };
+        // readAsDataURL
+        fileReader.readAsDataURL(blob);
+        fileReader.onerror = () => {
+            reject(new Error('blobToBase64 error'));
+        };
+    });
+    }
 
 
 

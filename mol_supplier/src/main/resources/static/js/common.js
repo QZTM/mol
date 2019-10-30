@@ -1,4 +1,4 @@
-function showLoading(){
+﻿function showLoading(){
     // var index = layer.load(2, {
     //     shade: [0.1,'#fff'] //0.1透明度的白色背景
     // });
@@ -39,7 +39,7 @@ function isPhoneNo(phone) {
  * @returns {Promise<any>}
  */
 function uploadImg(bl,whichImg){
-    showLoading();
+    //showLoading();
     var fd = new FormData();
     fd.append("file",bl);
     fd.append("whichImg",whichImg);
@@ -56,12 +56,12 @@ function uploadImg(bl,whichImg){
             processData: false,
             contentType: false,
             success:function(data){
-                hideLoading();
+                //hideLoading();
                 alertMsg("上传成功！");
                 resolve(data);
                 console.log(data);
             },fail:function(data){
-                hideLoading();
+                //hideLoading();
                 alertMsg("上传失败，请稍后再试!");
                 reject(data);
             }

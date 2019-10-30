@@ -42,6 +42,9 @@
         .protocol-span-proname{
             color:#00FFFF;
         }
+        .b1{white-space-collapsing:preserve;}
+        .b2{margin: 1.0in 1.25in 1.0in 1.25in;}
+        .p1{text-align:start;hyphenate:auto;font-family:Calibri;font-size:12pt;}
     </style>
 </head>
 <body>
@@ -93,7 +96,7 @@
             <input type="checkbox" name="protocolAgree" title="同意协议" id="protocol-checkbox-input">
         </div>
         <div class="col-xs-10 col-md-10" style="margin-top: 5.5%;">
-            <span class="protocol-span">同意<span class="protocol-span-proname">《茉尔易购用户注册协议》</span>和<span class="protocol-span-proname">《隐私政策》</span></span>
+            <span class="protocol-span">同意<span class="protocol-span-proname" id="protocol-span-id">《茉尔易购用户注册协议》</span>和<span class="protocol-span-proname" id="privace-agree-id">《隐私政策》</span></span>
         </div>
 
     </div>
@@ -105,9 +108,21 @@
 </form>
 </body>
 <script th:inline="javascript">
-    $(document).ready(function(){
 
+    $(document).ready(function(){
         console.log("document.ready");
+
+        //点击用户注册协议显示协议内容事件：
+        $("#protocol-span-id").on('click',function(){
+            location.href = "/microApp/login/showProtocolPage";
+        })
+
+        //点击用户隐私协议内容事件：
+        $("#privace-agree-id").on('click',function(){
+            location.href = "/microApp/login/showprivacyagreePage";
+        })
+
+
 
         //点击同意协议checkbox事件：
         $("#protocol-checkbox").on("click",function(){

@@ -19,6 +19,7 @@ public class XiaoNiuMsmTemplate implements MsmTemplate{
     public static final String 给专家发送评审失败结果模板ID = "1007";
     public static final String 推送中标结果模板ID = "1008";
     public static final String 推送未中标结果模板ID = "1009";
+    public static final String 供应商修改信息模板ID = "1010";
 
 
     private static String id;
@@ -63,6 +64,10 @@ public class XiaoNiuMsmTemplate implements MsmTemplate{
 
     public static XiaoNiuMsmTemplate 推送未中标结果模板(){
         return new XiaoNiuMsmTemplate(XiaoNiuMsmTemplate.推送未中标结果模板ID,"推送未中标结果模板");
+    }
+
+    public static XiaoNiuMsmTemplate 供应商修改信息模板(){
+        return new XiaoNiuMsmTemplate(XiaoNiuMsmTemplate.供应商修改信息模板ID,"供应商修改信息模板");
     }
 
 

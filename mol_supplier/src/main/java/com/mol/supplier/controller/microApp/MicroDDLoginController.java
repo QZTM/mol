@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.dingtalk.api.response.OapiDepartmentGetResponse;
 import com.dingtalk.api.response.OapiUserGetResponse;
 import com.dingtalk.oapi.lib.aes.DingTalkJsApiSingnature;
+import com.mol.cache.CacheHandle;
 import com.mol.supplier.config.MicroAttr;
 import com.mol.supplier.entity.MicroApp.DDDept;
 import com.mol.supplier.entity.MicroApp.DDUser;
@@ -12,6 +13,7 @@ import com.mol.supplier.entity.MicroApp.Supplier;
 import com.mol.supplier.exception.microApp.OApiException;
 import com.mol.supplier.service.microApp.*;
 import entity.ServiceResult;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,10 @@ import java.util.Map;
 @RequestMapping("/microApp/login")
 public class MicroDDLoginController {
 
+    private Integer getDDUserIdCounts = 5;
+
+    private Integer tryCounts = 0;
+
     private Logger logger = LoggerFactory.getLogger(MicroDDLoginController.class);
 
     @Autowired
@@ -52,6 +58,9 @@ public class MicroDDLoginController {
     @Autowired
     private MicroTokenService microTokenService;
 
+    @Autowired
+    private CacheHandle cacheHandle;
+
 
     /**
      * 显示登陆/注册页面
@@ -63,6 +72,24 @@ public class MicroDDLoginController {
     public String login(String registType, Model model) {
         model.addAttribute("registType", registType);
         return "login";
+    }
+
+    /**
+     * 显示普通供应商注册协议
+     * @return
+     */
+    @RequestMapping("/showProtocolPage")
+    public String showProtocolPage(){
+        return "meygyhzcxy";
+    }
+
+    /**
+     * 显示隐私协议
+     * @return
+     */
+    @RequestMapping("/showprivacyagreePage")
+    public String showPrivacyAgreePage(){
+        return "privacyagreeprotocol";
     }
 
 
@@ -91,7 +118,27 @@ public class MicroDDLoginController {
     public ServiceResult getSticket(String code, HttpSession session, HttpServletRequest request) {
         logger.info("进入initUserInfo方法");
         /*获取钉钉用户id*/
-        String userId = microGetDDUserInfoService.getDDUserId(code);
+        String userId = "";
+        try{
+             userId = microGetDDUserInfoService.getDDUserId(code);
+        }catch (Exception e){
+            logger.info(e.getMessage());
+            tryCounts++;
+            if(!(tryCounts>=getDDUserIdCounts)){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                getSticket(code,session,request);
+            }else{
+                logger.info("尝试"+tryCounts+"次依然没获取到用户的钉钉id");
+                tryCounts = 0;
+                return ServiceResult.failure("未获取到用户钉钉id");
+            }
+
+
+        }
         logger.info("getDDUserId()....return : userId:" + userId);
 
         /*获取钉钉用户详情：*/
@@ -162,6 +209,12 @@ public class MicroDDLoginController {
 
             session.setAttribute("user", salesman);
             session.setAttribute("supplier", getdSupplier);
+            Integer getedVersion = getdSupplier.getVersion();
+            Integer cacheVersion = 0;
+            String supplierVersionStr = cacheHandle.getStr(getdSupplier.getPkSupplier()+"version");
+            if(StringUtils.isEmpty(supplierVersionStr) || Integer.valueOf(supplierVersionStr)<getedVersion){
+                cacheHandle.saveStr(getdSupplier.getPkSupplier()+"version",24*60*60,getedVersion+"");
+            }
             Map map = new HashMap();
             map.put("user",salesman);
             map.put("supplier",getdSupplier);
