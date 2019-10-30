@@ -3,15 +3,19 @@ package com.mol.purchase.service.dingding.purchase;
 import com.alibaba.fastjson.JSON;
 import com.mol.purchase.config.BuyChannelResource;
 import com.mol.purchase.config.OrderStatus;
+import com.mol.purchase.entity.SupplierSalesman;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseArray;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj;
 import com.mol.purchase.entity.dingding.purchase.strategPurchaseEntity.PageArray;
 import com.mol.purchase.mapper.fyOracle.dingding.purchase.StrategyOraclMapper;
+import com.mol.purchase.mapper.newMysql.BdSupplierSalesmanMapper;
 import com.mol.purchase.mapper.newMysql.FyPurchaseEsMapper;
+import com.mol.purchase.mapper.newMysql.dingding.purchase.BdMarbasclassMapper;
 import com.mol.purchase.mapper.newMysql.dingding.purchase.BdSupplierMapper;
 import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
 import com.mol.purchase.util.FindFirstMarbasclassByMaterialUtils;
+import com.mol.purchase.util.MarbasclassToChineseUtils;
 import com.mol.purchase.util.robot.Cread_PDF;
 import entity.BdMarbasclass;
 import entity.ServiceResult;
@@ -26,8 +30,8 @@ import util.IdWorker;
 import util.TimeUtil;
 
 import javax.annotation.Resource;
+import javax.persistence.Transient;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 
 import static com.mol.purchase.config.Constant.orederStartNum;
@@ -39,9 +43,6 @@ public class SingleSourceService {
 
     @Resource
     private fyPurchaseMapper purchaseMapper;
-
-    @Resource
-    private BdSupplierMapper bdSupplierMapper;
 
     @Resource
     private com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseDetailMapper fyPurchaseDetailMapper;
@@ -61,7 +62,14 @@ public class SingleSourceService {
     @Autowired
     FindFirstMarbasclassByMaterialUtils find;
 
+    @Autowired
+    private BdMarbasclassMapper bdMarbasclassMapper;
 
+    @Autowired
+    private BdSupplierSalesmanMapper supplierSalesmanMapper;
+
+
+    @Transient
     public StraregyObj save(PageArray pageArray, String staId, String orgId) throws IOException, DocumentException, IllegalAccessException {
         //申请事由
         String applyCause = pageArray.getApplyCause();
@@ -88,6 +96,9 @@ public class SingleSourceService {
         String expertReview = pageArray.getExpertReview();
         //评审奖励
         String expertReward = pageArray.getExpertReward();
+        if (expertReview==null ||expertReview==""){
+            expertReview="false";
+        }
 
 
         StraregyObj stObj = new StraregyObj();
@@ -157,26 +168,33 @@ public class SingleSourceService {
         return json;
     }
 
-    public ServiceResult<Supplier> getSupplier(List<PurchaseArray> purList) {
+    public List<Supplier> getSupplier(String pkMaClass) {
         //判断有没有id？？
         //先拿到ID
         //拿到查询到的id，到mysql中查询对应的公司name ,telephone
-        HashMap<String, String> map = new HashMap<String, String>();
-        int key=1;
-        Supplier supplier=null;
-        for (PurchaseArray pur : purList) {
-            map.put(key+"",pur.getMaterialId());
+//        HashMap<String, String> map = new HashMap<String, String>();
+//        int key=1;
+//        Supplier supplier=null;
+//        for (PurchaseArray pur : purList) {
+//            map.put(key+"",pur.getMaterialId());
+//        }
+//        System.out.println(supplier);
+//
+//        if (map.size()>0&&map!=null){
+//            String id= bdSupplierMapper.getSupplierId(map);
+//            System.out.println(id);
+//            if (id!=null){
+//                supplier=bdSupplierMapper.getSupplierById(id);
+//            }
+//        }
+        Supplier t=new Supplier();
+        t.setIfAttrSingle(1);
+        t.setIndustryFirst(pkMaClass);
+        List<Supplier> select = supplierMapper.select(t);
+        for (Supplier supplier : select) {
+            MarbasclassToChineseUtils.getSupplierChinese(supplier);
         }
-        System.out.println(supplier);
-
-        if (map.size()>0&&map!=null){
-            String id= bdSupplierMapper.getSupplierId(map);
-            System.out.println(id);
-            if (id!=null){
-                supplier=bdSupplierMapper.getSupplierById(id);
-            }
-        }
-        return ServiceResult.success(supplier);
+        return select;
     }
     /**
      * 产生订单号
@@ -204,5 +222,32 @@ public class SingleSourceService {
         and.andEqualTo("industryFirst",stobj.getPkMarbasclass()).andEqualTo("ifAttrSingle",1);
         return  supplierMapper.selectByExample(e);
 
+    }
+
+    public BdMarbasclass getBdMarBasclssByPkMaclass(String pkmaClass) {
+        if (pkmaClass==null){
+            return null;
+        }
+        BdMarbasclass t=new BdMarbasclass();
+        t.setPkMarbasclass(pkmaClass);
+        return bdMarbasclassMapper.selectOne(t);
+    }
+
+    public BdMarbasclass getBm(BdMarbasclass bm) {
+        BdMarbasclass bms=new BdMarbasclass();
+        bms.setPkMarbasclass(bm.getPkParent());
+        BdMarbasclass bdMarbasclass = bdMarbasclassMapper.selectOne(bms);
+        if (bdMarbasclass.getPkParent().equals("~")){
+            return bdMarbasclass;
+        }else {
+            BdMarbasclass bmss= getBm(bdMarbasclass);
+            return bmss;
+        }
+    }
+
+    public List<SupplierSalesman> findSaleManListBySupplierId(String pkSupplier) {
+        SupplierSalesman t=new SupplierSalesman();
+        t.setPkSupplier(pkSupplier);
+        return supplierSalesmanMapper.select(t);
     }
 }

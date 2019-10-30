@@ -13,6 +13,7 @@ import lombok.Data;
 @Data
 public class BdMarbasclass {
 
+
     private String pkMarbasclass;
     private String name;
     private String code;

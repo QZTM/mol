@@ -207,23 +207,29 @@
 
             </table>
         </div>
-        <div >
-            <span style="float: left;">
+
+    </div>
+    <!-- 中标结果结束-->
+    <div th:if="${expertReview=='true'}" >
+        <div style="clear: both;border: 1px solid black;height: 36px;margin-left: 10px;text-align: center;padding: 3px 3px 0px 3px ;">
+             <span style="float: left;">
                 专家评审费：
             </span>
-            <span style="float: left;"  th:text="${expertReward}">
-            </span>
-            <span style="width: 14%;float: right">
+                <span style="float: left;color: #b92c28;"  th:text="${expertReward}"></span><span style="float: left;"  >元</span>
+                <span style="width: 14%;float: right">
                 <button  id="basic-addon1" style="background-color: #5B9BD5;text-align: center" onclick="pay()">支付</button>
             </span>
         </div>
+
+        <div style="clear: both;margin: 3px 0px 0px 10px ;">
+            请尽快支付相关费用，以免耽误合作进度！
+        </div>
     </div>
-    <!-- 中标结果结束-->
 
 
 
     <div class="jumbotron">
-        <h2 th:text="${pur.status}" style="text-align: center">Hello, world!</h2>
+        <h2  style="text-align: center"><small th:text="${pur.status}"></small></h2>
 
     </div>
 

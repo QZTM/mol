@@ -54,12 +54,9 @@ public class TobeNegotiatedController {
 
         //判断userid 是否是管理员，
         AppAuthOrg appAuthOrg=loginService.AppAuthOrgByOrgId(orgId);
-        AppUser appUser = appAuthOrg.getPurchaseMainPerson();
-        /**
-         *测试
-         */
-        String ceshiId="1163256283915173888";//
-        appUser = loginService.one(ceshiId);//不测试可删除
+        String mainPersonId = appAuthOrg.getPurchaseMainPerson();
+
+        AppUser appUser = loginService.one(mainPersonId);//不测试可删除
 
 
         if (userId.equals(appUser.getId())){
@@ -129,16 +126,10 @@ public class TobeNegotiatedController {
 
         //查询企业信息
         AppAuthOrg appAuthOrg=loginService.AppAuthOrgByOrgId(orgId);
-        AppUser purchaseMainPerson = appAuthOrg.getPurchaseMainPerson();
-
-        //-------------------测试---------------
-        //String id="1163256283915173888";
-        //AppUser appUser=loginService.one(id);//1163256283915173888
-        //-------------------ceshi-----------------
-
-
+        String purchaseMainPerson = appAuthOrg.getPurchaseMainPerson();
+        AppUser appUser=loginService.one(purchaseMainPerson);
         //AppUser appUser = loginService.one(purchaseMainPerson.getId());
-        return ServiceResult.success(purchaseMainPerson);
+        return ServiceResult.success(appUser);
     }
 
 

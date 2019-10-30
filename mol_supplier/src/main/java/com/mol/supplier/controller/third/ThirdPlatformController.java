@@ -107,6 +107,7 @@ public class ThirdPlatformController {
     public List<fyPurchase> getOrderList(String buyId, String status) {
         //List<fyPurchase> orderList = platformService.findList(buyId, 1, 5);
         List<fyPurchase> orderList = platformService.findListByStatusAndId(buyId, 1, 8, status);
+        orderList=platformService.PurchaseToChinese(orderList);
         return orderList;
     }
 
@@ -157,14 +158,15 @@ public class ThirdPlatformController {
             list = pb.getList();
             count = pb.getTotalCount();
         } else {
-//            //获取采购内容的list
+            //获取采购内容的list
             list = platformService.findLIstByStatusAndGoodsTypeAndBuyChannelId(buyId, status, goodsType, pageNumber, pageSize);
             count = platformService.findCount(buyId, status, goodsType);
         }
+        //单一页面  将公司id切换为中文显示
+        if (buyId==5+""){
+            list=platformService.getPkSupplierToCHinese(list);
+        }
         map.addAttribute("list", list);
-
-        //设置pageBean的值
-//        int count=platformService.findCount(buyId);
         map.addAttribute("count", count);
         pb.setTotalCount(count);
         pb.setPageSize(pageSize);
@@ -175,10 +177,6 @@ public class ThirdPlatformController {
         List<BdMarbasclass> marbasFirstList = platformService.findMarbasClassFirstList();
         map.addAttribute("marList", marbasFirstList);
 
-        //设置pb页面的页码
-        //pb.setList(platformService.getPageNumList(pb));
-        //map.addAttribute("pb",pb);
-        //System.out.println(pb);
         map.addAttribute("searchVal", "");
         map.addAttribute("keyword", keyword);
         map.addAttribute("status", status);
@@ -227,7 +225,7 @@ public class ThirdPlatformController {
 
         System.out.println(id);
         fyPurchase purchase = platformService.selectOneById(id);
-
+        purchase=platformService.ToChineseString(purchase);
         //查询报价商家的数量
         String quoteCounts = purchase.getQuoteCounts();
         modelMap.addAttribute("quoteCount", quoteCounts);
@@ -324,8 +322,12 @@ public class ThirdPlatformController {
         }
         if (purchase.getBuyChannelId() == 5) {
             //判断供应商是不是单一供应商，不是则跳转；
+            String pkSupplier = purchase.getPkSupplier();
+            if (pkSupplier==null || !pkSupplier.equals(supplierId)){
+                return "error_quote";
+            }
         }
-
+        purchase=platformService.ToChineseString(purchase);
         //定义最后要传递到页面的list
         List<PurchaseArray> purList = new ArrayList<>();
         //解析json字段
@@ -369,12 +371,15 @@ public class ThirdPlatformController {
         }
         //通过ddid查询对应人员id
         Salesman salesman=platformService.findSalesManId(ddUserId);
-
-        platformService.saveQuote(quotes, supplierId, salesman);
+        try{
+            platformService.saveQuote(quotes, supplierId, salesman);
+        }catch (Exception e){
+            return ServiceResult.failureMsg("发生异常,请重新报价");
+        }
         //添加报价记录
         platformService.addQuoteCountsByPkMaterialId(quotes.getQuotes().get(0).getFyPurchaseId());
         //return "redirect:/index/findAll";
-        return ServiceResult.success("报价成功");
+        return ServiceResult.successMsg("报价成功");
 
     }
 

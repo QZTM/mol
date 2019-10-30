@@ -26,7 +26,7 @@
         select * from fy_purchase where buy_channel_id = #{buyId}  and goods_type =#{goodsType} ORDER BY create_time desc
     </select>
     <select id="findListByIdAndStatus"  parameterType="java.lang.String" resultType="com.mol.supplier.entity.dingding.solr.fyPurchase">
-        SELECT *  FROM `fy_purchase` where buy_channel_id =#{buyId} and status =#{status}
+        SELECT *  FROM `fy_purchase` where buy_channel_id =#{buyId} and status =#{status} ORDER BY create_time desc
     </select>
 
     <select id="findCountByIdAndStatus"  resultType="java.lang.Integer" parameterType="java.lang.String">
@@ -88,7 +88,7 @@
         <foreach collection="list" item="item" index="index" open="(" close=")" separator=",">
             #{item}
         </foreach>
-        AND STATUS  in( #{status_f},#{status_s},#{status_t})  order by create_time desc
+        AND STATUS  in( #{status_f},#{status_s},#{status_t},#{status_fo})  order by create_time desc
     </select>
     <select id="findListByOrgIdAndStatus" resultType="com.mol.supplier.entity.dingding.solr.fyPurchase" parameterType="java.lang.String">
         		select * from fy_purchase where org_id =#{orgId} and status in (#{status},#{secondStatus}) ORDER BY create_time DESC

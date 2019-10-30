@@ -66,8 +66,8 @@ public class ScheService {
         return fyQuoteMapper.findFypurchaseIdListBySupplierId(supplierId);
     }
 
-    public List<fyPurchase> findListByIdList(String status_f,String status_s,String status_t,List<String> purIdList) {
-        List<fyPurchase> fyPurchaseList = fyPurchaseMapper.findListByIdlistAndStatus(status_f,status_s,status_t, purIdList);
+    public List<fyPurchase> findListByIdList(String status_f,String status_s,String status_t,String status_fo,List<String> purIdList) {
+        List<fyPurchase> fyPurchaseList = fyPurchaseMapper.findListByIdlistAndStatus(status_f,status_s,status_t, status_fo,purIdList);
         List<fyPurchase> fList = new ArrayList<>();
         for (fyPurchase fyPurchase : fyPurchaseList) {
             fList.add(StatusScheUtils.getStatusIntegerToString(fyPurchase));

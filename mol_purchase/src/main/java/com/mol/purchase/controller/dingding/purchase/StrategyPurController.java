@@ -58,7 +58,7 @@ public class StrategyPurController {
     private SendMsmHandler sendMsmHandler = SendMsmHandler.getSendMsmHandler();
 
     @RequestMapping(value = "/start",method = RequestMethod.POST)
-    public ServiceResult<String> start(@RequestBody SubObj obj, HttpServletRequest request) throws DocumentException , IllegalAccessException, IOException {
+    public ServiceResult start(@RequestBody SubObj obj, HttpServletRequest request) throws DocumentException , IllegalAccessException, IOException {
 
         System.out.println("pagecontent"+ obj);
         PageArray pageArray = obj.getPageArray();
@@ -66,7 +66,13 @@ public class StrategyPurController {
 //        String userid = ddUser.getUserid();
         String orgId = obj.getOrgId();
         String staffId = obj.getStaffId();
-        StraregyObj stobj =strategyPurchaseService.save(pageArray,orgId,staffId);
+        StraregyObj stobj=null;
+        try{
+            stobj =strategyPurchaseService.save(pageArray,orgId,staffId);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ServiceResult.failureMsg("提交失败");
+        }
 
         //添加定时任务：
         quartzClient.addquoteendjobwithendtime(stobj.getId(),stobj.getDeadLine());
@@ -87,7 +93,7 @@ public class StrategyPurController {
                 sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, XiaoNiuMsmTemplate.提醒供应商报价模板(),phone);
             }
         }
-        return ServiceResult.success("成功");
+        return ServiceResult.successMsg("提交成功");
     }
 
     @RequestMapping(value = "/getSupplierNum")

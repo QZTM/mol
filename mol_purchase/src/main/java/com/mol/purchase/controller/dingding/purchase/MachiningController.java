@@ -27,14 +27,19 @@ public class MachiningController {
     private MachiningService machiningService;
 
     @RequestMapping(value = "/start",method = RequestMethod.POST)
-    public ServiceResult<String> start(@RequestBody SubObj obj, HttpServletRequest request) throws DocumentException, IllegalAccessException, IOException {
+    public ServiceResult start(@RequestBody SubObj obj, HttpServletRequest request) throws DocumentException, IllegalAccessException, IOException {
 
 
         PageArray pageArray = obj.getPageArray();
         String staid=obj.getStaffId();
         String orgId=obj.getOrgId();
         String type=obj.getType();
-
-        return machiningService.save(pageArray,staid,orgId,type);
+        try{
+            machiningService.save(pageArray,staid,orgId,type);
+        }catch (Exception e){
+            e.printStackTrace();
+            return ServiceResult.failureMsg("提交失败");
+        }
+        return ServiceResult.successMsg("提交成功");
     }
 }
