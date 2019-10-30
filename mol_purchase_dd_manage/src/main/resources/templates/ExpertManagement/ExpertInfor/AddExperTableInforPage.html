@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<link rel="stylesheet" href="/layui/css/layui.css">
+<script src="/echarts.min.js"></script>
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js" type="text/javascript"></script>
+<body onload="Landing_start()">
+
+<div style="padding: 12px;">
+
+    <div style="width: 100%;height: 80px;">
+        <div style="width: 100%; height: 40px;">
+            <div style="float:left; width: 150px;height: 35px;background-color:#2D93CA;border-radius: 6px;font-size: 20px;text-align:center;color:#fbfbfb;">
+                <p style="margin-top: 3px">新增专家</p>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <hr class="layui-bg-green">
+    </div>
+    <div>
+        <div style="width: 100%;height: 40px;margin-top: 24px">
+            <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;">
+                <p style="margin: 4px">专家姓名</p>
+            </div>
+            <input id="input_name" style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="请输入标题">
+
+            <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;margin-left: 5%">
+                <p style="margin: 4px">出生日期</p>
+            </div>
+            <input id="date" type="text" name="date"  lay-verify="date" style="margin-left: 16px;float:left;width: 35%;height: 30px;font-size: 16px" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+        </div>
+
+        <div style="width: 100%;height: 40px;margin-top: 24px">
+            <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;">
+                <p style="margin: 4px">年龄</p>
+            </div>
+            <input id="input_age" style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="请输入标题">
+
+            <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;margin-left: 5%">
+                <p style="margin: 4px">工作年限</p>
+            </div>
+            <input id="input_work_life" style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="只能输入纯数字如 2 代表两年">
+        </div>
+
+        <div style="width: 100%;height: 40px;margin-top: 24px">
+            <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;">
+                <p style="margin: 4px">身份证号码</p>
+            </div>
+            <input id="input_id_number" style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="请输入标题">
+
+            <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;margin-left: 5%">
+                <p style="margin: 4px">所属行业</p>
+            </div>
+            <input id="input_industry" style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="只能输入纯数字如 2 代表两年">
+        </div>
+        <form id="File_upload_form" method="post" enctype="multipart/form-data">
+            <div style="margin-top: 24px">
+                <div style="width: 100%;height: 35px">
+                    <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;">
+                        <p style="margin: 4px">身份证材料</p>
+                    </div>
+                </div>
+                <div style="width: 95%;height: 300px;border-radius: 6px;border:1px solid #B2B2B2;">
+                    <div style="float: left;margin: 24px">
+                        <!--  <form  id="domeform" method="post" enctype="multipart/form-data">-->
+                        <div style="float: left;">
+                            <div style="float: left;">
+                                <div>
+                                    <img id="img_front_of_id" class="pimg" name="image" src="/imge/file.ico" style="height: 140px;width: 120px;">
+                                </div>
+                                <input id="input_img_front_of_id" onchange="Input_image_change(this)" type="file" name="file" value="选择图片" style="color: transparent;width: 80px;margin-left: 25px ;margin-top: 3px">
+                                <div>
+                                    <p style="word-wrap:break-word;text-align:center;width:115px;margin-top: 3px">未选择文件</p>
+                                </div>
+
+                                <div style="margin:0 auto;width: 60px;border-radius: 4px;background-color: #eb7350;color: #fbfbfb;cursor:pointer;" onclick="Delete_image_logo(this)">
+                                    <p style="text-align:center;">删除</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="float: left;padding-left: 24px">
+                            <div style="float: left;">
+                                <div>
+                                    <img id="img_reverse_of_id" class="pimg" name="image" src="/imge/file.ico" style="height: 140px;width: 120px;">
+                                </div>
+                                <input  onchange="Input_image_change(this)" type="file" name="file" value="选择图片" style="color: transparent;width: 80px;margin-left: 25px ;margin-top: 3px">
+                                <div>
+                                    <p style="word-wrap:break-word;text-align:center;width:115px;margin-top: 3px">未选择文件</p>
+                                </div>
+
+                                <div style="margin:0 auto;width: 60px;border-radius: 4px;background-color: #eb7350;color: #fbfbfb;cursor:pointer;" onclick="Delete_image_logo(this)">
+                                    <p style="text-align:center;">删除</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!--  </form>-->
+                    </div>
+                    <!--                <div style="float: left;margin-top: 24px;margin-left: 12px">
+                                        <img src="/imge/add_file.ico" style="float: left;height: 140px;width: 120px;" onclick="Add_image_uplaod_logo(this)">
+                                    </div>-->
+                </div>
+            </div>
+
+            <div style="margin-top: 24px">
+                <div style="width: 100%;height: 35px">
+                    <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;">
+                        <p style="margin: 4px">名片资料</p>
+                    </div>
+                </div>
+                <div style="width: 95%;height:  300px;border-radius: 6px;border:1px solid #B2B2B2;">
+                    <div style="float: left;margin: 24px">
+                        <!-- <form  id="name_card" method="post" enctype="multipart/form-data">-->
+                        <div style="float: left;">
+                            <div style="float: left;">
+                                <div>
+                                    <img id="img_front_of_business" class="pimg" src="/imge/file.ico" style="height: 140px;width: 120px;">
+                                </div>
+                                <input  onchange="Input_image_change(this)" type="file" name="file" value="选择图片" style="color: transparent;width: 80px;margin-left: 25px ;margin-top: 3px">
+                                <div>
+                                    <p style="word-wrap:break-word;text-align:center;width:115px;margin-top: 3px">未选择文件</p>
+                                </div>
+                                <div style="margin:0 auto;width: 60px;border-radius: 4px;background-color: #eb7350;color: #fbfbfb;cursor:pointer;" onclick="Delete_image_logo(this)">
+                                    <p style="text-align:center;">删除</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="float: left;padding-left: 24px">
+                            <div style="float: left;">
+                                <div>
+                                    <img id="img_reverse_of_business" class="pimg" src="/imge/file.ico" style="height: 140px;width: 120px;">
+                                </div>
+                                <input  onchange="Input_image_change(this)" type="file" name="file" value="选择图片" style="color: transparent;width: 80px;margin-left: 25px ;margin-top: 3px">
+                                <div>
+                                    <p style="word-wrap:break-word;text-align:center;width:115px;margin-top: 3px">未选择文件</p>
+                                </div>
+                                <div style="margin:0 auto;width: 60px;border-radius: 4px;background-color: #eb7350;color: #fbfbfb;cursor:pointer;" onclick="Delete_image_logo(this)">
+                                    <p style="text-align:center;">删除</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- </form>-->
+                    </div>
+                    <!--                <div style="float: left;margin-top: 24px;margin-left: 12px">
+                                        <img src="/imge/add_file.ico" style="float: left;height: 140px;width: 120px;" onclick="Add_image_uplaod_logo(this)">
+                                    </div>-->
+                </div>
+            </div>
+
+            <div style="margin-top: 24px">
+                <div style="width: 100%;height: 35px">
+                    <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;">
+                        <p style="margin: 4px">其他材料</p>
+                    </div>
+                </div>
+                <div style="width: 95%;height:  300px;border-radius: 6px;border:1px solid #B2B2B2;">
+                    <div style="float: left;margin: 24px">
+                        <!-- <form  id="other_data" method="post" enctype="multipart/form-data">-->
+                        <div style="float: left;">
+                            <div style="float: left;">
+                                <div>
+                                    <img id="img_other_documents_one" class="pimg" src="/imge/file.ico" style="height: 140px;width: 120px;">
+                                </div>
+                                <input  onchange="Input_image_change(this)" type="file" name="file" value="选择图片" style="color: transparent;width: 80px;margin-left: 25px ;margin-top: 3px">
+                                <div>
+                                    <p style="word-wrap:break-word;text-align:center;width:115px;margin-top: 3px">未选择文件</p>
+                                </div>
+                                <div style="margin:0 auto;width: 60px;border-radius: 4px;background-color: #eb7350;color: #fbfbfb;cursor:pointer;" onclick="Delete_image_logo(this)">
+                                    <p style="text-align:center;">删除</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="float: left;padding-left: 24px">
+                            <div style="float: left;">
+                                <div>
+                                    <img id="img_other_documents_two" class="pimg" src="/imge/file.ico" style="height: 140px;width: 120px;">
+                                </div>
+                                <input  onchange="Input_image_change(this)" type="file" name="file" value="选择图片" style="color: transparent;width: 80px;margin-left: 25px ;margin-top: 3px">
+                                <div>
+                                    <p style="word-wrap:break-word;text-align:center;width:115px;margin-top: 3px">未选择文件</p>
+                                </div>
+                                <div style="margin:0 auto;width: 60px;border-radius: 4px;background-color: #eb7350;color: #fbfbfb;cursor:pointer;" onclick="Delete_image_logo(this)">
+                                    <p style="text-align:center;">删除</p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- </form>-->
+                    </div>
+                    <!--                <div style="float: left;margin-top: 24px;margin-left: 12px">
+                                        <img src="/imge/add_file.ico" style="float: left;height: 140px;width: 120px;" onclick="Add_image_uplaod_logo(this)">
+                                    </div>-->
+                </div>
+            </div>
+        </form>
+        <div>
+            <div style="width: 50%;height: 60px;margin:  0 auto;margin-top: 36px">
+                <div style="float: left;border-radius: 6px;background-color: #2D93CA;color:#fbfbfb;width: 120px;height:40px;font-size: 24px;text-align: center;cursor:pointer" onclick="Save_form()">
+                    <p>保 存</p>
+                </div>
+                <div style="float: right;border-radius: 6px;background-color:#eb7350;color:#fbfbfb;width: 120px;height:40px;font-size: 24px;text-align: center;cursor:pointer" onclick="return_top()">
+                    <p>退 出</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<div id="outerdiv" style="position:fixed;top:0;left:0;background:rgba(0,0,0,0.7);z-index:2;width:100%;height:100%;display:none;">
+    <div id="innerdiv" style="position:absolute;">
+        <img id="bigimg" style="border:5px solid #fff;" src="" />
+    </div>
+</div>
+
+<script src="/layui/layui.all.js"></script>
+<script>
+
+   // var ima_delete=new Array();//当用户删除了身份证正面图片时 ima_delete[0]=1;如果没删除ima_delete[0]=0；
+    function Landing_start()
+    {
+/*
+        for (var n=1;n<=6;n++)
+        {
+            ima_delete[n]=0;
+        }*/
+    }
+
+    function File_upload(upload_type_id)//上传文件的方法，参数 url controller地址 上传文件类型的div id 如名片div的id 或者 身份材料的divid
+    {
+        var img_id = new FormData(document.getElementById('File_upload_form'));//"domeform"
+       // img_id.set("ExperId",document.getElementById("ExperId").innerText);//传一个专家id
+
+        img_id.set("name",document.getElementById("input_name").value);//传一个专家id
+        img_id.set("birthday",document.getElementById("date").value);//传一个生日
+        img_id.set("age",document.getElementById("input_age").value);//专家年龄
+        img_id.set("work_life",document.getElementById("input_work_life").value);//工作年限
+        img_id.set("id_number",document.getElementById("input_id_number").value);//身份证号
+        img_id.set("industry",document.getElementById("input_industry").value);//所属行业
+       // img_id.set("ima_delete",ima_delete);
+
+        $.ajax({
+            url: "/ExperManagement/AddExperInfor",
+            type: "post",
+            data: img_id,//,img_business:img_business,img_documents:img_documents},
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                alert("123456")
+            },
+            error: function(e) {
+                console.log(e);
+            }
+        });
+    }
+
+
+    function Delete_image_logo(e) //删除文件框 参数 e ，mge_number 1~6的图片序号 如1代表身份证正面
+    {
+        if (confirm("你要删除此文件吗?"))
+        {
+            e.parentElement.childNodes[1].childNodes[1].src="/imge/file.ico";
+            e.parentElement.childNodes[3].outerHTML=e.parentElement.childNodes[3].outerHTML;//清除input里的图片
+        }
+    }
+    function Input_image_change(file)//上传的图片同时在image中显示，并且显示文件的名字  判断图片类型和大小
+    {
+        var fileSize = 0;
+        var fileMaxSize = 2048;//1M
+        var filePath = file.value;
+        if(filePath){
+            fileSize =file.files[0].size;
+            var size = fileSize / 1024;
+            if (size > fileMaxSize)
+            {
+                alert("图片大小不能大于2MB！");
+                file.value = "";
+                return false;
+            }
+            else if (size <= 0)
+            {
+                alert("图片大小不能为0MB！");
+                file.value = "";
+                return false;
+            }
+            else//判断文件类型
+            {
+                var fileTypes = ["jpg", "png","JPG"];
+                var filePath = file.value;
+                //当括号里面的值为0、空字符、false 、null 、undefined的时候就相当于false
+                if(filePath){
+                    var isNext = false;
+                    var fileNames=filePath.split('.');//filePath.substring(filePath.indexOf("."));
+                    var fileEnd = fileNames[fileNames.length-1];
+                    console.log(fileEnd)
+                    for (var i = 0; i < fileTypes.length; i++) {
+                        if (fileTypes[i] == fileEnd) {
+                            isNext = true;
+                            break;
+                        }
+                    }
+                    if (!isNext)//判断是否符合标准
+                    {
+                        alert('不接受此文件类型，只能上传格式为jpg或者png的图片');
+                        file.value = "";
+                        return false;
+                    }
+                    else //文件通过，可以上传
+                    {
+                        var reads= new FileReader();
+                        reads.readAsDataURL(file.files[0]);
+                        reads.onload=function (l) {
+                            file.parentElement.childNodes[1].childNodes[1].src=this.result;
+                        };
+                        file.parentElement.childNodes[5].childNodes[1].textContent=file.files[0].name//显示文件名字
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
+    layui.use(['form', 'layedit', 'laydate'], function(){
+        var form = layui.form
+            ,layer = layui.layer
+            ,layedit = layui.layedit
+            ,laydate = layui.laydate;
+        //日期
+        laydate.render({
+            elem: '#date'
+        });
+        laydate.render({
+            elem: '#date1'
+        });
+
+        laydate.render({
+            elem: '#test1'
+        });
+
+    });
+    function  Save_form()
+    {
+        if (confirm("你要删除此文件吗?"))
+        {
+            File_upload("domeform")
+        }
+    }
+
+
+    $(document).ready(function(){
+        $(".pimg").click(function(){
+            var _this = $(this);//将当前的pimg元素作为_this传入函数
+            imgShow("#outerdiv", "#innerdiv", "#bigimg", _this);
+        });
+    });
+    /*        $(function(){
+                $(".pimg").click(function(){
+                    alert("222")
+                    var _this = $(this);//将当前的pimg元素作为_this传入函数
+                    imgShow("#outerdiv", "#innerdiv", "#bigimg", _this);
+                });
+            });*/
+
+    function imgShow(outerdiv, innerdiv, bigimg, _this){
+        var src = _this.attr("src");//获取当前点击的pimg元素中的src属性
+        $(bigimg).attr("src", src);//设置#bigimg元素的src属性
+
+        /*获取当前点击图片的真实大小，并显示弹出层及大图*/
+        $("<img/>").attr("src", src).load(function(){
+            var windowW = $(window).width();//获取当前窗口宽度
+            var windowH = $(window).height();//获取当前窗口高度
+            var realWidth = this.width;//获取图片真实宽度
+            var realHeight = this.height;//获取图片真实高度
+            var imgWidth, imgHeight;
+            var scale = 0.8;//缩放尺寸，当图片真实宽度和高度大于窗口宽度和高度时进行缩放
+
+            if(realHeight>windowH*scale) {//判断图片高度
+                imgHeight = windowH*scale;//如大于窗口高度，图片高度进行缩放
+                imgWidth = imgHeight/realHeight*realWidth;//等比例缩放宽度
+                if(imgWidth>windowW*scale) {//如宽度扔大于窗口宽度
+                    imgWidth = windowW*scale;//再对宽度进行缩放
+                }
+            } else if(realWidth>windowW*scale) {//如图片高度合适，判断图片宽度
+                imgWidth = windowW*scale;//如大于窗口宽度，图片宽度进行缩放
+                imgHeight = imgWidth/realWidth*realHeight;//等比例缩放高度
+            } else {//如果图片真实高度和宽度都符合要求，高宽不变
+                imgWidth = realWidth;
+                imgHeight = realHeight;
+            }
+            $(bigimg).css("width",imgWidth);//以最终的宽度对图片缩放
+
+            var w = (windowW-imgWidth)/2;//计算图片与窗口左边距
+            var h = (windowH-imgHeight)/2;//计算图片与窗口上边距
+            $(innerdiv).css({"top":h, "left":w});//设置#innerdiv的top和left属性
+            $(outerdiv).fadeIn("fast");//淡入显示#outerdiv及.pimg
+        });
+
+        $(outerdiv).click(function(){//再次点击淡出消失弹出层
+            $(this).fadeOut("fast");
+        });
+    }
+
+    function return_top()//返回上一层
+    {
+        if (confirm("退出后数据将不会保存！"))
+        {
+            parent.close_Details_page();
+        }
+    }
+
+</script>
+
+
+
+</body>
+</html>

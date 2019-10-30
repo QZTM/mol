@@ -34,6 +34,7 @@ public class MicroRegistService {
         String nowTime = TimeUtil.getNowDateTime();
         supplier.setRegistTime(nowTime);
         supplier.setLastUpdateTime(nowTime);
+        supplier.setVersion(1);
         try {
             microSupplierMapper.insert(supplier);
             return newId;

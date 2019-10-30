@@ -1,7 +1,7 @@
 package com.mol.ddmanage.Controller.ExperManagement;
 
-import com.mol.ddmanage.Ben.ExperManagement.ExpertInforPageListben;
-import com.mol.ddmanage.Service.ExperManagement.ExpertInforPageListService;
+import com.mol.ddmanage.Ben.ExperManagement.ExperApprovalListben;
+import com.mol.ddmanage.Service.ExperManagement.ExperApprovalListService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,10 +14,10 @@ import java.util.ArrayList;
 public class ExperApprovalListController
 {
    @Resource
-   ExpertInforPageListService expertInforPageListService;
+   ExperApprovalListService experApprovalListService;
    @RequestMapping("/ShowList")
-   public ArrayList<ExpertInforPageListben> ShowList(@RequestParam String authentication)//专家审核列表
+   public ArrayList<ExperApprovalListben> ShowList(@RequestParam String authentication)//专家审核列表
    {
-       return expertInforPageListService.ExpertInforPageListShow(authentication);
+       return experApprovalListService.ShowList(authentication);
    }
 }

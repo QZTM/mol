@@ -145,6 +145,7 @@
                         [
                              {type: 'checkbox', fixed: 'left'}
                             ,{field:'number', title:'ID', width:100, fixed: 'left'}
+                            ,{field:'pk_supplier', title:'供应商id', width:100}
                             ,{field:'name', title:'供应商名称', width:100}
                             ,{field:'supplier_type', title:'类型', width:150}
                             ,{field:'industry', title:'行业类别', width:200}
@@ -177,7 +178,7 @@
             else if(obj.event === 'edit1')//点击查看按钮
             {
                 document.getElementById("datagridview").style.display="none";
-                document.getElementById("subWin").src="/Home/SupplierToExaminePage";//?JobName="+data.item1;//跳转到合同详情 传送一个合同编号
+                document.getElementById("subWin").src="/Home/SupplierToExaminePage?pk_supplier="+data.pk_supplier;//跳转到合同详情 传送一个合同编号
                 document.getElementById("Details").style.display="block";
             }
         });

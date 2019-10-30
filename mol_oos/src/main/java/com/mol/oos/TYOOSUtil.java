@@ -1,7 +1,7 @@
 package com.mol.oos;
 
 import java.io.*;
-
+import java.util.List;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.GetObjectRequest;
@@ -11,29 +11,43 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 
-public class TYOOS {
+public class TYOOSUtil {
 
-    private static AmazonS3 oos = OOSClient.getClient();
-
-    private TYOOS(){
+    private AmazonS3 oos = OOSClient.getClient();
+    private volatile static TYOOSUtil oosUtil;
+    private TYOOSUtil(){
     }
+
+    public static TYOOSUtil getUtil() {
+        if (oosUtil == null) {
+            synchronized (TYOOSUtil.class) {
+                if (oosUtil == null) {
+                    oosUtil = new TYOOSUtil();
+                }
+            }
+        }
+        return oosUtil;
+    }
+
 
     /**
      * 列出所有的bucket
      */
-    public static void bucketList(){
+    public List<Bucket> bucketList(){
         /*列出账户内的所有 buckets */
         System.out.println("Listing buckets");
-        for (Bucket bucket : oos.listBuckets()) {
+        List<Bucket> buckets = oos.listBuckets();
+        for (Bucket bucket : buckets) {
             System.out.println(" - " + bucket.getName());
         }
+        return buckets;
     }
 
     /**
      * 创建bucket
      * @param bucketName
      */
-    public static void createBucket(String bucketName){
+    public void createBucket(String bucketName){
         /* 创建 bucket */
         System.out.println("Creating bucket " + bucketName + "\n");
         oos.createBucket(bucketName);
@@ -46,7 +60,7 @@ public class TYOOS {
      * @param key               文件名
      * @param file              文件
      */
-    public static void uploadObjToBucket(String bucketName,String key,File file) throws IOException {
+    public void uploadObjToBucket(String bucketName,String key,File file) throws IOException {
         /* 上传一个 object 到 bucket 中 */
         System.out.println("Uploading a new object to OOS from a file\n");
             oos.putObject(new PutObjectRequest(bucketName, key, createSampleFile()));
@@ -58,7 +72,7 @@ public class TYOOS {
      * @param key
      * @throws IOException
      */
-    public static void download(String bucketName,String key) throws IOException {
+    public void download(String bucketName,String key) throws IOException {
         /* 下载 object */
         System.out.println("Downloading an object");
             /* 当使用getObject()方法时，需要非常小心。因为返回的S3Object对象包
@@ -79,7 +93,7 @@ public class TYOOS {
      * @param destinationBucketName
      * @param destinationKey
      */
-    public static void copy(String bucketName,String key,String destinationBucketName,String destinationKey){
+    public void copy(String bucketName,String key,String destinationBucketName,String destinationKey){
         /* 拷贝 object */
 //        String destinationBucketName = "my-copy-oos-bucket";
 //        String destinationKey = "MyCopyKey";
@@ -97,7 +111,7 @@ public class TYOOS {
      * @param destinationBucketName
      * @throws IOException
      */
-    public static void downCoped(String bucketName,String key,String destinationKey,String destinationBucketName) throws IOException {
+    public void downCoped(String bucketName,String key,String destinationKey,String destinationBucketName) throws IOException {
         /* 下载拷贝的 object */
         S3Object object = oos.getObject(new GetObjectRequest(bucketName, key));
         System.out.println("Downloading the " + destinationKey + " object");
@@ -113,7 +127,7 @@ public class TYOOS {
      * @param bucketName        桶名称
      * @param filePre           文件前缀
      */
-    public static void listObj(String bucketName,String filePre){
+    public  void listObj(String bucketName,String filePre){
         /* 列出 bucket 中的 object，支 prefix,delimiter,marker,max-keys 等选项 */
         if(filePre == null){
             filePre = "";
@@ -134,7 +148,7 @@ public class TYOOS {
      * @param destinationBucketName
      * @param destinationKey
      */
-    public static void delObj(String bucketName,String key,String destinationBucketName,String destinationKey){
+    public void delObj(String bucketName,String key,String destinationBucketName,String destinationKey){
         /* 删除 object */
         System.out.println("Deleting objects\n");
         oos.deleteObject(bucketName, key);
@@ -147,7 +161,7 @@ public class TYOOS {
      * @param bucketName
      * @param destinationBucketName
      */
-    public static void delBucket(String bucketName,String destinationBucketName){
+    public void delBucket(String bucketName,String destinationBucketName){
         /* 删除 bucket */
         System.out.println("Deleting bucket " + bucketName + "\n");
         oos.deleteBucket(bucketName);
@@ -170,7 +184,7 @@ public class TYOOS {
     }
 
 
-    public static void getBucketLocation(String bucketName){
+    public void getBucketLocation(String bucketName){
         String locationResult = oos.getBucketLocation(bucketName);
         System.out.println("bucketLocation:"+locationResult);
     }
@@ -181,7 +195,7 @@ public class TYOOS {
      * @param input
      * @throws IOException
      */
-    public static void displayTextInputStream(InputStream input) throws IOException {
+    public void displayTextInputStream(InputStream input) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         while (true) {
             String line = reader.readLine();

@@ -32,8 +32,9 @@ public class MicroSmsController {
      * 供应商注册验证码    1001
      */
 
-    private static final String MSMTYPE_REGIST = "regist";
-    private static final String MSMTYPE_AUTH = "auth";
+    private static final String MSMTYPE_SUPPLIER_REGIST = "supplierRegist";
+    private static final String MSMTYPE_SUPPLIER_AUTH = "supplierAuth";
+    private static final String MSMTYPE_SUPPLIER_UPDATE = "supplieUpdate";
 
     @RequestMapping(value = "/send", method = RequestMethod.POST)
     @ResponseBody
@@ -50,12 +51,14 @@ public class MicroSmsController {
         }
         XiaoNiuMsmTemplate template = null;
         switch (msgType) {
-            case MSMTYPE_REGIST:
+            case MSMTYPE_SUPPLIER_REGIST:
                 template = XiaoNiuMsmTemplate.供应商注册模板();
                 break;
-            case MSMTYPE_AUTH:
+            case MSMTYPE_SUPPLIER_AUTH:
                 template = XiaoNiuMsmTemplate.供应商认证模板();
                 break;
+            case MSMTYPE_SUPPLIER_UPDATE:
+                template = XiaoNiuMsmTemplate.供应商修改信息模板();
         }
         String sendResult = sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, template,phone);
         return ServiceResult.success("发送成功", sendResult);

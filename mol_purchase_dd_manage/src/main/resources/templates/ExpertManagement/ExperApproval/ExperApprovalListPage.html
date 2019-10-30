@@ -157,7 +157,8 @@
                     ,title: '用户数据表'
                     ,cols: [
                         [
-                            {field:'number', title:'ID', width:100, fixed: 'left', unresize: true, sort: true}
+                            {field:'number', title:'序号', width:100, fixed: 'left', unresize: true, sort: true}
+                            ,{field:'id', title:'专家id', width:150}
                             ,{field:'name', title:'姓名', width:100, edit: 'text'}
                             ,{field:'birthday', title:'出生日期', width:150, edit: 'text'}
                             ,{field:'id_number', title:'身份证', width:200}
@@ -188,7 +189,7 @@
             else if(obj.event === 'edit2')//点击查看按钮
             {
                 document.getElementById("datagridview").style.display="none";
-                document.getElementById("subWin").src="/Home/SetExperApprovalPage";//?JobName="+data.item1;//跳转到合同详情 传送一个合同编号
+                document.getElementById("subWin").src="/Home/SetExperApprovalPage?ExperId="+data.id;//传一个专家id
                 document.getElementById("Details").style.display="block";
             }
         });

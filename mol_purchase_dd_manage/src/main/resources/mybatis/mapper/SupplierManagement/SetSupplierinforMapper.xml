@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.ddmanage.mapper.SupplierManagement.SetSupplierinforMapper">
+
+    <select id="LandingSupplierinforMapper" resultType="com.mol.ddmanage.Ben.SupplierManagement.SetSupplierinforben">
+        select bd_supplier.*,
+         (select bd_marbasclass.name from bd_marbasclass where bd_marbasclass.pk_marbasclass=bd_supplier.industry_first)industry_first,
+         (select pui_supplier_deposit.money from pui_supplier_deposit where pui_supplier_deposit.supplier_id=bd_supplier.pk_supplier)money
+        from  bd_supplier where
+        bd_supplier.pk_supplier=#{pk_supplier}
+
+    </select>
+</mapper>

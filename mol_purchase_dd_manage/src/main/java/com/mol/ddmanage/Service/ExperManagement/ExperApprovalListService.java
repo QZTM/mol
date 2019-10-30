@@ -15,6 +15,10 @@ public class ExperApprovalListService
     public ArrayList<ExperApprovalListben> ShowList(String authentication)
     {
         ArrayList<ExperApprovalListben> experApprovalListbens=experApprovalListMapper.ExperApprovalListShow(authentication);
+        for(int n=0;n<experApprovalListbens.size();n++)
+        {
+            experApprovalListbens.get(n).setNumber(String.valueOf(n));
+        }
         return experApprovalListbens;
     }
 }

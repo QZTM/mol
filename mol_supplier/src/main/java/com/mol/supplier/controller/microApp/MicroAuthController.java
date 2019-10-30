@@ -1,11 +1,12 @@
 package com.mol.supplier.controller.microApp;
-
 import com.alibaba.fastjson.JSON;
 import com.mol.sms.SendMsmHandler;
 import com.mol.supplier.config.MicroAttr;
 import com.mol.supplier.entity.MicroApp.Salesman;
 import com.mol.supplier.entity.MicroApp.Supplier;
+import com.mol.supplier.entity.thirdPlatform.BdMarbasclass;
 import com.mol.supplier.mapper.newMysql.microApp.MicroSupplierMapper;
+import com.mol.supplier.mapper.newMysql.third.BdMarbasclassMapper;
 import com.mol.supplier.service.microApp.MicroAuthService;
 import com.mol.supplier.service.microApp.MicroUserService;
 import entity.ServiceResult;
@@ -16,10 +17,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Enumeration;
-import java.util.Map;
+import java.util.List;
 
 /**
  * 供应商认证控制器
@@ -83,6 +85,9 @@ public class MicroAuthController {
 
     private SendMsmHandler sendMsmHandler = SendMsmHandler.getSendMsmHandler();
 
+    @Autowired
+    private BdMarbasclassMapper bdMarbasclassMapper;
+
 
     @RequestMapping("/attr")
     public String showAuthChoosePage() {
@@ -105,6 +110,11 @@ public class MicroAuthController {
         if (supplier == null) {
             throw new RuntimeException("请先注册后再试");
         }
+
+        //获取行业类别（物料分类的第一级）
+        List<BdMarbasclass> bdMarbasclassList = bdMarbasclassMapper.findMarbasFirstList();
+        model.addAttribute("itemTypeList",bdMarbasclassList);
+
         if ("jichu".equals(authType)) {
             model.addAttribute("pagenametitlefront", "基础");
             pageName = "authenticate_jichu2";
@@ -114,6 +124,8 @@ public class MicroAuthController {
             //如果正在认证中显示认证中页面
             if(supplier.getIfAttrNormal() == 1 && supplier.getSupstateNormal() == MicroAttr.SUPSTATE_LOADING){
                 pageName = "authenticate_shenhe";
+            }else if(supplier.getIfAttrNormal() == 1 && supplier.getSupstateNormal() == MicroAttr.SUPSTATE_FAIL){
+                pageName = "authenticate_update_jichu";
             }
 
         } else if ("zhanlve".equals(authType)) {
@@ -136,6 +148,22 @@ public class MicroAuthController {
         return pageName;
     }
 
+
+    @RequestMapping(value = "/update",method = RequestMethod.POST)
+    @ResponseBody
+    public ServiceResult update(@RequestBody Supplier supplier, HttpSession session, HttpServletResponse response) throws IOException {
+            Supplier supplier1 = microUserService.getSupplierFromSession(session);
+        System.out.println(supplier);
+        supplier.setPkSupplier(supplier1.getPkSupplier());
+        try{
+            microSupplierMapper.updateByPrimaryKeySelective(supplier);
+            Supplier newSupplier = microSupplierMapper.selectByPrimaryKey(supplier);
+            session.setAttribute("supplier",newSupplier);
+        }catch(Exception e){
+            return ServiceResult.failureMsg("系统异常，请稍后再试");
+        }
+        return ServiceResult.successMsg("修改成功");
+    }
 
     /**
      * 认证相关图片上传并保存入数据库
@@ -193,7 +221,8 @@ public class MicroAuthController {
         if (saveResult != 1) {
             throw new RuntimeException("保存照片时出错");
         }
-
+        Supplier newSupplier = microSupplierMapper.selectByPrimaryKey(supplier);
+        session.setAttribute("supplier",newSupplier);
         return ServiceResult.success("保存成功");
     }
 
@@ -250,8 +279,6 @@ public class MicroAuthController {
         }
 
         Supplier newSupplier = microSupplierMapper.selectByPrimaryKey(supplier.getPkSupplier());
-        System.out.println("newSupplier:");
-        System.out.println(newSupplier);
         session.setAttribute("supplier",newSupplier);
         return ServiceResult.success("保存成功");
 

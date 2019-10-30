@@ -36,7 +36,7 @@ public class MicroGetDDUserInfoService {
             response = client.execute(request, microTokenService.getToken());
         }catch (Exception e){
             logger.error("通过免登授权码获取用户id失败（ddAPI）");
-            e.printStackTrace();
+            throw new RuntimeException("通过免登授权码获取用户id失败（ddAPI）");
         }
         String userId = response.getUserid();
         logger.info("userId:"+userId);

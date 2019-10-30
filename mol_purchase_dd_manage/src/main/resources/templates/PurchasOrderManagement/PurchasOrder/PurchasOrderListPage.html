@@ -161,7 +161,8 @@
                     ,page: true
                 });
             },
-            error: function (data) {
+            error: function (data)
+            {
                 alert("获取审核议价信息失败")
             }
         });
@@ -183,7 +184,7 @@
             else if(obj.event === 'edit'){
                 console.log(data.type);
                 document.getElementById("datagridview").style.display="none";
-                document.getElementById("subWin").src="/Home/PurchasOrderinforPage?Oreder_number="+obj.data.l4;//跳转到合同详情 传送一个合同编号
+                document.getElementById("subWin").src="/Home/PurchasOrderinforPage?Oreder_number="+data.id+"&user_name="+data.user_name+"&create_time="+data.create_time+"&goods_name="+data.goods_name;//跳转到合同详情 传送一个合同编号
                 document.getElementById("Details").style.display="block";
             }
             $("#Details").animate({width:"100%"}, 500);//展开

@@ -16,14 +16,23 @@ public class File_Receive
     public String Receive_default_file(@RequestParam("file") ArrayList<MultipartFile> files)
     {
         try {
+            ArrayList<byte[]> imas=new ArrayList<>();
+
             for (MultipartFile file :files)
             {
                 String fileName = file.getOriginalFilename();
                 String dir=System.getProperty("user.dir");
                 String destFileName=dir+ File.separator +"uploadedfiles_"+fileName;
-                System.out.println(destFileName);
-                File destFile = new File(destFileName);
-                file.transferTo(destFile);
+ /*               File destFile = file.getBytes();//new File(destFileName);
+
+                BufferedImage bi;
+                bi = ImageIO.read(destFile);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ImageIO.write(bi, "jpg", baos);  //经测试转换的图片是格式这里就什么格式，否则会失真*/
+                byte[] bytes =file.getBytes();// baos.toByteArray();
+                imas.add(bytes);
+
+                //   file.transferTo(destFile);
             }
             return "上传成功";
           //  System.out.println("开始读取EXCEL内容");

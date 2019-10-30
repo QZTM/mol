@@ -2,6 +2,9 @@ package com.mol.supplier.entity.thirdPlatform;
 
 import lombok.Data;
 
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 /**
  * ClassName:BdMarbasclass
  * Package:com.mol.supplier.entity.thirdPlatform

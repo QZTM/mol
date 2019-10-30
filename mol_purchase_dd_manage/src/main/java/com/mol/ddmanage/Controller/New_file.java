@@ -164,21 +164,29 @@ public class New_file {
     }
 
     @RequestMapping("/EditExperInforPage")//专家信息编辑
-    public String EditExperInforPage()
+    public String EditExperInforPage(@RequestParam Map map,Model model)
     {
+        model.addAttribute("ExperId",map.get("ExperId").toString());
         return "ExpertManagement/ExpertInfor/EditExperInforPage";
     }
 
-    @RequestMapping("/ExperApprovalListPage")//专家信息审核
+    @RequestMapping("/ExperApprovalListPage")//专家信息审核列表
     public String ExperApprovalListPage()
     {
         return "ExpertManagement/ExperApproval/ExperApprovalListPage";
     }
 
     @RequestMapping("/SetExperApprovalPage")//专家资料审核
-    public String SetExperApprovalPage()
+    public String SetExperApprovalPage(@RequestParam Map map,Model model)
     {
+        model.addAttribute("ExperId",map.get("ExperId").toString());//传出去专家id
         return "ExpertManagement/ExperApproval/SetExperApprovalPage";
+    }
+
+    @RequestMapping("/AddExperTableinfor")//添加专家信息
+    public String AddExperTableinfor()
+    {
+        return "ExpertManagement/ExpertInfor/AddExperTableInforPage";
     }
 
     @RequestMapping("/PurchasOrderListPage")//采购订单
@@ -190,20 +198,24 @@ public class New_file {
     @RequestMapping("/PurchasOrderinforPage")//订单信息详情
     public String PurchasOrderinforPage(@RequestParam Map map,Model model)
     {
-        model.addAttribute("Oreder_number",map.get("Oreder_number").toString());//传一个订单编号
+        model.addAttribute("Oreder_number","订单编号:"+map.get("Oreder_number").toString());//传一个订单编号
+        model.addAttribute("user_name","申请人:"+map.get("user_name").toString());//申请人
+        model.addAttribute("create_time","发布日期:"+map.get("create_time").toString());//创建日期
+        model.addAttribute("goods_name",map.get("goods_name").toString());
         return "PurchasOrderManagement/PurchasOrder/PurchasOrderinforPage";
     }
 
     @RequestMapping("/SupplierListPage")//供应商管理
     public String SuperplierListPage()
     {
-        return "SupplierManagement/SupplierList/SupplierListPage";
+        return "SupplierManagement/SupplierData/SupplierListPage";
     }
 
     @RequestMapping("/SetSupplierinforPage")//查看供应商信息
-    public String SetSupplierinforPage()
+    public String SetSupplierinforPage(@RequestParam Map map,Model model)
     {
-        return "SupplierManagement/SupplierList/SetSupplierinforPage";
+        model.addAttribute("pk_supplier",map.get("pk_supplier").toString());
+        return "SupplierManagement/SupplierData/SetSupplierinforPage";
     }
 
     @RequestMapping("/SupplierToExamineListPage")//供应商审核列表
@@ -213,8 +225,9 @@ public class New_file {
     }
 
     @RequestMapping("/SupplierToExaminePage")//供应商审核内容
-    public String SupplierToExaminePage()
+    public String SupplierToExaminePage(@RequestParam Map map ,Model model)
     {
+        model.addAttribute("pk_supplier",map.get("pk_supplier").toString());
         return "SupplierManagement/SupplierToExamine/SupplierToExaminePage";
     }
 

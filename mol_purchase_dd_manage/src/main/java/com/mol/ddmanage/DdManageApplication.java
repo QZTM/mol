@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import util.IdWorker;
 
 import javax.servlet.MultipartConfigElement;
 
@@ -26,5 +27,10 @@ public class DdManageApplication {
         /// 设置总上传数据总大小
         factory.setMaxRequestSize("1024000KB");
         return factory.createMultipartConfig();
+    }
+    @Bean("idWork")
+    public IdWorker getIdWorker()
+    {
+        return new IdWorker();
     }
 }
