@@ -21,7 +21,10 @@ import com.mol.sms.XiaoNiuMsmTemplate;
 import entity.ServiceResult;
 import entity.dd.DDUser;
 import org.activiti.bpmn.model.BpmnModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,17 +41,17 @@ import java.util.*;
 @RestController
 @RequestMapping("/ac")
 public class ActController {
+    private static final Logger logger=LoggerFactory.getLogger(ActController.class);
+
     @Autowired
     ActService actService;
-
-
     @Autowired
     SendNotification sendNotificationImp;
-
     @Autowired
     private TokenService tokenService;
 
     private SendMsmHandler sendMsmHandler = SendMsmHandler.getSendMsmHandler();
+
 
     @RequestMapping(value = "/hello",method = RequestMethod.GET)
     @ResponseBody
@@ -129,27 +132,16 @@ public class ActController {
         System.out.println("jwt获取用户："+user);
         actService.completeTask(taskId,processInsId,variables,comment,name);
 
-        if (result.equals("pass")){
-            AppUser appUser=actService.getAppUserByUserDingId(user.getUserid());
-            AppAuthOrg org = actService.findappAuthOrgByOrgId(appUser.getAppAuthOrgId());
-            String approveString = org.getPurchaseApproveList();
-            String sendUserId="";
-            //String userid=user.getUserid();
-            if (approveString !=null){
-                String[] split = approveString.split(",");
-                for(int i=0;i<split.length;i++){
-                    if (split[i].equals(appUser.getId())){
-                        if (i ==split.length-1){
-                            break;
-                        }else {
-                            sendUserId=split[i+1];
-                            break;
-                        }
 
-                    }
-                }
-            }
-            if (sendUserId!=null){
+
+        if (result.equals("pass")){
+            //去获取下一个审批人的id
+            String sendUserId=actService.getNextSendUserId(user);
+
+
+
+            if (sendUserId!="" || sendUserId==null){
+                logger.info("当前任务完成，向下一审批人发通知。");
                 //给下个任务处理人发通知和短信
                 AppUser appUserById = actService.findAppUserById(sendUserId);
                 //发送钉钉通知
@@ -157,68 +149,50 @@ public class ActController {
                 //发送短信通知
                 sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, XiaoNiuMsmTemplate.提醒领导审批订单模板(),appUserById.getMobile());
             }else {
+                logger.info("审批通过");
                 //审批任务完成
                 //查询订单相关信息
                 //1.订单ID
                 ActHiProcinst hiProcinst=actService.getActHiprocinstByProcInstId(processInsId);
                 //2.订单
                 fyPurchase pur=actService.findPurchaseById(hiProcinst.getBusinessKey());
-                //2.订单详情
+                //3.订单详情
                 List<PurchaseDetail> detailList =actService.findPurchaseDetailListByPurId(pur.getId());
-
-
-
+                //修改选中的专家推荐表中的adopt
+                actService.updataExpertRecommendChecked(pur.getId(),detailList);
+                //修改未选中的专家推荐表中的adopt
+                actService.updataExpertRecommendNotChecked(pur.getId());
                 //1.给采购部门主管发短信，通知
 
-
-
                 //2.给选中的专家发短信，通知
-                Set<String> expetSet = new HashSet<>();
-                for (PurchaseDetail purchaseDetail : detailList) {
-                    expetSet.add(purchaseDetail.getExpertId());
-                }
-                List <ExpertUser> userList=null;
-                for (String s : expetSet) {
-                    ExpertUser exertUser=actService.findExpertById(s);
-                    userList.add(exertUser);
-                }
-                for (ExpertUser expertUser : userList) {
-                    //发送钉钉通知
-                    sendNotificationImp.sendOaFromExpert(expertUser.getId(),Constant.AGENTID_EXPERT,tokenService.getToken());
-                    //发送短信通知
-                    sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, XiaoNiuMsmTemplate.给专家推送评审成功结果模板(),expertUser.getMobile());
-                }
-
-
-
+                ListenableFuture<Integer> expertSendMessage = actService.getExpertSendMessage(detailList, sendMsmHandler, XiaoNiuMsmTemplate.给专家推送评审成功结果模板());
 
                 //3.给发起采购的采购人员发短信，通知
-                AppUser au =actService.findAppUserById(pur.getStaffId());
-                //发送钉钉通知
-                sendNotificationImp.sendOaFromE(au.getId(),au.getUserName(),tokenService.getToken(),Constant.AGENTID_EXPERT);
-                //发送短信通知
-                sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, XiaoNiuMsmTemplate.给专家推送评审成功结果模板(),au.getMobile());
-
-
+                ListenableFuture<Integer> auSendMessage = actService.getAuSendMessage(pur.getStaffId(), sendMsmHandler, XiaoNiuMsmTemplate.推送中标结果模板());
 
                 //4.给供应商下的报价人发短信，通知
-                Set<String> supplierSet=new HashSet<>();
-                for (PurchaseDetail purchaseDetail : detailList) {
-                    supplierSet.add(purchaseDetail.getQuoteId());
-                }
-                List<SupplierSalesman> suList=null;
-                for (String s : supplierSet) {
-                    FyQuote quo=actService.findQuoteById(s);
-                    SupplierSalesman salesman =actService.findSupplierById(quo.getSupplierSalesmanId());
-                    suList.add(salesman);
-                }
-                for (SupplierSalesman salesman : suList) {
-                    //发送钉钉通知
-                    sendNotificationImp.sendOaFromThird(salesman.getDdUserId(),Constant.AGENTID_THIRDPLAT,tokenService.getToken());
-                    //发送短信通知
-                    sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, XiaoNiuMsmTemplate.推送中标结果模板(),salesman.getPhone());
-                }
+                ListenableFuture<Integer> saleManSendMessage = actService.getSaleManSendMessage(detailList, sendMsmHandler, XiaoNiuMsmTemplate.推送中标结果模板());
             }
+        }else{
+            //审批拒绝
+
+            //查询订单相关信息
+            //1.订单ID
+            ActHiProcinst hiProcinst=actService.getActHiprocinstByProcInstId(processInsId);
+            //2.订单
+            fyPurchase pur=actService.findPurchaseById(hiProcinst.getBusinessKey());
+            //3.订单详情
+            List<PurchaseDetail> detailList =actService.findPurchaseDetailListByPurId(pur.getId());
+            //修改未选中的专家推荐表中的adopt
+            actService.updataExpertRecommendNotChecked(pur.getId());
+            //1.给采购部门主管发短信，通知
+            //2.给选中的专家发短信，通知
+            ListenableFuture<Integer> expertSendMessage = actService.getExpertSendMessage(detailList, sendMsmHandler, XiaoNiuMsmTemplate.给专家发送评审失败结果模板());
+            //3.给发起采购的采购人员发短信，通知
+            ListenableFuture<Integer> auSendMessage = actService.getAuSendMessage(pur.getStaffId(), sendMsmHandler, XiaoNiuMsmTemplate.推送未中标结果模板());
+            //4.给供应商下的报价人发短信，通知
+            ListenableFuture<Integer> saleManSendMessage = actService.getSaleManSendMessage(detailList, sendMsmHandler, XiaoNiuMsmTemplate.推送未中标结果模板());
+
         }
 
 

@@ -3,6 +3,7 @@ package com.mol.ddmanage.Ben.SupplierManagement;
 public class SupplierListben
 {
     private String number;//序号
+    private String pk_supplier;//供应商id
     private String name;//供应商名称
     private String supprop;//供应商类型 供应商类型0=外部单位，1=内部单位，
 
@@ -93,5 +94,13 @@ public class SupplierListben
 
     public void setRegist_time(String regist_time) {
         this.regist_time = regist_time;
+    }
+
+    public String getPk_supplier() {
+        return pk_supplier;
+    }
+
+    public void setPk_supplier(String pk_supplier) {
+        this.pk_supplier = pk_supplier;
     }
 }

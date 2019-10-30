@@ -19,6 +19,7 @@ public class  ExpertUser {
     private String id;
     private String name;
     private String avatar;
+    private String ddId;
     private String orgId;
     private String mobile;
 

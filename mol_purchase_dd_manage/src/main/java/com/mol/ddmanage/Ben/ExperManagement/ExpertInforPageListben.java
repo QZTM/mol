@@ -3,6 +3,7 @@ package com.mol.ddmanage.Ben.ExperManagement;
 public class ExpertInforPageListben//专家实体类
 {
     private String number;//序号
+    private String id;//专家id
     private String expert_grade;//专家等级
     private String name; //专家名称
     private String review_number;//参与订单
@@ -64,5 +65,13 @@ public class ExpertInforPageListben//专家实体类
 
     public void setAuthentication(String authentication) {
         this.authentication = authentication;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -1,7 +1,9 @@
 package com.mol.purchase.controller.dingding.shcedule;
 
+import com.alipay.api.domain.Sale;
 import com.mol.purchase.config.OrderStatus;
 import com.mol.purchase.entity.FyQuote;
+import com.mol.purchase.entity.SupplierSalesman;
 import com.mol.purchase.entity.activiti.ActHiComment;
 import com.mol.purchase.entity.activiti.ActHiProcinst;
 import com.mol.purchase.entity.dingding.login.AppAuthOrg;
@@ -80,6 +82,7 @@ public class SchedulerRepairController {
                 //List<Supplier> supplierList
             //}
         }
+        supplierList=schedulerRepairService.getPayExpertResult(supplierList,id);
         map.put("quote",detailList);
         map.put("supplier",supplierList);
 
@@ -113,5 +116,21 @@ public class SchedulerRepairController {
 
         List<AppUser> userList=schedulerRepairService.getAppUserByIdList(list);
         return ServiceResult.success(userList);
+    }
+
+    /**
+     * 联系供应商
+     * @param purId
+     * @param supplierId
+     * @return
+     */
+    @GetMapping("/getSaleMan")
+    public ServiceResult getSaleman(String purId,String supplierId){
+        if (purId ==null || supplierId==null){
+            return ServiceResult.failure("查询失败！");
+        }
+        String id =schedulerRepairService.getSalemanId(purId,supplierId);
+        SupplierSalesman man=schedulerRepairService.getSaleManById(id);
+        return ServiceResult.success(man);
     }
 }

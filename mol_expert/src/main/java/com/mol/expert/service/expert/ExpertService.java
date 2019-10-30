@@ -150,6 +150,9 @@ public class ExpertService {
      * @return
      */
     public AppAuthOrg getOrg(String id){
+        if (id==null){
+            return null;
+        }
         AppAuthOrg t =new AppAuthOrg();
         t.setId(id);
         return appOrgMapper.selectOne(t);
@@ -275,4 +278,6 @@ public class ExpertService {
 
         }
     }
+
+
 }

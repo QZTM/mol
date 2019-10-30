@@ -132,13 +132,13 @@ public class TobeNegotiatedController {
         AppUser purchaseMainPerson = appAuthOrg.getPurchaseMainPerson();
 
         //-------------------测试---------------
-        String id="1163256283915173888";
-        AppUser appUser=loginService.one(id);//1163256283915173888
+        //String id="1163256283915173888";
+        //AppUser appUser=loginService.one(id);//1163256283915173888
         //-------------------ceshi-----------------
 
 
         //AppUser appUser = loginService.one(purchaseMainPerson.getId());
-        return ServiceResult.success(appUser);
+        return ServiceResult.success(purchaseMainPerson);
     }
 
 

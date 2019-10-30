@@ -8,7 +8,8 @@ import java.util.List;
 @Data
 public class SupplierIdToExpertId {
     //选中的供应商
-    private String supplierId;
+    private String suId;
     //选中的专家
-    private List<ExpertUser> expertList;
+    private String exId;
+
 }

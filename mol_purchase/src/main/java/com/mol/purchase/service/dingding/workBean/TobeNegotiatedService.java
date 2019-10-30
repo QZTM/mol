@@ -205,57 +205,26 @@ public class TobeNegotiatedService {
 
         List<SupplierIdToExpertId> ste = negotiatIng.getSupplierToExpert();
 
-//        for (MaterIdToSupplierId idToSupplierId : mts) {
-//            String materId = idToSupplierId.getMaterId();
-//            String supplierId = idToSupplierId.getSupplierId();
-//            //保存物料对应关系
-//            //根据物料，订单，公司查询报价记录id
-//            String quoteId=fyQuoteMapper.findIdByPurIdAndPkMatIdAndSupplierId(purId,materId,supplierId);
-//            //根据订单id，物料id，保存选中的报价id
-//            fyPurchaseDetailMapper.updataQuoteIdByPurIdAndPkMatId(purId,materId,quoteId);
-//        }
-
         //合并
         for(int k=0;k<mts.size();k++){
+            String idString="";
             for (int v=0;v<ste.size();v++){
-                if (mts.get(k).getSupplierId().equals(ste.get(v).getSupplierId())){
+                if (mts.get(k).getSupplierId().equals(ste.get(v).getSuId())){
                     //专家id 字符串
-                    List<ExpertUser> expertList = ste.get(v).getExpertList();
-                    String idString="";
-                    for (int i=0;i<expertList.size();i++){
-                        if (i==expertList.size()-1){
-                            idString+=expertList.get(i).getId();
-                        }else {
-                            idString+=expertList.get(i).getId();
-                            idString+=",";
-                        }
-                    }
-
-                    String materId = mts.get(k).getMaterId();
-                    String supplierId = mts.get(k).getSupplierId();
-                    //保存物料对应关系
-                    //根据物料，订单，公司查询报价记录id
-                    String quoteId=fyQuoteMapper.findIdByPurIdAndPkMatIdAndSupplierId(purId,materId,supplierId);
-                    //根据订单id，物料id，保存选中的报价id
-                    fyPurchaseDetailMapper.updataQuoteIdAndExpertIdByPurIdAndPkMatId(purId,materId,quoteId,idString);
+                    //List<ExpertUser> expertList = ste.get(v).getExpertList();
+                    String eId = ste.get(v).getExId();
+                    idString+=eId+",";
                 }
             }
+            String materId = mts.get(k).getMaterId();
+            String supplierId = mts.get(k).getSupplierId();
+            //保存物料对应关系
+            //根据物料，订单，公司查询报价记录id
+            String quoteId=fyQuoteMapper.findIdByPurIdAndPkMatIdAndSupplierId(purId,materId,supplierId);
+            //根据订单id，物料id，保存选中的报价id
+            fyPurchaseDetailMapper.updataQuoteIdAndExpertIdByPurIdAndPkMatId(purId,materId,quoteId,idString);
         }
-        //保存推荐专家
 
-//            for (SupplierIdToExpertId ste : supplierToExpert) {
-//            String supplierId = ste.getSupplierId();
-//            List<ExpertUser> expertList = ste.getExpertList();
-//            String idString="";
-//            for (int i=0;i<expertList.size();i++){
-//                if (i==expertList.size()-1){
-//                    idString+=expertList.get(i).getId();
-//                }else {
-//                    idString+=expertList.get(i).getId();
-//                    idString+=",";
-//                }
-//            }
-//        }
     }
 
     //查询订单详情表中具体物料选中的具体公司

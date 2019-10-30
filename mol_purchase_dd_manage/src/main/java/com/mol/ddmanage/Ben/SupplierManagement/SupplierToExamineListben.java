@@ -3,6 +3,7 @@ package com.mol.ddmanage.Ben.SupplierManagement;
 public class SupplierToExamineListben
 {
     private String number;//序号
+    private String pk_supplier;
     private String name;//供应商名称
 
     private String supstate_normal;//基础供应商状态0=潜在，1=核准，2=正在审批，4=审批被拒绝
@@ -112,5 +113,13 @@ public class SupplierToExamineListben
 
     public void setReview_statu(String review_statu) {
         Review_statu = review_statu;
+    }
+
+    public String getPk_supplier() {
+        return pk_supplier;
+    }
+
+    public void setPk_supplier(String pk_supplier) {
+        this.pk_supplier = pk_supplier;
     }
 }

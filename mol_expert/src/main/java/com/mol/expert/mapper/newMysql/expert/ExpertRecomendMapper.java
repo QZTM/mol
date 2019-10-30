@@ -19,4 +19,6 @@ import java.util.List;
 public interface ExpertRecomendMapper extends BaseMapper<ExpertRecommend> {
 
     List<fyPurchase> findPurAndAdopt(String adopt, String expertId);
+    List<fyPurchase> findPurAndAdoptSuccessOrFail(String expertId);
+    List<fyPurchase> findPur(String expertId);
 }

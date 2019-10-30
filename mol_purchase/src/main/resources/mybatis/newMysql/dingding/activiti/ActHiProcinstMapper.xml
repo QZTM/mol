@@ -6,4 +6,7 @@
     <select id="getProByPurId" parameterType="java.lang.String" resultType="com.mol.purchase.entity.activiti.ActHiProcinst">
         select * from act_hi_procinst where BUSINESS_KEY_ =#{purId}
     </select>
+    <select id="getProByProId" parameterType="java.lang.String" resultType="com.mol.purchase.entity.activiti.ActHiProcinst">
+        SELECT * FROM `act_hi_procinst` where PROC_INST_ID_=#{proId}
+    </select>
 </mapper>

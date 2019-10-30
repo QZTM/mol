@@ -1,12 +1,16 @@
 package com.mol.purchase.service.dingding.schedule;
 
+import com.mol.purchase.entity.ExpertRecommend;
 import com.mol.purchase.entity.FyQuote;
+import com.mol.purchase.entity.SupplierSalesman;
 import com.mol.purchase.entity.activiti.ActHiComment;
 import com.mol.purchase.entity.activiti.ActHiProcinst;
 import com.mol.purchase.entity.dingding.login.AppAuthOrg;
 import com.mol.purchase.entity.dingding.login.AppUser;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
 import com.mol.purchase.entity.dingding.solr.fyPurchase;
+import com.mol.purchase.mapper.newMysql.BdSupplierSalesmanMapper;
+import com.mol.purchase.mapper.newMysql.ExpertRecommendMapper;
 import com.mol.purchase.mapper.newMysql.FyQuoteMapper;
 import com.mol.purchase.mapper.newMysql.dingding.activiti.ActHiCommentMapper;
 import com.mol.purchase.mapper.newMysql.dingding.activiti.ActHiProcinstMapper;
@@ -55,6 +59,13 @@ public class SchedulerRepairService {
 
     @Autowired
     private AppUserMapper appUserMapper;
+
+
+    @Autowired
+    private BdSupplierSalesmanMapper supplierSalesmanMapper;
+
+    @Autowired
+    private ExpertRecommendMapper expertRecommendMapper;
 
 
     public List<fyPurchase> getList(String orgId, String userId) {
@@ -121,5 +132,51 @@ public class SchedulerRepairService {
             }
         }
         return appUserList;
+    }
+
+    public String getSalemanId(String purId, String supplierId) {
+        FyQuote t=new FyQuote();
+        t.setFyPurchaseId(purId);
+        t.setPkSupplierId(supplierId);
+        return fyQuoteMapper.select(t).get(0).getSupplierSalesmanId();
+    }
+
+    public SupplierSalesman getSaleManById(String id) {
+        SupplierSalesman t=new SupplierSalesman();
+        t.setId(id);
+        return supplierSalesmanMapper.selectByPrimaryKey(t);
+    }
+
+    public List<Supplier> getPayExpertResult(List<Supplier> supplierList, String purId) {
+        //purid supplierId    quoteId
+        //purId quoteId  expertId
+        //for expertId
+        for (Supplier supplier : supplierList) {
+            supplier.setPayAllExpert(true);
+            FyQuote t= new FyQuote();
+            t.setPkSupplierId(supplier.getPkSupplier());
+            t.setFyPurchaseId(purId);
+            List<FyQuote> quoteList = fyQuoteMapper.select(t);
+            for (FyQuote fyQuote : quoteList) {
+                PurchaseDetail fd=new PurchaseDetail();
+                fd.setFyPurchaseId(purId);
+                fd.setQuoteId(fyQuote.getId());
+                PurchaseDetail purchaseDetail = fyPurchaseDetailMapper.selectOne(fd);
+                if (purchaseDetail!=null){
+                    for (String expertId : purchaseDetail.getExpertId().split(",")) {
+                        ExpertRecommend er=new ExpertRecommend();
+                        er.setExpertId(expertId);
+                        er.setPurchaseId(purId);
+                        ExpertRecommend expertRecommend = expertRecommendMapper.selectOne(er);
+                        if ( expertRecommend.getCommission()==0+""){
+                            supplier.setPayAllExpert(false);
+                            break;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        return supplierList;
     }
 }

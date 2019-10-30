@@ -5,7 +5,7 @@ import com.mol.expert.entity.expert.ExpertUser;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * ClassName:ExpertUserMapper
+ * ClassName:ExpertUserMapper.xml
  * Package:com.purchase.mapper.newMysql.expert
  * Description
  *
@@ -14,4 +14,7 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface ExpertUserMapper extends BaseMapper<ExpertUser> {
+    ExpertUser findExpertByDdId(String ddId);
+
+    void updataReviewAndPassAndRateById(String id, String reviewCount, String successCount, String suAndFaCount);
 }
