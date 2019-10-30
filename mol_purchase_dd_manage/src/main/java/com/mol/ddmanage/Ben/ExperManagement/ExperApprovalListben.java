@@ -3,6 +3,7 @@ package com.mol.ddmanage.Ben.ExperManagement;
 public class ExperApprovalListben//专家审核展示列表实体类
 {
     private String number;//序号
+    private String id;//专家id
     private String name;// 姓名
     private String birthday;//出生日期
     private String id_number;//身份证号码
@@ -55,5 +56,13 @@ public class ExperApprovalListben//专家审核展示列表实体类
 
     public void setWork_life(String work_life) {
         this.work_life = work_life;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

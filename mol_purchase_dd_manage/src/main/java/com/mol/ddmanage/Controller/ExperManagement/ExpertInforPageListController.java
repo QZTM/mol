@@ -19,6 +19,10 @@ public class ExpertInforPageListController
     @RequestMapping("/ShowList")
      public ArrayList<ExpertInforPageListben> ShowList(@RequestParam String expert_grade)//专家管理列表展示
      {
+
          return expertInforPageListService.ExpertInforPageListShow(expert_grade);
      }
+
+
+
 }

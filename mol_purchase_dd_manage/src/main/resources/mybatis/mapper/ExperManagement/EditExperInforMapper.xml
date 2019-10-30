@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.ddmanage.mapper.ExperManagement.EditExperInforMapper">
+
+    <update id="ExperInforUpload" parameterType="com.mol.ddmanage.Ben.ExperManagement.SetExperApprovalben" >
+        update expert_user set
+        `name`=#{name},
+        birthday=#{birthday},
+        age=#{age},
+        work_life=#{work_life},
+        id_number=#{id_number}
+        where
+        id=#{id}
+    </update>
+
+    <update id="ImageUpload"  >
+       update expert_user set
+       <if test="number == 1">
+           front_of_id=#{image}
+       </if>
+
+        <if test="number == 2">
+            reverse_of_id=#{image}
+        </if>
+        <if test="number == 3">
+            front_of_business=#{image}
+        </if>
+        <if test="number == 4">
+            reverse_of_business=#{image}
+        </if>
+        <if test="number == 5">
+            other_documents_one=#{image}
+        </if>
+        <if test="number == 6">
+            other_documents_two=#{image}
+        </if>
+
+       where
+       id=#{ExperId}
+    </update>
+
+    <insert id="AddExperInfor">
+        insert into expert_user(id) values (#{ExperId})
+    </insert>
+</mapper>

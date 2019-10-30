@@ -1,13 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
 </head>
 <link rel="stylesheet" href="/layui/css/layui.css">
 <script src="/echarts.min.js"></script>
 <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js" type="text/javascript"></script>
 <body onload="Landing_start()"><!--供应商资料查看-->
+<p id="pk_supplier" style="display: none" th:text="${pk_supplier}"></p>
 <div style="padding: 12px;" >
 
     <div style="width: 100%;height: 60px;">
@@ -29,60 +31,60 @@
             <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;">
                 <p style="margin: 4px">供应商类型</p>
             </div>
-            <input style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="请输入标题" disabled>
+            <input id="supprop" style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="" disabled>
 
             <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;margin-left: 5%">
                 <p style="margin: 4px">公司名称</p>
             </div>
-            <input style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="请输入标题" disabled>
+            <input id="name" style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="" disabled>
         </div>
 
         <div style="width: 100%;height: 40px;margin-top: 24px">
             <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;">
                 <p style="margin: 4px">营业执照号</p>
             </div>
-            <input style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="请输入标题" disabled>
+            <input id="buslicensenum" style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="" disabled>
 
             <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;margin-left: 5%">
                 <p style="margin: 4px">经营范围</p>
             </div>
-            <input style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="只能输入纯数字如 2 代表两年" disabled>
+            <input id="business_scope" style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="只能输入纯数字如 2 代表两年" disabled>
         </div>
 
         <div style="width: 100%;height: 40px;margin-top: 24px">
             <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;">
                 <p style="margin: 4px">所在地</p>
             </div>
-            <input style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="请输入标题" disabled>
+            <input id="Location" style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="请输入标题" disabled>
 
             <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;margin-left: 5%">
                 <p style="margin: 4px">注册地</p>
             </div>
-            <input style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="只能输入纯数字如 2 代表两年" disabled>
+            <input id="registered_address" style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="" disabled>
         </div>
 
         <div style="width: 100%;height: 40px;margin-top: 24px">
             <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;">
                 <p style="margin: 4px">所属行业</p>
             </div>
-            <input style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="请输入标题" disabled>
+            <input id="industry_first" style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="" disabled>
 
             <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;margin-left: 5%">
                 <p style="margin: 4px">法人姓名</p>
             </div>
-            <input style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="只能输入纯数字如 2 代表两年" disabled>
+            <input id="legalbody_name" style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="" disabled>
         </div>
 
         <div style="width: 100%;height: 40px;margin-top: 24px">
             <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;">
                 <p style="margin: 4px">身份证号</p>
             </div>
-            <input style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="请输入标题" disabled>
+            <input id="legalbody_idcard_number" style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="" disabled>
 
             <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;margin-left: 5%">
                 <p style="margin: 4px">手机号</p>
             </div>
-            <input style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="只能输入纯数字如 2 代表两年" disabled>
+            <input id="telephone" style="margin-left: 16px;float:left;width: 35%;height: 26px;font-size: 16px" type="text" placeholder="" disabled>
         </div>
 
         <div style="margin-top: 24px">
@@ -92,8 +94,8 @@
                 </div>
             </div>
             <div style="width: 95%;height:  200px;border-radius: 6px;border:1px solid #B2B2B2;">
-                <div id="domeform" style="float: left;margin: 24px">
-                    <img class="pimg" src="/imge/file.ico" style="height: 140px;width: 120px;">
+                <div  style="float: left;margin: 24px">
+                    <img id="business_licence_img" class="pimg" src="/imge/file.ico" style="height: 140px;width: 120px;">
                 </div>
             </div>
         </div>
@@ -105,8 +107,11 @@
                 </div>
             </div>
             <div style="width: 95%;height:  200px;border-radius: 6px;border:1px solid #B2B2B2;">
-                <div id="name_card" style="float: left;margin: 24px">
-                    <img class="pimg" src="/imge/file.ico" style="height: 140px;width: 120px;">
+                <div  style="float: left;margin: 24px">
+                    <img id="legalbody_card_front_img" class="pimg" src="/imge/file.ico" style="height: 140px;width: 120px;">
+                </div>
+                <div  style="float: left;margin: 24px">
+                    <img id="legalbody_card_back_img" class="pimg" src="/imge/file.ico" style="height: 140px;width: 120px;">
                 </div>
             </div>
         </div>
@@ -118,8 +123,17 @@
                 </div>
             </div>
             <div style="width: 95%;height:  200px;border-radius: 6px;border:1px solid #B2B2B2;">
-                <div id="other_data" style="float: left;margin: 24px">
-                    <img class="pimg" src="/imge/file.ico" style="height: 140px;width: 120px;">
+                <div  style="float: left;margin: 24px">
+                    <img id="additional_one" class="pimg" src="/imge/file.ico" style="height: 140px;width: 120px;">
+                </div>
+                <div  style="float: left;margin: 24px">
+                    <img id="additional_two" class="pimg" src="/imge/file.ico" style="height: 140px;width: 120px;">
+                </div>
+                <div  style="float: left;margin: 24px">
+                    <img id="additional_three" class="pimg" src="/imge/file.ico" style="height: 140px;width: 120px;">
+                </div>
+                <div  style="float: left;margin: 24px">
+                    <img id="additional_four" class="pimg" src="/imge/file.ico" style="height: 140px;width: 120px;">
                 </div>
             </div>
         </div>
@@ -127,7 +141,7 @@
         <div style="margin-top: 24px">
             <div style="width: 100%;height: 35px">
                 <div style="float:left;width: 120px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;">
-                    <p style="margin: 4px">其它证件材料</p>
+                    <p style="margin: 4px">备注</p>
                 </div>
             </div>
             <div style="width: 95%;height:  200px;border-radius: 6px;border:1px solid #B2B2B2;">
@@ -142,7 +156,7 @@
                 </div>
             </div>
             <div style="width: 95%;height:  50px;border-radius: 6px;border:1px solid #B2B2B2;">
-                <div><p>已缴纳 2000元</p></div>
+                <div><p id="money">已缴纳 2000元</p></div>
             </div>
         </div>
     </div>
@@ -157,10 +171,80 @@
 
 
 <script src="/layui/layui.all.js"></script>
+<script th:src="@{/js/city.js}"></script>
+
 <script>
 
     function Landing_start()
     {
+        $.ajax({
+            type:'post',
+            data:{"pk_supplier":document.getElementById("pk_supplier").innerText}, //传送指定的专家id
+            dataType:'json',
+            url: "/SetSupplierinfor/LandingSupplierinfor",
+            success: function(data)
+            {
+                console.log(data)
+                document.getElementById("supprop").value=data.supprop;
+                document.getElementById("name").value=data.name;
+                document.getElementById("buslicensenum").value=data.buslicensenum;
+
+                document.getElementById("registered_address").value=data.registered_address;
+                document.getElementById("industry_first").value=data.industry_first;
+                document.getElementById("legalbody_name").value=data.legalbody_name;
+                document.getElementById("legalbody_idcard_number").value=data.legalbody_idcard_number;
+                document.getElementById("telephone").value=data.telephone;
+                document.getElementById("money").innerText="已缴纳"+data.money+" 元";
+                //将图片的Base64编码设置给src
+                if (data.business_licence_img!=null)
+                {
+                    $("#business_licence_img").attr("src","data:image/png;base64,"+data.business_licence_img);
+                }
+                if (data.legalbody_card_front_img!=null)
+                {
+                    $("#legalbody_card_front_img").attr("src","data:image/png;base64,"+data.legalbody_card_front_img);
+                }
+                if (data.legalbody_card_back_img!=null)
+                {
+                    $("#legalbody_card_back_img").attr("src","data:image/png;base64,"+data.legalbody_card_back_img);
+                }
+                if (data.additional_one!=null)
+                {
+                    $("#additional_one").attr("src","data:image/png;base64,"+data.additional_one);
+                }
+                if (data.additional_two!=null)
+                {
+                    $("#additional_two").attr("src","data:image/png;base64,"+data.additional_two);
+                }
+                if (data.additional_three!=null)
+                {
+                    $("#additional_three").attr("src","data:image/png;base64,"+data.additional_three);
+                }
+                if (data.additional_four!=null)
+                {
+                    $("#additional_four").attr("src","data:image/png;base64,"+data.additional_four);
+                }
+
+
+                if(data.location_province_js_index!=null && data.location_province_js_index!="")//拿出供应商地址
+                {
+                    document.getElementById("Location").value=city[data.location_province_js_index].name ;
+                    if (data.location_city_js_index!=null && data.location_city_js_index!="")
+                    {
+                        document.getElementById("Location").value=document.getElementById("Location").value+" "+city[data.location_province_js_index].sub[data.location_city_js_index].name ;
+                        if (data.location_area_js_index!=null && data.location_area_js_index!="")
+                        {
+                            document.getElementById("Location").value=document.getElementById("Location").value+" "+city[data.location_province_js_index].sub[data.location_city_js_index].sub[data.location_area_js_index].name;
+                        }
+                    }
+                }
+            },
+            error:function(data)
+            {
+                alert('响应失败！');
+            }
+        });
+
 
     }
     function File_upload(url,upload_type_id)//上传文件的方法，参数 url controller地址 上传文件类型的div id 如名片div的id 或者 身份材料的divid
@@ -172,17 +256,20 @@
             data: form,
             processData: false,
             contentType: false,
-            success: function(data) {
+            success: function(data)
+            {
                 alert("123456")
             },
-            error: function(e) {
+            error: function(e)
+            {
                 console.log(e);
             }
         });
     }
 
 
-    layui.use(['form', 'layedit', 'laydate'], function(){
+    layui.use(['form', 'layedit', 'laydate'], function()
+    {
         var form = layui.form
             ,layer = layui.layer
             ,layedit = layui.layedit

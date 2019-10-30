@@ -2,8 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mol.ddmanage.mapper.ExperManagement.ExperApprovalListMapper">
 
-    <select id="ExpertInforPageListShow" resultType="com.mol.ddmanage.Ben.ExperManagement.ExperApprovalListben">
-      select expert_user.*,
+    <select id="ExperApprovalListShow" resultType="com.mol.ddmanage.Ben.ExperManagement.ExperApprovalListben">
+      select expert_user.id,
+        expert_user.name,
+        expert_user.birthday,
+        expert_user.id_number,
+        expert_user.work_life,
         (select bd_marbasclass.name from bd_marbasclass where expert_user.major=bd_marbasclass.pk_marbasclass)industry
       from expert_user
       <if test="authentication!=100">
