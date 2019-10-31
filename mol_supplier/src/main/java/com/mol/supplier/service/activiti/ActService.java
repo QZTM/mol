@@ -3,8 +3,8 @@ package com.mol.supplier.service.activiti;
 import com.mol.supplier.entity.activiti.TaskDTO;
 import com.mol.supplier.entity.dingding.login.AppAuthOrg;
 import com.mol.supplier.entity.dingding.login.AppUser;
-import com.mol.supplier.mapper.newMysql.dingding.org.AppOrgMapper;
-import com.mol.supplier.mapper.newMysql.dingding.user.AppUserMapper;
+import com.mol.supplier.mapper.dingding.org.AppOrgMapper;
+import com.mol.supplier.mapper.dingding.user.AppUserMapper;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
@@ -20,7 +20,6 @@ import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.validation.ProcessValidator;
 import org.activiti.validation.ProcessValidatorFactory;
 import org.activiti.validation.ValidationError;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

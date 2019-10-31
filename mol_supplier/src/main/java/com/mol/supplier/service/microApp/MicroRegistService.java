@@ -2,8 +2,8 @@ package com.mol.supplier.service.microApp;
 
 import com.mol.supplier.entity.MicroApp.Salesman;
 import com.mol.supplier.entity.MicroApp.Supplier;
-import com.mol.supplier.mapper.newMysql.microApp.MicroSalesmanMapper;
-import com.mol.supplier.mapper.newMysql.microApp.MicroSupplierMapper;
+import com.mol.supplier.mapper.microApp.MicroSalesmanMapper;
+import com.mol.supplier.mapper.microApp.MicroSupplierMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -10,7 +10,7 @@ import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.mol.supplier.entity.dingding.Pay.pui_supplier_deposit;
-import com.mol.supplier.mapper.newMysql.dingding.Pay.AlipayMapper;
+import com.mol.supplier.mapper.dingding.Pay.AlipayMapper;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Service;
 

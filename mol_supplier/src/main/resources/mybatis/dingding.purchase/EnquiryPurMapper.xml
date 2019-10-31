@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.supplier.mapper.dingding.purchase.EnquiryPurMapper">
+    <resultMap id="purchaseResultMap" type="com.mol.supplier.entity.dingding.solr.fyPurchase">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="buy_channel_id" property="buyChannelId" jdbcType="INTEGER"/>
+        <result column="goods_type" property="goodsType" jdbcType="VARCHAR" />
+        <result column="goods_brand" property="goodsBrand" jdbcType="VARCHAR" />
+        <result column="goods_name" property="goodsName" jdbcType="VARCHAR" />
+        <result column="goods_specs" property="goodsSpecs" jdbcType="VARCHAR" />
+        <result column="goods_branch" property="goodsBranch" jdbcType="VARCHAR" />
+        <result column="goods_quantity" property="goodsQuantity" jdbcType="INTEGER" />
+        <result column="goods_detail" property="goodsDetail" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="VARCHAR" />
+        <result column="org_id" property="orgId" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="VARCHAR" />
+        <result column="process_instance_id" property="processInstanceId" jdbcType="VARCHAR" />
+        <result column="staff_id" property="staffId" jdbcType="VARCHAR" />
+        <result column="url" property="url" jdbcType="VARCHAR" />
+        <result column="title" property="title" jdbcType="VARCHAR" />
+        <result column="process_code" property="processCode" jdbcType="VARCHAR" />
+        <result column="crop_id" property="cropId" jdbcType="VARCHAR" />
+        <result column="auditor" property="auditor" jdbcType="VARCHAR" />
+        <result column="apply_cause" property="applyCause" jdbcType="VARCHAR" />
+
+    </resultMap>
+<!--    通过itemname查询id-->
+    <select id="getMysqlId" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT
+        pk_material
+        from
+        fy_material
+        where
+        name=#{itemName}
+    </select>
+
+<!--    <select id="getSupplierSellerNum" parameterType="java.util.Map" resultType="int">-->
+<!--        select-->
+<!--        count(fms.pk_material)-->
+<!--        from-->
+<!--        fy_mat_sup fms-->
+<!--        where-->
+<!--        <foreach collection="map" index="key" item="item" separator="or">-->
+<!--            fms.pk_material=#{item}-->
+<!--        </foreach>-->
+<!--    </select>-->
+    <select id="getFyPurchase" resultMap="purchaseResultMap">
+       select * from fy_purchase
+--        where status=5 or status =0
+    </select>
+</mapper>

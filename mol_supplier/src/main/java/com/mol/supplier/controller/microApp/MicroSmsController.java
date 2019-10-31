@@ -60,8 +60,15 @@ public class MicroSmsController {
             case MSMTYPE_SUPPLIER_UPDATE:
                 template = XiaoNiuMsmTemplate.供应商修改信息模板();
         }
-        String sendResult = sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, template,phone);
-        return ServiceResult.success("发送成功", sendResult);
+        //String sendResult = sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, template,phone);
+        String sendResult = "success666666";
+        if(sendResult.contains("success")){
+            return ServiceResult.success("发送成功", sendResult.substring(7));
+        }else{
+            return ServiceResult.failureMsg("发送失败");
+        }
+
+
     }
 
 

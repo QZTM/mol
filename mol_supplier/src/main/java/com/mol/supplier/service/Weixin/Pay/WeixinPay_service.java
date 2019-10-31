@@ -1,7 +1,7 @@
 package com.mol.supplier.service.Weixin.Pay;
 
 import com.mol.supplier.entity.dingding.Pay.pui_supplier_deposit;
-import com.mol.supplier.mapper.newMysql.Weixin.Pay.WeixinPayMapper;
+import com.mol.supplier.mapper.Pay.WeixinPayMapper;
 import com.mol.supplier.util.PayUtil;
 import org.springframework.stereotype.Service;
 

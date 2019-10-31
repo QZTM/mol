@@ -9,7 +9,7 @@ import com.mol.supplier.entity.dingding.purchase.underlinePurchasePageEntity.Pag
 import com.mol.supplier.entity.dingding.approve.PurchaseApprove;
 import com.mol.supplier.entity.dingding.approve.approveDetail.ApproveDetailOfFormComponentValues;
 import com.mol.supplier.entity.dingding.approve.approveDetail.RowValue;
-import com.mol.supplier.mapper.newMysql.dingding.schedule.ScheduleMapper;
+import com.mol.supplier.mapper.dingding.schedule.ScheduleMapper;
 import com.mol.supplier.service.dingding.approve.ApproveService;
 import entity.ServiceResult;
 import org.slf4j.Logger;

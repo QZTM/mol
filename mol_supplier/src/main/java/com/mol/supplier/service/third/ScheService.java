@@ -4,13 +4,12 @@ import com.github.pagehelper.PageHelper;
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
 import com.mol.supplier.entity.dingding.solr.fyPurchase;
 import com.mol.supplier.entity.thirdPlatform.FyQuote;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.BdSupplierMapper;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseDetailMapper;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
-import com.mol.supplier.mapper.newMysql.third.FyQuoteMapper;
-import com.mol.supplier.mapper.newMysql.third.TpMapper;
+import com.mol.supplier.mapper.dingding.purchase.BdSupplierMapper;
+import com.mol.supplier.mapper.dingding.purchase.fyPurchaseDetailMapper;
+import com.mol.supplier.mapper.dingding.purchase.fyPurchaseMapper;
+import com.mol.supplier.mapper.third.FyQuoteMapper;
+import com.mol.supplier.mapper.third.TpMapper;
 import com.mol.supplier.util.StatusScheUtils;
-import com.mol.supplier.util.StatusUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

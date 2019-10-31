@@ -1,7 +1,7 @@
 package com.mol.supplier.service.microApp;
 
 import com.mol.supplier.entity.MicroApp.Salesman;
-import com.mol.supplier.mapper.newMysql.microApp.MicroSalesmanMapper;
+import com.mol.supplier.mapper.microApp.MicroSalesmanMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

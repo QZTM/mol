@@ -85,7 +85,7 @@ public class XiaoNiuMsm implements SendMsmHandler{
             SendSmsResponse response = this.sendSms(signName,template.getId(),phoneNumber,oldPhoneCode);
             log.info("短信发送响应结果："+response.getMessage());
             if("OK".equals(response.getMessage())){
-                return "短信发送成功"+oldPhoneCode;
+                return "success"+oldPhoneCode;
             }
 //            if (true) {
 //                saveToCache(phone,code);
@@ -96,7 +96,7 @@ public class XiaoNiuMsm implements SendMsmHandler{
             e.printStackTrace();
             throw new RuntimeException("发送短信时出错");
         }
-        return "短信发送失败";
+        return "fail";
 
     }
 
