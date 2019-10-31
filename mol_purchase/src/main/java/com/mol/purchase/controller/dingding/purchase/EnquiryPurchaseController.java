@@ -51,32 +51,24 @@ public class EnquiryPurchaseController {
     private SendMsmHandler sendMsmHandler = SendMsmHandler.getSendMsmHandler();
 
     @RequestMapping(value = "/start",method = RequestMethod.POST)
-    public ServiceResult<String> start(@RequestBody SubObj obj, HttpServletRequest request) throws DocumentException, IllegalAccessException, IOException {
+    public ServiceResult start(@RequestBody SubObj obj, HttpServletRequest request) throws DocumentException, IllegalAccessException, IOException {
 
         PageArray pageArray = obj.getPageArray();
         String staid=obj.getStaffId();
         String orgId=obj.getOrgId();
-        StraregyObj stobj = shoppingService.save(pageArray, staid, orgId);
+        StraregyObj stobj=null;
+        try{
+            stobj = shoppingService.save(pageArray, staid, orgId);
+        }catch (Exception e){
+           e.printStackTrace();
+           return ServiceResult.failureMsg("提交失败");
+        }
         //添加定时任务：
         quartzClient.addquoteendjobwithendtime(stobj.getId(),stobj.getDeadLine());
-        //所属行业供应商
-        List<Supplier> list=shoppingService.findSupplierByPur(stobj);
-        if (list.size()>0 && list!=null){
-            //查询供应商下的人员
-            List<SupplierSalesman> saleManList = shoppingService.findSaleManList(list);
-            //查询人员的ddId
-            List<String> manIdList=shoppingService.findSaleIdList(saleManList);
-            //发送通知消息
-            for (String s : manIdList) {
-                sendNotification.sendOaFromThird(s, Constant.AGENTID_THIRDPLAT,tokenService.getMicroToken());
-            }
-            //查询人员的电话
-            List<String> manPhoneList= shoppingService.findSalePhoneList(saleManList);
-            for (String phone : manPhoneList) {
-                sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, XiaoNiuMsmTemplate.提醒供应商报价模板(),phone);
-            }
-        }
-        return ServiceResult.success("成功");
+        logger.info("成功1");
+        shoppingService.sendMessage(stobj,sendMsmHandler,sendNotification,XiaoNiuMsmTemplate.提醒供应商报价模板());
+        logger.info("成功2");
+        return ServiceResult.successMsg("提交成功");
     }
 
     @RequestMapping(value = "/getSupplierNum")

@@ -62,7 +62,7 @@ public class TobeNegotiatedService {
     }
 
     public List<fyPurchase> findListByIdListAndStatus(String status, List<String> quoteIdList) {
-        return fyPurchaseMapper.findListByIdlistAndStatus(status,null,null,quoteIdList);
+        return fyPurchaseMapper.findListByIdlistAndStatus(status,null,null,null,quoteIdList);
     }
 
     public List<fyPurchase> findListByOrgId(String orgId, String status,String secondStatus) {

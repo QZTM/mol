@@ -91,7 +91,7 @@
         <!--        供货周期-->
         <div class="input-group">
             <span class="input-group-addon" id="basic-addon1">供货周期</span>
-            <input type="text" class="form-control" placeholder="请输入供货周期" aria-describedby="basic-addon1" th:name="${'quotes[0].supplyCycle'}">
+            <input type="text" id="cycle" class="form-control" placeholder="请输入供货周期" aria-describedby="basic-addon1" th:name="${'quotes[0].supplyCycle'}">
         </div>
         <!--        <input type="submit" value="提交">-->
         <button  class="btn btn-primary" style="margin-left: 42%;margin-top: 12px;" onclick="sub()" id="subBtn">提交</button>
@@ -101,32 +101,77 @@
     </form>
 </div>
 </body>
+<script th:src="@{/js/dingtalk.open.js}"></script>
 <script th:inline="javascript">
 
     function sub () {
-        var orNull= checkForm();
-        if (!orNull){
-            return;
-        }
-        var _purId=$("#purId").val();
-        var i=false ;
-        $.ajax({
-            type: "post",
-            url: "/index/getQuoteFromForm",
-            data: $('#form1').serialize(),
-            async:false,
-            dataType:'json',
-            success:function (data) {
-                alert(data.result);
-                // window.location.reload()
-                // location.href="/index/selectOne?id="+_purId;
-                window.history.go(-2)
+        //$("#subBtn").css("disable",)
+        dd.device.notification.showPreloader({
+            text:"提交报价...",
+            showIcon:true,
+            onSuccess:function () {
+                var orNum=checkDate();
+                if (!orNum){
+                    dd.device.notification.hidePreloader({
+                        onSuccess:function () {
+                            //alert("提交失败");
+                            return;
+                        },
+                        onFail:function () {
+
+                        }
+                    })
+                    return;
+                }
+                var orNull= checkForm();
+                if (!orNull){
+                    dd.device.notification.hidePreloader({
+                        onSuccess:function () {
+                            //alert("提交失败，请检查报价信息");
+                            return;
+                        },
+                        onFail:function () {
+
+                        }
+                    })
+                    return;
+                }
+                var _purId=$("#purId").val();
+                var i=false ;
+                $.ajax({
+                    type: "post",
+                    url: "/index/getQuoteFromForm",
+                    data: $('#form1').serialize(),
+                    async:false,
+                    dataType:'json',
+                    success:function (data) {
+                        dd.device.notification.hidePreloader({
+                            onSuccess:function () {
+                                alert(data.message);
+                                // window.location.reload()
+                                // location.href="/index/selectOne?id="+_purId;
+                                window.history.go(-2)
+                            },
+                            onFail:function () {
+
+                            }
+                        })
+
+                    },
+                    fail:function (data) {
+                        dd.device.notification.hidePreloader({
+                            onSuccess:function () {
+                                alert("出现问题，请联系管理员");
+                            }
+                        })
+                    }
+                })
+
             },
-            fail:function (data) {
-                console.log(data)
+            onFail:function () {
+
             }
         })
-
     }
 
 
@@ -188,10 +233,10 @@
 
     }
 
+
+
+
     function checkForm(au) {
-
-
-
         var count= $("#size0").val();
         console.log("提交："+count)
         for (var i=0;i<count;i++){
@@ -204,6 +249,23 @@
             }
         }
         return true;
+    }
+
+
+    function checkDate() {
+        var cyDate=$("#cycle").val();
+        if (cyDate==null || cyDate==""){
+            alert("请输入供货周期！");
+            return false;
+        }
+        var reg=/^[0-9]+.?[0-9]*$/;
+        if (!reg.test(cyDate)) {
+            alert("请输入数字");
+            $("#cycle").val("");
+            return false;
+        }
+        return true;
+         
     }
 
 

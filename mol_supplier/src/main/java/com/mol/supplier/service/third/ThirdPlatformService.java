@@ -2,9 +2,11 @@ package com.mol.supplier.service.third;
 
 import com.github.pagehelper.PageHelper;
 import com.mol.supplier.entity.MicroApp.Salesman;
+import com.mol.supplier.entity.dingding.login.AppAuthOrg;
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
 import com.mol.supplier.entity.dingding.solr.fyPurchase;
 import com.mol.supplier.entity.thirdPlatform.*;
+import com.mol.supplier.mapper.dingding.org.AppOrgMapper;
 import com.mol.supplier.mapper.dingding.purchase.BdSupplierMapper;
 import com.mol.supplier.mapper.dingding.purchase.fyPurchaseDetailMapper;
 import com.mol.supplier.mapper.dingding.purchase.fyPurchaseMapper;
@@ -22,6 +24,7 @@ import util.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class ThirdPlatformService {
@@ -50,6 +53,9 @@ public class ThirdPlatformService {
 
     @Autowired
     private IdWorker idWorker;
+
+    @Autowired
+    private AppOrgMapper appOrgMapper;
 
     @Autowired
     private MicroSalesmanMapper salesmanMapper;
@@ -177,11 +183,19 @@ public class ThirdPlatformService {
 //    }
 
     public fyPurchase selectOneById(String id) {
-        fyPurchase fyPurchase = tpMapper.selectOneById(id);
-        fyPurchase = StatusUtils.getStatusIntegerToString(fyPurchase);
-        String supplierNameById = bdSupplierMapper.getSupplierNameById(fyPurchase.getPkSupplier());
-        fyPurchase.setPkSupplier(supplierNameById);
-        return fyPurchase;
+        fyPurchase pur = tpMapper.selectOneById(id);
+//        fyPurchase = StatusUtils.getStatusIntegerToString(fyPurchase);
+//        String supplierNameById = bdSupplierMapper.getSupplierNameById(fyPurchase.getPkSupplier());
+//        fyPurchase.setPkSupplier(supplierNameById);
+        return pur;
+    }
+
+    //将字段改为中文显示
+    public fyPurchase ToChineseString(fyPurchase purchase){
+        purchase = StatusUtils.getStatusIntegerToString(purchase);
+        String supplierNameById = bdSupplierMapper.getSupplierNameById(purchase.getPkSupplier());
+        purchase.setPkSupplier(supplierNameById);
+        return purchase;
     }
 
     //获取公司上次该物料的报价
@@ -345,5 +359,28 @@ public class ThirdPlatformService {
         Salesman t=new Salesman();
         t.setDdUserId(ddUserId);
         return salesmanMapper.selectOne(t);
+    }
+
+    public List<fyPurchase> getPkSupplierToCHinese(List<fyPurchase> list) {
+        if (list!=null && list.size()>0){
+            for (fyPurchase pur : list) {
+                pur.setPkSupplier(bdSupplierMapper.getSupplierNameById(pur.getPkSupplier()));
+            }
+        }
+        return list;
+    }
+
+    //将订单采购方  公司id  -->  公司名称
+    public List<fyPurchase> PurchaseToChinese(List<fyPurchase> orderList) {
+        if (orderList!=null && orderList.size()>0){
+            for (fyPurchase purchase : orderList) {
+                if (purchase.getOrgId()!=null){
+                    AppAuthOrg t=new AppAuthOrg();
+                    t.setId(purchase.getOrgId());
+                    purchase.setOrgId(appOrgMapper.selectOne(t).getOrgName());
+                }
+            }
+        }
+        return orderList;
     }
 }

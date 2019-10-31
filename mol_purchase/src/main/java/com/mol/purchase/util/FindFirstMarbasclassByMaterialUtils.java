@@ -32,10 +32,10 @@ public class FindFirstMarbasclassByMaterialUtils {
         return bm1;
     }
 
-    private BdMarbasclass getBm(BdMarbasclass bm){
+    public BdMarbasclass getBm(BdMarbasclass bm){
         BdMarbasclass bms=new BdMarbasclass();
         bms.setPkMarbasclass(bm.getPkParent());
-        BdMarbasclass bdMarbasclass = bdMarbasclassMapper.selectOne(bms);
+         BdMarbasclass bdMarbasclass = bdMarbasclassMapper.selectOne(bms);
         if (bdMarbasclass.getPkParent().equals("~")){
             return bdMarbasclass;
         }else {

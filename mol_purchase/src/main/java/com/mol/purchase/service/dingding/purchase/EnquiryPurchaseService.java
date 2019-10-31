@@ -1,4 +1,6 @@
 package com.mol.purchase.service.dingding.purchase;
+import com.mol.config.Constant;
+import com.mol.notification.SendNotification;
 import com.mol.purchase.entity.Supplier;
 import com.mol.purchase.entity.SupplierSalesman;
 import com.mol.purchase.mapper.newMysql.BdSupplierSalesmanMapper;
@@ -13,19 +15,25 @@ import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseA
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj;
 import com.mol.purchase.mapper.fyOracle.dingding.purchase.EnquiryOraclMapper;
+import com.mol.purchase.service.token.TokenService;
 import com.mol.purchase.util.FindFirstMarbasclassByMaterialUtils;
 import com.mol.purchase.util.robot.Cread_PDF;
+import com.mol.sms.SendMsmHandler;
+import com.mol.sms.XiaoNiuMsm;
+import com.mol.sms.XiaoNiuMsmTemplate;
 import entity.BdMarbasclass;
 import entity.ServiceResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 import util.IdWorker;
 import util.TimeUtil;
 
 import javax.annotation.Resource;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +68,9 @@ public class EnquiryPurchaseService {
     @Autowired
     private IdWorker idWorker;
 
+    @Autowired
+    private TokenService tokenService;
+
     @Resource
     private BdSupplierMapper supplierMapper;
 
@@ -72,6 +83,7 @@ public class EnquiryPurchaseService {
     @Autowired
     private BdSupplierSalesmanMapper bdSupplierSalesmanMapper;
 
+    @Transient
     public StraregyObj save(PageArray pageArray, String staId, String orgId)  {
         //申请事由
         String applyCause = pageArray.getApplyCause();
@@ -95,6 +107,9 @@ public class EnquiryPurchaseService {
         String technicalSupportTelephone = pageArray.getTechnicalSupportTelephone();
         //专家评审
         String expertReview = pageArray.getExpertReview();
+        if (expertReview==null ||expertReview==""){
+            expertReview="false";
+        }
         //评审奖励
         String expertReward=pageArray.getExpertReward();
         ServiceResult result = null;
@@ -279,6 +294,27 @@ public class EnquiryPurchaseService {
             return ssP;
         }else {
             return ssP;
+        }
+    }
+
+    @Async
+    public void sendMessage(StraregyObj stobj , SendMsmHandler sendMsmHandler, SendNotification sendNotification, XiaoNiuMsmTemplate templateName) {
+        //所属行业供应商
+        List<Supplier> list=findSupplierByPur(stobj);
+        if (list.size()>0 && list!=null){
+            //查询供应商下的人员
+            List<SupplierSalesman> saleManList = findSaleManList(list);
+            //查询人员的ddId
+            List<String> manIdList=findSaleIdList(saleManList);
+            //发送通知消息
+            for (String s : manIdList) {
+                sendNotification.sendOaFromThird(s, Constant.AGENTID_THIRDPLAT,tokenService.getMicroToken());
+            }
+            //查询人员的电话
+            List<String> manPhoneList= findSalePhoneList(saleManList);
+            for (String phone : manPhoneList) {
+                sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, XiaoNiuMsmTemplate.提醒供应商报价模板(),phone);
+            }
         }
     }
 }

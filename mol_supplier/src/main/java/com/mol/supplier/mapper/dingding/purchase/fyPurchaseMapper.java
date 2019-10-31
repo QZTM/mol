@@ -40,7 +40,7 @@ public interface fyPurchaseMapper {
 
     List<fyPurchase> findList(@Param("buyId") String buyId, @Param("status") String status, @Param("list") List<PurchaseDetail> list);
 
-    List<fyPurchase> findListByIdlistAndStatus(@Param("status_f") String status, @Param("status_s") String status_s, @Param("status_t") String status_t, @Param("list") List<String> quoteIdList);
+    List<fyPurchase> findListByIdlistAndStatus(@Param("status_f") String status, @Param("status_s") String status_s, @Param("status_t") String status_t, @Param("status_fo") String status_fo, @Param("list") List<String> quoteIdList);
 
     List<fyPurchase> findListByOrgIdAndStatus(String orgId, String status, String secondStatus);
 

@@ -11,6 +11,7 @@ public class PageArray {
     private String applyCause;
     private List<PurchaseArray> purchaseArray;
     private String singleSource;
+    //单一供应商id
     private String pkSupplier;
     private String telePhone;
     private String remarks;

@@ -82,6 +82,7 @@ public class SchedulerRepairController {
                 //List<Supplier> supplierList
             //}
         }
+//        if (pur.get)
         supplierList=schedulerRepairService.getPayExpertResult(supplierList,id);
         map.put("quote",detailList);
         map.put("supplier",supplierList);

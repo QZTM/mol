@@ -81,6 +81,9 @@ public class StrategyPurchaseService {
         String technicalSupportTelephone = pageArray.getTechnicalSupportTelephone();
         //专家评审
         String expertReview = pageArray.getExpertReview();
+        if (expertReview==null ||expertReview==""){
+            expertReview="false";
+        }
         //评审奖励
         String expertReward = pageArray.getExpertReward();
         ServiceResult result = null;
