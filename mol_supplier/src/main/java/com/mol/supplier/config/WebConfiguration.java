@@ -21,7 +21,7 @@ public class WebConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         System.out.println("session拦截器启动");
         registry.addInterceptor(jwtInterceptor())
-                .excludePathPatterns("/microApp/login/**","/callbackto","/error","/callback","**/img/**","/index/**","**/js/**","**/css/**","/static/upload/**","/templates/**","/index/findAll","/css/**","/js/**","/layui/**")
+                .excludePathPatterns("/microApp/login/**","/callbackto","/error","/callback","**/img/**","/index/**","**/js/**","**/css/**","/static/upload/**","/templates/**","/index/findAll","/css/**","/js/**","/layui/**","/actuator/**")
                 .addPathPatterns("/**");
     }
 
