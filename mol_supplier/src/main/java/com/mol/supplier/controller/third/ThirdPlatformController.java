@@ -22,10 +22,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import util.TimeUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -319,6 +322,10 @@ public class ThirdPlatformController {
         fyPurchase purchase = platformService.selectOneById(id);
         if (purchase.getBuyChannelId() == 3) {
             //判断供应商是不是战略供应商，不是则跳转报错页面；
+            Supplier su=platformService.getSupplierById(supplierId);
+            if (su.getIfAttrStrategy()!=1){
+                return "error_quote";
+            }
         }
         if (purchase.getBuyChannelId() == 5) {
             //判断供应商是不是单一供应商，不是则跳转；
@@ -364,6 +371,29 @@ public class ThirdPlatformController {
         String supplierId = microUserService.getUserFromSession(session).getPkSupplier();
         DDUser ddUser = (DDUser)session.getAttribute("ddUser");
         String ddUserId = ddUser.getUserid();
+
+        //判断订单报价状态
+        //1.status
+        //2.dealTime
+        String purId = quotes.getQuotes().get(0).getFyPurchaseId();
+        fyPurchase pur=platformService.selectOneById(purId);
+        String nowTime = TimeUtil.getNow();
+        String deadLineTime = pur.getDeadLine();
+        long l=0l;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
+            Date nowTimeParse = sdf.parse(nowTime);
+            Date deadLineTimeParse = sdf.parse(deadLineTime);
+            l = nowTimeParse.getTime() - deadLineTimeParse.getTime();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if (pur.getStatus()!="1" || l<0){
+
+            return ServiceResult.failureMsg("本次订单报价已经截止了");
+        }
+
+
 
 
         if (quotes == null) {

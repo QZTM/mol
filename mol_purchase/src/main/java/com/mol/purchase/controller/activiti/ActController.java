@@ -115,9 +115,9 @@ public class ActController {
     //查询当前个人任务
     @RequestMapping(value = "/task",method = RequestMethod.GET)
     @ResponseBody
-    public ServiceResult taskQuery(@RequestParam String assignee){
+    public ServiceResult taskQuery(@RequestParam String assignee,int pageNum,int pageSize){
         //获取当前用户，
-        return ServiceResult.success(actService.getTask(assignee));
+        return ServiceResult.success(actService.getTask(assignee,pageNum,pageSize));
     }
 
     //完成个人任务

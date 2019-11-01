@@ -1,6 +1,7 @@
 package com.mol.purchase.controller.dingding.shcedule;
 
 import com.alipay.api.domain.Sale;
+import com.github.pagehelper.PageInfo;
 import com.mol.purchase.config.OrderStatus;
 import com.mol.purchase.entity.FyQuote;
 import com.mol.purchase.entity.SupplierSalesman;
@@ -38,8 +39,8 @@ public class SchedulerRepairController {
 
 
     @RequestMapping(value = "/getList",method = RequestMethod.GET)
-    public ServiceResult getList(String orgId, String userId){
-        List<fyPurchase> purList=schedulerRepairService.getList(orgId,userId);
+    public ServiceResult getList(String orgId, String userId,int pageNum,int pageSize){
+        List<fyPurchase> purList=schedulerRepairService.getList(orgId,userId,pageNum,pageSize);
         return ServiceResult.success(purList);
     }
 

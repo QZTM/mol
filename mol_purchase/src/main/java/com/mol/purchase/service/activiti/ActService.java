@@ -1,5 +1,6 @@
 package com.mol.purchase.service.activiti;
 
+import com.github.pagehelper.PageHelper;
 import com.mol.config.Constant;
 import com.mol.notification.SendNotification;
 import com.mol.purchase.config.ExecutorConfig;
@@ -146,8 +147,8 @@ public class ActService {
      * @param assignee 办理人
      * @return
      */
-    public List<TaskDTO> getTask(String assignee) {
-        List<Task> list=taskService.createTaskQuery().taskAssignee(assignee).list();
+    public List<TaskDTO> getTask(String assignee,int pageNum,int pageSize) {
+        List<Task> list=taskService.createTaskQuery().taskAssignee(assignee).listPage(pageNum,pageSize);
         System.out.println("任务："+list);
         List<TaskDTO> list1 = new ArrayList<>();
         for (Task task : list){

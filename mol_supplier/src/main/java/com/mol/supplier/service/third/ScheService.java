@@ -67,6 +67,9 @@ public class ScheService {
     }
 
     public List<fyPurchase> findListByIdList(String status_f,String status_s,String status_t,String status_fo,List<String> purIdList) {
+        if (purIdList==null || purIdList.size()==0 ){
+            return new ArrayList<>();
+        }
         List<fyPurchase> fyPurchaseList = fyPurchaseMapper.findListByIdlistAndStatus(status_f,status_s,status_t, status_fo,purIdList);
         List<fyPurchase> fList = new ArrayList<>();
         for (fyPurchase fyPurchase : fyPurchaseList) {
