@@ -99,6 +99,7 @@ public class ThirdPlatformController {
         map.addAttribute("orderList", orderList);
         map.addAttribute("pageName", pageName);
         map.addAttribute("index", true);
+        map.addAttribute("pageindex","index");
         return "index";
     }
 

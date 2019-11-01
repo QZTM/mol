@@ -69,3 +69,23 @@ function uploadImg(bl,whichImg){
     })
 }
 
+
+//导航图标点击事件
+$.each($(".bottom_icon_img"),function(){
+    var that = $(this);
+    $(this).on('click',function(){
+        var id=that.attr('id');
+        var oldsrc = that.attr('src');
+        var newfront = oldsrc.substring(0,oldsrc.indexOf('.'));
+        var newsrc = newfront+'-flow.png';
+        console.log(newsrc);
+        $("#botton_icon_index_img_id").attr('src','/img/bottom-icon-index.png');
+        $("#botton_icon_schedule_img_id").attr('src','/img/bottom-icon-schedule.png');
+        $("#botton_icon_person_img_id").attr('src','/img/bottom-icon-person.png');
+        $("#"+id).attr('src',newsrc);
+        setTimeout(function(){
+            window.location.href=that.next().attr('href');
+        },600);
+    })
+})
+
