@@ -56,6 +56,8 @@
             height: 50px;
             position: fixed;
             bottom:0px;
+            border-top: 1px solid #ddd;
+            background-color: #f6fdfd;
         }
         .bottom_div_adiv{
             float:left ;
@@ -64,12 +66,24 @@
             line-height: 255%;
             text-align: center;
             margin: 10px 0px 20px 0px ;font-size: 16px;
-            background-color:#eee;
-        }
-        .bottom_div_adiv:hover{
-            background-color:#ccc;
-        }
+            position: relative;
 
+        }
+        .bottom_a_span{
+            display: inline-block;
+            position: absolute;
+            font-size:10px;
+            bottom: 2px;
+            left:43%;
+            color:#8c8c8c;
+        }
+        .bottom_icon_img{
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            top:-4px;
+            left:41%;
+        }
     </style>
 
 </head>
@@ -155,19 +169,20 @@
 <div class="bottom_div" th:fragment="footer">
     <div class="bottom_div_adiv">
         <!--        不用topage，发送请求-->
+        <img class="bottom_icon_img" src="/img/bottom-icon-index-flow.png" id="botton_icon_index_img_id">
         <a th:href="@{'/index/findAll'}"><span class="bottom_a_span">首页</span></a>
     </div>
     <div class="bottom_div_adiv">
+        <img class="bottom_icon_img" src="/img/bottom-icon-schedule.png" id="botton_icon_schedule_img_id">
         <a th:href="@{'/sche/findList?status_first=1&status_second=4&status_thrid=6&pageNum=1&pageSize=8'}" id="processa"><span class="bottom_a_span">进度</span></a>
     </div>
     <div class="bottom_div_adiv">
         <!--        <a th:href="@{'/toPage?url='+my}">我的</a>-->
-
+        <img class="bottom_icon_img" src="/img/bottom-icon-person.png" id="botton_icon_person_img_id">
         <a th:href="@{'/microApp/my/show'}"><span class="bottom_a_span">我的</span></a>
 
     </div>
 </div>
-<!--导航模块结束-->
 <!--获取打开环境-->
 <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery) -->
 <script th:src="@{/js/jquery-3.2.1.min.js}"></script>
@@ -178,6 +193,22 @@
 <script th:src="@{/js/dingtalk.open.js}"></script>
 <script th:src="@{/js/bootstrap.min.js}"></script>
 <script th:src="@{/js/ddInit.js}"></script>
+<script>
+    $.each($(".bottom_icon_img"),function(){
+        $(this).on('click',function(){
+            var id=$(this).attr(id);
+            var oldsrc = $(this).attr('src');
+            var newfront = oldsrc.substring(0,oldsrc.indexOf('.')-1);
+            var newsrc = newfront+'-flow.png';
+            console.log(newsrc);
+            $("#botton_icon_index_img_id").attr('src','/img/bottom-icon-index.png');
+            $("#botton_icon_schedule_img_id").attr('src','/img/bottom-icon-schedule.png');
+            $("#botton_icon_person_img_id").attr('src','/img/bottom-icon-person.png');
+            $("#"+id).attr('src',newsrc);
+        })
+    })
+</script>
+<!--导航模块结束-->
 <script th:inline="javascript">
     var layer ;
     var index;
