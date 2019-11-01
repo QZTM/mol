@@ -9,10 +9,10 @@ import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseD
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj;
 import com.mol.supplier.entity.dingding.purchase.strategPurchaseEntity.PageArray;
 import com.mol.supplier.entity.dingding.purchaseOrder.Supplier;
-import com.mol.supplier.mapper.fyOracle.dingding.purchase.StrategyOraclMapper;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.BdSupplierMapper;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
-import com.mol.supplier.mapper.newMysql.third.FyPurchaseEsMapper;
+import com.mol.supplier.mapper.StrategyOraclMapper;
+import com.mol.supplier.mapper.dingding.purchase.BdSupplierMapper;
+import com.mol.supplier.mapper.dingding.purchase.fyPurchaseMapper;
+import com.mol.supplier.mapper.third.FyPurchaseEsMapper;
 import com.mol.supplier.util.Cread_PDF;
 import entity.ServiceResult;
 import org.slf4j.Logger;
@@ -44,7 +44,7 @@ public class SingleSourceService {
     private IdWorker idWorker;
 
     @Resource
-    private com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseDetailMapper fyPurchaseDetailMapper;
+    private com.mol.supplier.mapper.dingding.purchase.fyPurchaseDetailMapper fyPurchaseDetailMapper;
 
     //oracl的mapper
     @Resource

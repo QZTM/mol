@@ -1,7 +1,7 @@
 package com.mol.supplier.service.microApp;
 
 import com.mol.supplier.entity.MicroApp.Supplier;
-import com.mol.supplier.mapper.newMysql.microApp.MicroSupplierMapper;
+import com.mol.supplier.mapper.microApp.MicroSupplierMapper;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 

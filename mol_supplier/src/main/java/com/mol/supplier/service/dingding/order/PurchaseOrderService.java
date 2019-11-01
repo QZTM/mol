@@ -1,7 +1,7 @@
 package com.mol.supplier.service.dingding.order;
 
 import com.mol.supplier.entity.dingding.purchaseOrder.PurchaseOrderDetail;
-import com.mol.supplier.mapper.fyOracle.dingding.order.PurchaseOrderMapper;
+import com.mol.supplier.mapper.PurchaseOrderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;

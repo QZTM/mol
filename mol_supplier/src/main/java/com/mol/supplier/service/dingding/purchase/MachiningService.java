@@ -8,9 +8,9 @@ import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseA
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj;
 import com.mol.supplier.entity.thirdPlatform.BdMaterialRepair;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.BdMaterialRepairMapper;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseDetailMapper;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
+import com.mol.supplier.mapper.dingding.purchase.BdMaterialRepairMapper;
+import com.mol.supplier.mapper.dingding.purchase.fyPurchaseDetailMapper;
+import com.mol.supplier.mapper.dingding.purchase.fyPurchaseMapper;
 import entity.ServiceResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

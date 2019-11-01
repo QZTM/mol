@@ -8,14 +8,14 @@ import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseD
 import com.mol.supplier.entity.dingding.purchaseOrder.Supplier;
 import com.mol.supplier.entity.dingding.solr.fyPurchase;
 import com.mol.supplier.entity.thirdPlatform.FyQuote;
-import com.mol.supplier.mapper.newMysql.dingding.activiti.ActHiCommentMapper;
-import com.mol.supplier.mapper.newMysql.dingding.activiti.ActHiProcinstMapper;
-import com.mol.supplier.mapper.newMysql.dingding.org.AppOrgMapper;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.BdSupplierMapper;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseDetailMapper;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
-import com.mol.supplier.mapper.newMysql.dingding.user.AppUserMapper;
-import com.mol.supplier.mapper.newMysql.third.FyQuoteMapper;
+import com.mol.supplier.mapper.dingding.activiti.ActHiCommentMapper;
+import com.mol.supplier.mapper.dingding.activiti.ActHiProcinstMapper;
+import com.mol.supplier.mapper.dingding.org.AppOrgMapper;
+import com.mol.supplier.mapper.dingding.purchase.BdSupplierMapper;
+import com.mol.supplier.mapper.dingding.purchase.fyPurchaseDetailMapper;
+import com.mol.supplier.mapper.dingding.purchase.fyPurchaseMapper;
+import com.mol.supplier.mapper.dingding.user.AppUserMapper;
+import com.mol.supplier.mapper.third.FyQuoteMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
