@@ -1,5 +1,6 @@
 package com.mol.purchase.service.dingding.schedule;
 
+import com.github.pagehelper.PageHelper;
 import com.mol.purchase.entity.ExpertRecommend;
 import com.mol.purchase.entity.FyQuote;
 import com.mol.purchase.entity.SupplierSalesman;
@@ -68,7 +69,8 @@ public class SchedulerRepairService {
     private ExpertRecommendMapper expertRecommendMapper;
 
 
-    public List<fyPurchase> getList(String orgId, String userId) {
+    public List<fyPurchase> getList(String orgId, String userId,Integer pageNum,Integer pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
         List<fyPurchase> list=fyPurchaseMapper.findListByOrgIdAndStaffId(orgId,userId);
 //        List<fyPurchase> ll=new ArrayList<>();
 //        for (fyPurchase fyPurchase : list) {

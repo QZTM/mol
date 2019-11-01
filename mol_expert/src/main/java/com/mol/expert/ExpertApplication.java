@@ -1,6 +1,7 @@
 package com.mol.expert;
 
 import com.mol.cache.CacheHandle;
+import com.mol.expert.entity.MicroApp.Supplier;
 import org.activiti.spring.boot.SecurityAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

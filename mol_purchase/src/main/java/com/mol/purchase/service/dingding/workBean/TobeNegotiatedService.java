@@ -3,6 +3,7 @@ package com.mol.purchase.service.dingding.workBean;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
 import com.mol.purchase.config.OrderStatus;
 import com.mol.purchase.entity.ExpertRecommend;
 import com.mol.purchase.entity.ExpertUser;
@@ -80,7 +81,8 @@ public class TobeNegotiatedService {
         return fyPurchaseMapper.findListByIdlistAndStatus(status,null,null,quoteIdList);
     }
 
-    public List<fyPurchase> findListByOrgId(String orgId, String status,String secondStatus) {
+    public List<fyPurchase> findListByOrgId(String orgId, String status,String secondStatus,int pageNum,int pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
          return fyPurchaseMapper.findListByOrgIdAndStatus(orgId,status,secondStatus);
     }
 
@@ -140,10 +142,10 @@ public class TobeNegotiatedService {
      * @param userId
      * @return
      */
-    public List<fyPurchase> findListIfOk(String orgId, String status,String secondStatus, String userId) {
+    public List<fyPurchase> findListIfOk(String orgId, String status,String secondStatus, String userId,int pageNum,int pageSize) {
 
         List<fyPurchase> overList=new ArrayList<>();
-
+        PageHelper.startPage(pageNum,pageSize);
         List<fyPurchase> list = fyPurchaseMapper.findListByOrgIdAndStatus(orgId, status,secondStatus);
         for (fyPurchase fyPurchase : list) {
             String negotiatePerson = fyPurchase.getNegotiatePerson();

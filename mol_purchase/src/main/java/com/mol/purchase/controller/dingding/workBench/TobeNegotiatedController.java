@@ -48,7 +48,7 @@ public class TobeNegotiatedController {
      * @return
      */
     @RequestMapping(value = "/getList", method = RequestMethod.GET)
-    public List<fyPurchase> getList(String orgId,String status,String secondStatus,String userId){
+    public List<fyPurchase> getList(String orgId,String status,String secondStatus,String userId ,int pageNum,int pageSize){
 
         List<fyPurchase> list = new ArrayList<>();
 
@@ -61,10 +61,10 @@ public class TobeNegotiatedController {
 
         if (userId.equals(appUser.getId())){
             //是 展示所有状态，公司符合的order
-            list=negotiatedService.findListByOrgId(orgId,status,secondStatus);
+            list=negotiatedService.findListByOrgId(orgId,status,secondStatus,pageNum,pageSize);
         }else {
             //查询全部，遍历
-            list=negotiatedService.findListIfOk(orgId,status,secondStatus,userId);
+            list=negotiatedService.findListIfOk(orgId,status,secondStatus,userId,pageNum,pageSize);
         }
          return list;
     }

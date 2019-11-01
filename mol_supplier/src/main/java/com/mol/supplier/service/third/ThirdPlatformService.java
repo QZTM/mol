@@ -2,6 +2,7 @@ package com.mol.supplier.service.third;
 
 import com.github.pagehelper.PageHelper;
 import com.mol.supplier.entity.MicroApp.Salesman;
+import com.mol.supplier.entity.MicroApp.Supplier;
 import com.mol.supplier.entity.dingding.login.AppAuthOrg;
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
 import com.mol.supplier.entity.dingding.solr.fyPurchase;
@@ -59,6 +60,7 @@ public class ThirdPlatformService {
 
     @Autowired
     private MicroSalesmanMapper salesmanMapper;
+
 
     //enter排版
     public List<Enter> findAll() {
@@ -382,5 +384,12 @@ public class ThirdPlatformService {
             }
         }
         return orderList;
+    }
+
+
+    public Supplier getSupplierById(String supplierId) {
+        Supplier t=new Supplier();
+        t.setPkSupplier(supplierId);
+        return bdSupplierMapper.selectOne(t);
     }
 }
