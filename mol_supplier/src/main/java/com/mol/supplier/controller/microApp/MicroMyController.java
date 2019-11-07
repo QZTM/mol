@@ -75,7 +75,7 @@ public class MicroMyController {
         String industryStr = getSupplierIndustryStr(supplier);
         System.out.println("industryStr:"+industryStr);
         model.addAttribute("industrystr",industryStr);
-
+        model.addAttribute("pageindex","person");
         return "my";
     }
 

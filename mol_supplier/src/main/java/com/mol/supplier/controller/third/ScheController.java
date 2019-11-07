@@ -65,6 +65,7 @@ public class ScheController {
 
         map.addAttribute("list",list);
         map.addAttribute("status",status_first);
+        map.addAttribute("pageindex","schedule");
         return "schedule";
     }
 

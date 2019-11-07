@@ -21,6 +21,7 @@
     <!-- 加载 Bootstrap 的所有 JavaScript 插件。 -->
     <script th:src="@{/js/bootstrap.min.js}"></script>
     <script th:src="@{/js/phoneCode.js}"></script>
+
     <script src="https://g.alicdn.com/dingding/dingtalk-jsapi/2.7.13/dingtalk.open.js"></script>
     <style>
         .button{
@@ -96,7 +97,7 @@
             <input type="checkbox" name="protocolAgree" title="同意协议" id="protocol-checkbox-input">
         </div>
         <div class="col-xs-10 col-md-10" style="margin-top: 5.5%;">
-            <span class="protocol-span">同意<span class="protocol-span-proname" id="protocol-span-id">《茉尔易购用户注册协议》</span>和<span class="protocol-span-proname" id="privace-agree-id">《隐私政策》</span></span>
+            <span class="protocol-span">同意<a class="protocol-span-proname" id="protocol-span-id">《茉尔易购用户注册协议》</a>和<a class="protocol-span-proname" id="privace-agree-id">《隐私政策》</a></span>
         </div>
 
     </div>
@@ -106,6 +107,7 @@
         <button type="button" style="width: 80%;text-align: center;background-color: blueviolet;" class="btn btn-default" id="sub-btn" disabled="disabled">绑定</button>
     </div>
 </form>
+<div id="example1"></div>
 </body>
 <script th:inline="javascript">
 

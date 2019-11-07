@@ -231,6 +231,9 @@ public class MysqlDataBaseConfig {
         druid.setPoolPreparedStatements(poolPreparedStatements);
         // 打开PSCache时，指定每个连接上PSCache的大小
         druid.setMaxPoolPreparedStatementPerConnectionSize(maxPoolPreparedStatementPerConnectionSize);
+        druid.setRemoveAbandoned(true);
+        druid.setRemoveAbandonedTimeout(300);
+        druid.setLogAbandoned(true);
 
         return druid;
 

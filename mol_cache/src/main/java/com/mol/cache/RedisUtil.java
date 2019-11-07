@@ -38,10 +38,10 @@ public class RedisUtil {
             jedisPoolConfig.setTestOnReturn(true);
             //表示idle object evitor两次扫描之间要sleep的毫秒数
             //表示idle object evitor每次扫描的最多的对象数
-            jedisPoolConfig.setNumTestsPerEvictionRun(20);
+            jedisPoolConfig.setNumTestsPerEvictionRun(200);
             jedisPoolConfig.setTimeBetweenEvictionRunsMillis(30000);
             //表示一个对象至少停留在idle状态的最短时间，然后才能被idle object evitor扫描并驱逐；这一项只有在timeBetweenEvictionRunsMillis大于0时才有意义
-            jedisPoolConfig.setMinEvictableIdleTimeMillis(60000);
+            jedisPoolConfig.setMinEvictableIdleTimeMillis(30000);
             //pool = new JedisPool(jedisPoolConfig, ip, port, 10000, password);
             // redis 未设置密码
             pool = new JedisPool(jedisPoolConfig, ip, port, 10000 ,password);

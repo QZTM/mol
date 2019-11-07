@@ -5,5 +5,8 @@
 
 <mapper namespace="com.mol.supplier.mapper.microApp.MicroSupplierMapper">
 
+    <select id="getVersionByPkSupplier" parameterType="String" resultType="Integer">
+        select version from bd_supplier where pk_supplier=#{pkSupplier}
+    </select>
 
 </mapper>

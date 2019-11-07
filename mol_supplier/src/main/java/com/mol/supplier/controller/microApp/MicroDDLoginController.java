@@ -80,7 +80,7 @@ public class MicroDDLoginController {
      */
     @RequestMapping("/showProtocolPage")
     public String showProtocolPage(){
-        return "meygyhzcxy";
+        return "茉尔易购用户注册协议";
     }
 
     /**
@@ -89,7 +89,7 @@ public class MicroDDLoginController {
      */
     @RequestMapping("/showprivacyagreePage")
     public String showPrivacyAgreePage(){
-        return "privacyagreeprotocol";
+        return "茉尔易购隐私声明";
     }
 
 

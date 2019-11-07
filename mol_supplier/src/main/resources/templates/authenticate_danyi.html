@@ -258,37 +258,21 @@
         if(businessLicenceNum != '' && businessLicenceNum != 'Business license number'){
             supplier.buslicensenum = businessLicenceNum;
         }else{
-            setTimeout(function(){
-                $("#bussinessLicenceNumInput").focus();
-            },1000);
             alertMsg("请填写营业执照号码！");
+            location.href = "#bussinessLicenceNumInput";
             $("#subBtn").removeAttr('disabled');
+            $("#bussinessLicenceNumInput").click();
             return ;
         }
-        /*验证营业执照图片*/
-
-        var ifUpedbl = $("#bussinessLicence").attr("uped");
-        console.log(ifUpedbl);
-        if(!ifUpedbl){
-            setTimeout(function(){
-                $("#bussinessLicence").focus();
-                $("#bussinessLicence").click();
-            },1000);
-            layer.msg("请上传营业执照图片！");
-            $("#subBtn").removeAttr('disabled');
-            return ;
-        }
-
+        /*验证*/
         /*所在地*/
         var placeOnName =  $("#sel_city").text();
 
         if(placeOnName == undefined || placeOnName == "" || placeOnName == '点击选取省市区县'){
-            setTimeout(function(){
-                $("#sel_city").focus();
-                $("#sel_city").click();
-            },1000);
             alertMsg("请选择所在地！");
+            location.href = "#localplace";
             $("#subBtn").removeAttr('disabled');
+            $("#sel_city").click();
             return ;
         }
         supplier.locationProvinceJsIndex = selectedIndex[0];
@@ -300,11 +284,10 @@
         console.log("注册地");
         console.log(registAddress);
         if(registAddress == undefined || registAddress == ''){
-            setTimeout(function(){
-                $("#registAddressInput").focus();
-            },1000);
             alertMsg("请填写注册地址！");
             $("#subBtn").removeAttr('disabled');
+            $("#registAddressInput").focus();
+            location.href = "#registAddressInput";
             return ;
         }
         supplier.registeredAddress = registAddress;
@@ -317,11 +300,10 @@
         console.log(tradeOn);
         console.log("typeid："+typeId)
         if(!typeId){
-            setTimeout(function(){
-                $("#sel_trade").click();
-            },1000);
             alertMsg("请选择所属行业！");
             $("#subBtn").removeAttr('disabled');
+            location.href = "#sel_trade";
+            $("#sel_trade").click();
             return ;
         }
         supplier.industryFirst = typeId;
@@ -343,11 +325,10 @@
         console.log("经营范围");
         console.log(bussinessScope);
         if(!bussinessScope){
-            setTimeout(function(){
-                $("#bussinessScopeTextarea").focus();
-            },1000);
             alertMsg("请填写经营范围！");
             $("#subBtn").removeAttr('disabled');
+            location.href = "#bussinessScopeTextarea";
+            $("#bussinessScopeTextarea").focus();
             return ;
         }
         supplier.businessScope=bussinessScope;
@@ -356,32 +337,29 @@
         var ifUped = $("#legalBodyIdFront").attr("uped");
         console.log(ifUped);
         if(!ifUped){
-            setTimeout(function(){
-                $("#legalBodyIdFront").click();
-            },1000);
             alertMsg("请上传法人身份证正面照片！");
             $("#subBtn").removeAttr('disabled');
+            location.href = "#legalBodyIdFront";
+            $("#legalBodyIdFront").click();
             return ;
         }
 
         var ifUped2 = $("#legalBodyIdBack").attr("uped");
         if(!ifUped2){
-            setTimeout(function(){
-                $("#legalBodyIdBack").click();
-            },1000);
             alertMsg("请上传法人身份证反面照片！");
             $("#subBtn").removeAttr('disabled');
+            location.href = "#legalBodyIdBack";
+            $("#legalBodyIdBack").click();
             return ;
         }
 
         /*法人姓名*/
         var legalBodyName = $("#legalBodyNameInput").val();
         if(!legalBodyName){
-            setTimeout(function(){
-                $("#legalBodyNameInput").focus();
-            },1000);
             alertMsg("请填写法人姓名！");
             $("#subBtn").removeAttr('disabled');
+            location.href = "#legalBodyNameInput";
+            $("#legalBodyNameInput").focus();
             return ;
         }
 
@@ -391,11 +369,10 @@
         /*法人身份证号码*/
         var legalBodyIdCardNum = $("#legalBodyIdCardNumInput").val();
         if((!legalBodyIdCardNum)){
-            setTimeout(function(){
-                $("#legalBodyIdCardNumInput").focus();
-            },1000);
             alertMsg("请填写法人身份证号码！");
             $("#subBtn").removeAttr('disabled');
+            location.href = "#legalBodyIdCardNumInput";
+            $("#legalBodyIdCardNumInput").focus();
             return ;
         }
         if(!checkIdNum(legalBodyIdCardNum)){
@@ -411,20 +388,18 @@
         /*手机号码*/
         var phoneNum = $("#phoneNumInput-jc").val();
         if(!phoneNum){
-            setTimeout(function(){
-                $("#phoneNumInput-jc").focus();
-            },1000);
             alertMsg("请填写手机号码！");
             $("#subBtn").removeAttr('disabled');
+            location.href = "#phoneNumInput-jc";
+            $("#phoneNumInput-jc").focus();
             return ;
         }
 
         if(!isPhoneNo(phoneNum)){
-            setTimeout(function(){
-                $("#phoneNumInput-jc").focus();
-            },1000);
             alertMsg("请填写正确的手机号码！");
             $("#subBtn").removeAttr('disabled');
+            location.href = "#phoneNumInput-jc";
+            $("#phoneNumInput-jc").focus();
             return ;
         }
         supplier.authPhone = phoneNum;
@@ -432,11 +407,10 @@
         /*验证码*/
         var phoneCheckCode = $("#phoneCheckCodeInput").val();
         if(!phoneCheckCode){
-            setTimeout(function(){
-                $("#phoneCheckCodeInput").focus();
-            },1000);
             alertMsg("请填写验证码！");
             $("#subBtn").removeAttr('disabled');
+            location.href = "#phoneCheckCodeInput";
+            $("#phoneCheckCodeInput").focus();
             return ;
         }
 
@@ -455,7 +429,6 @@
                 console.log(res);
                 if(res.success){
                     alertMsg("提交成功,请等待审核");
-                    location.reload();
                 }else{
                     alertMsg(res.message);
                 }

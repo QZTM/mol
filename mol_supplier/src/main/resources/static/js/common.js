@@ -1,13 +1,25 @@
-﻿function showLoading(){
-    // var index = layer.load(2, {
-    //     shade: [0.1,'#fff'] //0.1透明度的白色背景
-    // });
+﻿var loadingpointaddinter ;
+function showLoading(msg){
+    if(msg){
+        $("#loading_img_span").text(msg);
+        loadingpointaddinter = setInterval(function(){
+            $("#loading_img_span").text($("#loading_img_span").text()+'.');
+            if($("#loading_img_span").text().indexOf('.....') >0){
+                $("#loading_img_span").text(msg);
+            }
+        },1000)
+    }
+    var abc = $("#loading_div").attr('hidden');
+    if(abc){
+        $("#loading_div").removeAttr('hidden');
+    }
 }
 
 function hideLoading(){
-    if(index){
-        layer.close(index);
+    if(loadingpointaddinter){
+        clearInterval(loadingpointaddinter);
     }
+    $("#loading_div").attr('hidden','hidden');
 }
 
 
@@ -66,6 +78,34 @@ function uploadImg(bl,whichImg){
                 reject(data);
             }
         })
+    })
+}
+
+
+//导航图标点击事件
+$.each($(".bottom_icon_img"),function(){
+    var that = $(this);
+    $(this).on('click',function(){
+        var id=that.attr('id');
+        var oldsrc = that.attr('src');
+        var newfront = oldsrc.substring(0,oldsrc.indexOf('.'));
+        var newsrc = newfront+'-flow.png';
+        console.log(newsrc);
+        $("#botton_icon_index_img_id").attr('src','/img/bottom-icon-index.png');
+        $("#botton_icon_schedule_img_id").attr('src','/img/bottom-icon-schedule.png');
+        $("#botton_icon_person_img_id").attr('src','/img/bottom-icon-person.png');
+        $("#"+id).attr('src',newsrc);
+        setTimeout(function(){
+            window.location.href=that.next().attr('href');
+        },600);
+    })
+})
+
+function snyTimeOut(time,callback){
+    return new Promise(function(resolve, reject){
+        setTimeout(function(){
+            callback;
+        },time);
     })
 }
 

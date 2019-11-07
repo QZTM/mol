@@ -29,6 +29,14 @@ public class MicroRegistService {
 
     /*供应商注册*/
     public String suppliseRegist(Supplier supplier) {
+
+        Example example = new Example(Supplier.class);
+        example.and().andEqualTo("name",supplier.getName());
+        Supplier checkSupplier = microSupplierMapper.selectOneByExample(example);
+        if(checkSupplier != null){
+            return checkSupplier.getPkSupplier();
+        }
+
         String newId = idWorker.nextId() + "";
         supplier.setPkSupplier(newId);
         String nowTime = TimeUtil.getNowDateTime();
@@ -47,6 +55,15 @@ public class MicroRegistService {
     }
 
     public String salesmanRegist(Salesman salesman) {
+
+        Example example = new Example(Salesman.class);
+        example.and().andEqualTo("name",salesman.getName());
+        example.and().andEqualTo("phone",salesman.getPhone());
+        Salesman checkedSalesman = microSalesmanMapper.selectOneByExample(example);
+        if(checkedSalesman != null){
+            return checkedSalesman.getId();
+        }
+
         String newId = idWorker.nextId() + "";
         salesman.setId(newId);
         String nowTime = TimeUtil.getNowDateTime();
