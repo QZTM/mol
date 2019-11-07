@@ -13,42 +13,6 @@
     <link th:href="@{/css/style_common.css}" rel="stylesheet">
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <link th:href="@{/css/thirdPage_homePage.css}" rel="stylesheet">
-    <style>
-        .companyName{
-            font-size: 15px;
-            text-align: center;
-            color: #d58512;
-        }
-        .picture{
-            width: 100%;
-            height: 222px;
-        }
-        .paiban{
-        }
-        .tt{
-            /*width: 50%;*/
-            height: 107px;
-        }
-        .tobe{
-            /*height: 62px;*/
-
-            padding-top: 58px;
-            border: 1px solid #eeeeee;
-            height: 125px;
-            width: 50%;
-            margin: auto;
-            text-align: center;
-        }
-        .change{
-            width: 45%;
-            margin: 3px 1% 5px 3%;
-        }
-        .thumbnail{
-            margin-bottom: 8px;
-            margin-top: 12px;
-        }
-    </style>
-
 </head>
 <body>
 <!--轮播图开始-->
@@ -151,6 +115,7 @@
 
 
     $(document).ready(function(){
+        //loading();
         console.log("index加载完成后执行------");
         console.log("检测session中是否有user信息-----");
         //从session获取用户信息：
@@ -162,7 +127,6 @@
         console.log(supplier);
         console.log("user && supplier");
         console.log(user && supplier);
-
         // if(user && supplier){
         //     console.log("session中有user和supplier：。。。。supstateNormal:"+supplier.supstateNormal);
         //     var supstate = supplier.supstateNormal;
@@ -265,5 +229,20 @@
 
 
 </script>
+<div style="width:100%;height:100%;background-color:rgba(29, 26, 26, 0.1);position: fixed;left:0px;top:0px;z-index:13000" hidden="hidden" id="loading_div">
+    <span style="top: 275px;left: 37%;position: absolute;" id="loading_img_span">加载用户信息中</span>
+    <img src="/img/loading2.gif" style="height: 60px;position: relative;top: 212px;left: 43%;">
+</div>
+<!--<input type="button" value="点我" onclick="showloadinga()">-->
+<div style="height:50px"></div>
 </body>
+<script>
+    function showloadinga(){
+        showLoading("获取用户信息中");
+            setTimeout(function(){
+                hideLoading();
+            },1000);
+
+    }
+</script>
 </html>

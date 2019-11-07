@@ -21,13 +21,13 @@ public class WebConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         System.out.println("session拦截器启动");
         registry.addInterceptor(jwtInterceptor())
-                .excludePathPatterns("static/**/**","/microApp/login/**","/callbackto","/error","/callback","**/img/**","/index/**","**/js/**","**/css/**","/static/upload/**","/templates/**","/index/findAll","/css/**","/js/**","/img/**","/layui/**","/actuator/**","/msg/**","/microApp/**/**","/microApp/regist/**")
+                .excludePathPatterns("static/**/**","static/**","/microApp/login/**","/callbackto","/error","/callback","**/img/**","/index/**","**/js/**","**/css/**","/static/upload/**","/pdf/**","/templates/**","/index/findAll","/css/**","/js/**","/img/**","/layui/**","/actuator/**","/msg/**","/microApp/**/**","/microApp/regist/**")
                 .addPathPatterns("/**");
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/upload/**").addResourceLocations("file:"+UploadUtils.getDirFile().getAbsolutePath()+"/imgs","file:"+ UploadUtils.getDirFile().getAbsolutePath()+"/videos","file:"+UploadUtils.getDirFile().getAbsolutePath()+"/documents","file:"+UploadUtils.getDirFile().getAbsolutePath()+"/sounds","classpath:/templates");
+        registry.addResourceHandler("/static/upload/**").addResourceLocations("file:"+UploadUtils.getDirFile().getAbsolutePath()+"/imgs","file:"+UploadUtils.getDirFile().getAbsolutePath()+"/pdf","file:"+ UploadUtils.getDirFile().getAbsolutePath()+"/videos","file:"+UploadUtils.getDirFile().getAbsolutePath()+"/documents","file:"+UploadUtils.getDirFile().getAbsolutePath()+"/sounds","classpath:/templates");
         registry.addResourceHandler("/index/**").addResourceLocations("classpath:/templates");
     }
 

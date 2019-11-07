@@ -1,5 +1,12 @@
 package com.mol.supplier.config;
 
+import util.TimeUtil;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 /**
  * 钉钉微应用参数
  */
@@ -29,8 +36,10 @@ public class MicroAttr {
     public static final Integer  SUPSTATE_FAIL = 4;
     //供应商未认证
     public static final Integer WITHOUT_SUPSTATE=0;
-
-
+    //供应商未付款，未形成订单
+    public static final Integer SUPSTATE_BEFORE_CREATE_PAY=5;
+    //供应商未付款，已形成订单
+    public static final Integer SUPSTATE_BEFORE_PAYOVER=6;
 
 
 }

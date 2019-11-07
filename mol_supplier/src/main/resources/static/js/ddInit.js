@@ -141,7 +141,8 @@ function getOrderInfo(){
 /*安卓钉钉初始化*/
 function android_dd_init_action(){
     console.log("android_dd_init_action")
-    alertMsg("获取用户信息中...请稍后",{time:2000});
+    //alertMsg("获取用户信息中...请稍后",2000);
+    showLoading("获取用户信息中");
     Promise.resolve().then(function(){
         return  get_access_code();
     }).then(function(a){
@@ -155,11 +156,12 @@ function android_dd_init_action(){
         }else{
             localStorage.setItem("user",JSON.stringify(b.result.user));
             localStorage.setItem("supplier",JSON.stringify(b.result.supplier));
-            alertMsg("获取成功",{time:1500});
+            alertMsg("获取成功",1500);
             if (!("初始化完成" == b.message )) {
                 xunjia(4,0);
             }else{
                 xunjia(4,1);
+                hideLoading();
                 //鉴权
                 console.log("鉴权");
                 console.log("b.result");
@@ -195,6 +197,7 @@ function android_dd_init_action(){
         }
     }).then(function(){
         console.log("执行成功");
+        hideLoading();
 
 
 

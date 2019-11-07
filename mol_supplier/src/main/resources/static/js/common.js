@@ -1,13 +1,25 @@
-﻿function showLoading(){
-    // var index = layer.load(2, {
-    //     shade: [0.1,'#fff'] //0.1透明度的白色背景
-    // });
+﻿var loadingpointaddinter ;
+function showLoading(msg){
+    if(msg){
+        $("#loading_img_span").text(msg);
+        loadingpointaddinter = setInterval(function(){
+            $("#loading_img_span").text($("#loading_img_span").text()+'.');
+            if($("#loading_img_span").text().indexOf('.....') >0){
+                $("#loading_img_span").text(msg);
+            }
+        },1000)
+    }
+    var abc = $("#loading_div").attr('hidden');
+    if(abc){
+        $("#loading_div").removeAttr('hidden');
+    }
 }
 
 function hideLoading(){
-    if(index){
-        layer.close(index);
+    if(loadingpointaddinter){
+        clearInterval(loadingpointaddinter);
     }
+    $("#loading_div").attr('hidden','hidden');
 }
 
 
@@ -88,4 +100,12 @@ $.each($(".bottom_icon_img"),function(){
         },600);
     })
 })
+
+function snyTimeOut(time,callback){
+    return new Promise(function(resolve, reject){
+        setTimeout(function(){
+            callback;
+        },time);
+    })
+}
 

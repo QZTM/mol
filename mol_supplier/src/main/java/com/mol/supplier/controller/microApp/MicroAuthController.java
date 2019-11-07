@@ -10,6 +10,7 @@ import com.mol.supplier.mapper.third.BdMarbasclassMapper;
 import com.mol.supplier.service.microApp.MicroAuthService;
 import com.mol.supplier.service.microApp.MicroUserService;
 import entity.ServiceResult;
+import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,7 @@ import java.util.List;
 @Controller
 @CrossOrigin
 @RequestMapping("/auth")
+@Log
 public class MicroAuthController {
 
     /**
@@ -90,8 +92,26 @@ public class MicroAuthController {
 
 
     @RequestMapping("/attr")
-    public String showAuthChoosePage() {
+    public String showAuthChoosePage(HttpSession session) {
+        Supplier oldSupplierObj = microUserService.getSupplierFromSession(session);
+        Supplier newSupplier = microSupplierMapper.selectByPrimaryKey(oldSupplierObj);
+        session.setAttribute("supplier",newSupplier);
         return "authenticate";
+    }
+
+    @RequestMapping("/pay/{authType}")
+    public String showAuthPayPage(@PathVariable String authType,HttpSession session,Model model){
+        log.info("authType:"+authType);
+
+        String pageName = "";
+        if ("zhanlve".equals(authType)) {
+            model.addAttribute("cost",0.01);
+            pageName = "authenticate_pay_zhanlve";
+        }else if("danyi".equals(authType)){
+            model.addAttribute("cost",0.01);
+            pageName = "authenticate_pay_danyi";
+        }
+        return pageName;
     }
 
     /**
@@ -110,7 +130,6 @@ public class MicroAuthController {
         if (supplier == null) {
             throw new RuntimeException("请先注册后再试");
         }
-
         //获取行业类别（物料分类的第一级）
         List<BdMarbasclass> bdMarbasclassList = bdMarbasclassMapper.findMarbasFirstList();
         model.addAttribute("itemTypeList",bdMarbasclassList);
@@ -122,33 +141,81 @@ public class MicroAuthController {
             System.out.println("supplier.getIfAttrNormal()..."+supplier.getIfAttrNormal());
             System.out.println("supplier.getSupstateNormal()..."+supplier.getSupstateNormal()+",MicroAttr.SUPSTATE_LOADING:"+MicroAttr.SUPSTATE_LOADING);
             //如果正在认证中显示认证中页面
-            if(supplier.getIfAttrNormal() == 1 && supplier.getSupstateNormal() == MicroAttr.SUPSTATE_LOADING){
-                pageName = "authenticate_shenhe";
-            }else if(supplier.getIfAttrNormal() == 1 && supplier.getSupstateNormal() == MicroAttr.SUPSTATE_FAIL){
-                pageName = "authenticate_update_jichu";
-            }
-
+                if(supplier.getSupstateNormal() == MicroAttr.SUPSTATE_LOADING){
+                    pageName = "authenticate_shenhe";
+                }else if(supplier.getSupstateNormal() == MicroAttr.SUPSTATE_FAIL){
+                    pageName = "authenticate_update_jichu";
+                }else if(supplier.getSupstateNormal() == MicroAttr.SUPSTATE_SUCCESS){
+                    pageName = "authenticate_success";
+                }
         } else if ("zhanlve".equals(authType)) {
             model.addAttribute("pagenametitlefront", "战略");
-            pageName = "authenticate_zhanlueyudanyi";
 
-            if(supplier.getIfAttrStrategy() == 1 && supplier.getSupstateStrategy() == MicroAttr.SUPSTATE_LOADING){
-                pageName = "authenticate_shenhe";
+
+
+                if(supplier.getSupstateStrategy() == MicroAttr.SUPSTATE_LOADING){
+                    pageName = "authenticate_shenhe";
+                    return pageName;
+                }else if(supplier.getSupstateStrategy() == MicroAttr.SUPSTATE_FAIL){
+                    pageName = "authenticate_update_zhanlve";
+                    return pageName;
+                }else if(supplier.getSupstateStrategy() == MicroAttr.SUPSTATE_SUCCESS){
+                    pageName = "authenticate_success";
+                    return pageName;
+                }else if(supplier.getSupstateStrategy() == MicroAttr.SUPSTATE_BEFORE_PAYOVER){
+                    //转到支付订单页面
+                }
+            /**
+             * 如果已经认证过了基础供应商，且未在其他状态，那么显示认证页面2，如果没有认证过基础供应商，那么显示认证页面1
+             */
+            if(supplier.getSupstateNormal() == MicroAttr.SUPSTATE_SUCCESS || supplier.getSupstateStrategy() == MicroAttr.SUPSTATE_BEFORE_CREATE_PAY){
+                pageName = "authenticate_zhanlve2";
+            }else{
+                pageName = "authenticate_zhanlve";
             }
-
         } else if ("danyi".equals(authType)) {
             model.addAttribute("pagenametitlefront", "单一");
-            pageName = "authenticate_zhanlueyudanyi";
-
-            if(supplier.getIfAttrSingle() == 1 && supplier.getSupstateSingle() == MicroAttr.SUPSTATE_LOADING){
-                pageName = "authenticate_shenhe";
-            }
-
+            pageName = "authenticate_danyi";
+                if(supplier.getSupstateSingle() == MicroAttr.SUPSTATE_LOADING){
+                    pageName = "authenticate_shenhe";
+                }else if(supplier.getSupstateSingle() == MicroAttr.SUPSTATE_FAIL){
+                    pageName = "authenticate_update_danyi";
+                }else if(supplier.getSupstateSingle() == MicroAttr.SUPSTATE_SUCCESS){
+                    pageName = "authenticate_success";
+                }
         }
+        System.out.println("pageName:"+pageName);
         return pageName;
     }
 
 
+    /**
+     * 认证通过后，成功页面的查看认证详情：
+     * @return
+     */
+    @RequestMapping("/detail")
+    public String showAuthDetail(String suppliertype,Model model){
+        model.addAttribute("pagenametitlefront", suppliertype);
+        log.info("showAuthDetail...suppliertype:"+suppliertype);
+        if ("基础".equals(suppliertype)) {
+            return "authenticate_update_jichu";
+        }else if("战略".equals(suppliertype)){
+            return "authenticate_update_zhanlve";
+        }else if("单一".equals(suppliertype)){
+            return "authenticate_update_danyi";
+        }
+        return "";
+    }
+
+
+    /**
+     * 修改
+     * @param supplier
+     * @param session
+     * @param response
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(value = "/update",method = RequestMethod.POST)
     @ResponseBody
     public ServiceResult update(@RequestBody Supplier supplier, HttpSession session, HttpServletResponse response) throws IOException {
