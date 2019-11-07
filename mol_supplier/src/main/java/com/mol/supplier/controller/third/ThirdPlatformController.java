@@ -1,6 +1,7 @@
 package com.mol.supplier.controller.third;
 
 import com.alibaba.fastjson.JSON;
+import com.mol.supplier.config.OrderStatus;
 import com.mol.supplier.entity.MicroApp.DDUser;
 import com.mol.supplier.entity.MicroApp.Salesman;
 import com.mol.supplier.entity.MicroApp.Supplier;
@@ -11,6 +12,7 @@ import com.mol.supplier.entity.thirdPlatform.*;
 import com.mol.supplier.service.dingding.purchase.EsService;
 import com.mol.supplier.service.microApp.MicroUserService;
 import com.mol.supplier.service.third.ThirdPlatformService;
+import com.taobao.api.internal.toplink.netcat.NetCatOuputWriter;
 import entity.PageBean;
 import entity.ServiceResult;
 import lombok.extern.java.Log;
@@ -143,6 +145,12 @@ public class ThirdPlatformController {
                 buyId = 6 + "";
                 htmlName = "index_jgwx";
                 break;
+            default:
+                htmlName="error_enter";
+                break;
+        }
+        if (htmlName=="error_enter"){
+            return htmlName;
         }
         if (keyword == null || keyword == "") {
             keyword = "";
@@ -209,6 +217,13 @@ public class ThirdPlatformController {
         return list;
     }
 
+    /**
+     * 数量
+     * @param buyChannelId
+     * @param status
+     * @param goodsType
+     * @return
+     */
     @RequestMapping("/getMarbasClassNameList/getCount")
     @ResponseBody
     public Integer getCount(String buyChannelId, String status, String goodsType) {
@@ -378,21 +393,36 @@ public class ThirdPlatformController {
         //2.dealTime
         String purId = quotes.getQuotes().get(0).getFyPurchaseId();
         fyPurchase pur=platformService.selectOneById(purId);
-        String nowTime = TimeUtil.getNow();
+        String nowTime = TimeUtil.getNowWitchOutSecond();
         String deadLineTime = pur.getDeadLine();
-        long l=0l;
+
+        long l=0L;
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:MM:ss");
-            Date nowTimeParse = sdf.parse(nowTime);
-            Date deadLineTimeParse = sdf.parse(deadLineTime);
-            l = nowTimeParse.getTime() - deadLineTimeParse.getTime();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            Date nowT = sdf.parse(nowTime);
+            long nowTimel = nowT.getTime();
+            //long nowTimel = sdf.parse(nowTime).getTime();
+            log.info(nowTime+"现在时间："+nowTimel);
+            //long dealTimeL = sdf.parse(deadLineTime).getTime();
+            Date deT = sdf.parse(deadLineTime);
+            long dealTimeL = deT.getTime();
+            log.info(deadLineTime+"截止时间："+dealTimeL);
+            l =dealTimeL- nowTimel;
+            log.info("时间结果："+l);
         }catch (Exception e){
             e.printStackTrace();
         }
-        if (pur.getStatus()!="1" || l<0){
-
+        int st=Integer.parseInt(pur.getStatus());
+        if ( l<0){
+            log.info("阻止报价操作：超过订单报价截止日期，");
+            log.info("时间："+l);
             return ServiceResult.failureMsg("本次订单报价已经截止了");
         }
+        if (st != OrderStatus.waitingQuote){
+            log.info("阻止报价操作：不符合订单报价状态");
+            return ServiceResult.failureMsg("本次订单报价已经截止了");
+        }
+
 
 
 

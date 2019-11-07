@@ -172,7 +172,8 @@
             console.log("st",status)
             console.log("go",goodsType)
             $.get('/index/getMarbasClassNameList',{buyChannelId:buyChannelId,status:status,goodsType:goodsType,pageNumber:pn,pageSize:ps},function (data) {
-                console.log(data)
+                // console.log(data)
+                //alert(JSON.stringify(data))
                 if (data.length<0){
                     //显示没有该类数据
                 } else {
@@ -188,7 +189,7 @@
                             chann="单一采购"
                         }
                         var h="";
-                        if (data[i].expertReward ==null || data[i].expertReward ==""){
+                        if (!data[i].expertReview){
                             h="<div class=\"list\">\n" +
                                 "        <a href=\"/index/selectOne?id="+data[i].id+"\" style=\"text-decoration: none;color: black;\">\n" +
                                 "            <p style=\"font-size: 16px;font-weight: bold;\">"+data[i].applyCause+"</p>\n" +
@@ -210,7 +211,7 @@
                                 "        </a>\n" +
                                 "    </div>"
                         }
-                        _html+=_h;
+                        _html=_html+h;
                     }
                     $("#refreshContainer").html("")
                     $("#refreshContainer").html(_html)

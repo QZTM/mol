@@ -175,8 +175,8 @@ public class ThirdPlatformService {
      * @return
      */
     public Integer findCount(String buyId,String status,String goodsType) {
-        List<PurchaseDetail> purchaseDetailList = getPurChaseDetail(goodsType);
-        return fyPurchaseMapper.findCountByIdAndStatus(buyId, status,purchaseDetailList);
+//        List<PurchaseDetail> purchaseDetailList = getPurChaseDetail(goodsType);
+        return fyPurchaseMapper.findCountByBuyChannIdAndMarbascAndStatus(buyId, status,goodsType);
     }
 
 
@@ -317,18 +317,24 @@ public class ThirdPlatformService {
 
     public List<fyPurchase> findLIstByStatusAndGoodsTypeAndBuyChannelId(String buyId, String status, String goodsType, Integer pageNumber,Integer pageSize) {
 
-        List<PurchaseDetail> purDetailList = getPurChaseDetail(goodsType);
-        List<fyPurchase> ceshi = fyPurchaseMapper.findList(buyId, status, purDetailList);
-        System.out.println("测试length："+ceshi.size());
-        PageHelper.startPage(pageNumber, pageSize);
-        List<fyPurchase> list = fyPurchaseMapper.findList(buyId, status, purDetailList);
-        System.out.println("响应length:"+list.size());
-        List<fyPurchase> new_List=new ArrayList<>();
+        PageHelper.startPage(pageNumber,pageSize);
+        List<fyPurchase> list = fyPurchaseMapper.findListByBuyChannIdAndMarbascAndStatus(buyId, goodsType, status);
         for (fyPurchase pur : list) {
-            fyPurchase fp = StatusUtils.getStatusIntegerToString(pur);
-            new_List.add(fp);
+            pur.setStatus(StatusUtils.getStatusIntegerToString(pur).getStatus());
         }
-        return new_List;
+        return list;
+//        List<PurchaseDetail> purDetailList = getPurChaseDetail(goodsType);
+//        List<fyPurchase> ceshi = fyPurchaseMapper.findList(buyId, status, purDetailList);
+//        System.out.println("测试length："+ceshi.size());
+//        PageHelper.startPage(pageNumber, pageSize);
+//        List<fyPurchase> list = fyPurchaseMapper.findList(buyId, status, purDetailList);
+//        System.out.println("响应length:"+list.size());
+//        List<fyPurchase> new_List=new ArrayList<>();
+//        for (fyPurchase pur : list) {
+//            fyPurchase fp = StatusUtils.getStatusIntegerToString(pur);
+//            new_List.add(fp);
+//        }
+        //return new_List;
     }
 
     private List<PurchaseDetail> getPurChaseDetail(String goodsType){

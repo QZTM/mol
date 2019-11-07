@@ -191,11 +191,13 @@
         }
     }
     function submit() {
+        $("#basic-addon1").attr("disabled",true);
         //判断是否认证
         var auth=[[${authen}]];
         if (auth == "0"){
             console.log("未认证");
             alert("请先认证专家身份");
+
             return;
         }
         //判断是否是认证的行业
@@ -205,6 +207,7 @@
         var len=item.length;
         if(len==0){
             alert("请选择推荐的公司！");
+            $("#basic-addon1").attr("disabled",false);
             return;
         }else {
             checked=$(":radio:checked").val();
@@ -213,6 +216,7 @@
         var re=$("#reason").val();
         if (re.length==0){
             alert("请输入推荐理由！");
+            $("#basic-addon1").attr("disabled",false);
             return;
         }
         var nMap=[[${quoteMap}]];
@@ -228,15 +232,18 @@
                 data:{purchaseId:purId,supplierId:supplierId,recommendReason:re},
                 dataType:'json',
                 success:function (data) {
-                    alert(data.result);
+                    alert(data.message);
                     window.history.go(-1);
                 },
                 fail:function (data) {
+                    $("#basic-addon1").attr("disabled",false);
+                    alert(data.message);
                     console.log(data)
                 }
 
             })
         } else {
+            $("#basic-addon1").attr("disabled",false);
             return;
         }
 

@@ -191,7 +191,8 @@ function android_dd_init_action(){
                         'biz.telephone.call',
                         'biz.util.uploadImage',
                         'biz.ding.post',
-                        'biz.alipay.pay']
+                        'biz.alipay.pay',
+                        'biz.telephone.showCallMenu']
                 });
             }
         }
