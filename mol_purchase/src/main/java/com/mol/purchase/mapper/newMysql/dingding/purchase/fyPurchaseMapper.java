@@ -1,5 +1,6 @@
 package com.mol.purchase.mapper.newMysql.dingding.purchase;
 
+import com.mol.base.BaseMapper;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj;
 import com.mol.purchase.entity.dingding.solr.fyPurchase;
 import org.apache.ibatis.annotations.Mapper;
@@ -12,7 +13,7 @@ import java.util.List;
  * fypurchase表
  */
 @Mapper
-public interface fyPurchaseMapper {
+public interface fyPurchaseMapper extends BaseMapper<fyPurchase> {
 
     void insertStrategyPur(StraregyObj obj);
 
@@ -55,4 +56,10 @@ public interface fyPurchaseMapper {
     List<fyPurchase> findListByOrgIdAndStaffId(String orgId, String userId);
 
     List<fyPurchase> findPurchaseByIdList(List<String> arr);
+
+    List<fyPurchase> findPurListByLikeCreateTime(String nowOnlyDate,String buyChannalId);
+
+    void updataApprovalStartTime(String purId,String time);
+
+    void updataApprovalEndTime(String purId, String time);
 }

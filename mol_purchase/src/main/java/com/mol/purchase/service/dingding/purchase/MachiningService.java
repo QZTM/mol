@@ -2,6 +2,7 @@ package com.mol.purchase.service.dingding.purchase;
 
 import com.alibaba.fastjson.JSON;
 import com.mol.purchase.entity.BdMaterialRepair;
+import com.mol.purchase.entity.dingding.solr.fyPurchase;
 import com.mol.purchase.mapper.newMysql.dingding.purchase.BdMaterialRepairMapper;
 import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
 import com.mol.purchase.config.BuyChannelResource;
@@ -47,7 +48,7 @@ public class MachiningService {
 
 
     @Transactional
-    public ServiceResult<String> save(PageArray pageArray, String staId, String orgId, String type) {
+    public synchronized StraregyObj save(PageArray pageArray, String staId, String orgId, String type) {
         //申请事由
         String applyCause = pageArray.getApplyCause();
         //采购详情
@@ -71,6 +72,9 @@ public class MachiningService {
         //评审奖励
         String expertReward = pageArray.getExpertReward();
         ServiceResult result = null;
+        if (expertReview==null ||expertReview==""){
+            expertReview="false";
+        }
 
         //保存到表中
         for (int i=0;i<purchaseList.size();i++){
@@ -97,7 +101,7 @@ public class MachiningService {
         StraregyObj stObj = new StraregyObj();
         stObj.setId(idWorker.nextId() + "");
         stObj.setBuyChannelId(BuyChannelResource.MACHINING);
-        stObj.setGoodsType("加工");
+        stObj.setGoodsType("加工维修");
         stObj.setGoodsBrand(purchaseList.get(0).getBrandName());
         stObj.setGoodsName(purchaseList.get(0).getItemName());
         stObj.setGoodsSpecs(purchaseList.get(0).getNorms());
@@ -108,7 +112,7 @@ public class MachiningService {
         stObj.setTitle("");
         stObj.setStaffId(staId);
         stObj.setOrgId(orgId);
-        stObj.setOrderNumber(makeOrderNum());
+        stObj.setOrderNumber(makeOrderNum(BuyChannelResource.MACHINING,type));
         stObj.setQuoteSellerNum(quoteSellerNum+"");
         stObj.setSupplierSellerNum(supplierSellerNum+"");
         stObj.setApplyCause(applyCause);
@@ -145,7 +149,7 @@ public class MachiningService {
 
             }
         }
-        return ServiceResult.success("保存成功！");
+        return stObj;
     }
 
     /**
@@ -158,20 +162,32 @@ public class MachiningService {
     /**
      * 产生订单号
      */
-    private String makeOrderNum(){
+    private String makeOrderNum(String buyChannalId,String type){
         String orderNum="";
-        orderNum+="jg";
-        String[] splits = TimeUtil.getNowOnlyDate().split("-");
-        String a="";
-        for (int i=0;i<splits.length;i++){
-            if (i==splits.length-1){
-                orderNum+=splits[i]+"-";
-            }else {
-                orderNum+=splits[i];
-            }
+        if (Integer.parseInt(type)==1){
+            orderNum+="JG";
         }
-        orederStartNum++;
-        orderNum+=orederStartNum;
+        if (Integer.parseInt(type)==2){
+            orderNum+="WX";
+        }
+
+        String time=TimeUtil.getNowOnlyDateNoline();
+        orderNum+=time;
+
+
+        List<fyPurchase> list=purchaseMapper.findPurListByLikeCreateTime(TimeUtil.getNowOnlyDate(),buyChannalId);
+        if (list.size()==0){
+            orderNum+="001";
+        }else{
+            String substring = list.get(0).getOrderNumber().substring(10);
+            int i = Integer.parseInt(substring);
+            i++;
+            String i2="0000"+i;
+            String substring1 = i2.substring(i2.length() - 3);
+            orderNum+=substring1;
+        }
+        //orederStartNum++;
+        //orderNum+=orederStartNum;
         return orderNum;
     }
 

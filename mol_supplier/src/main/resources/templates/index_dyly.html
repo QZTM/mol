@@ -118,7 +118,7 @@
         <a th:href="@{'/index/selectOne?id='+${er.id}}" style="text-decoration: none;color: black;">
             <p style="font-size: 16px;font-weight: bold;" th:text="${er.applyCause}"></p>
             <span style="float: right;margin-right: 6px" th:if="${er.expertReview=='true'}">需支付评审奖励<text th:text="${er.expertReward}" style="color: red;"></text>元</span>
-            <div th:switch="${er.buyChannelId}">单号:<span th:text="${er.orderNumber}">0000001</span>&nbsp;类型:&nbsp;<span th:case="3">单一来源</span><span th:case="4">询价采购</span><span th:case="5">单一采购</span>&nbsp;供应商:<span th:text="${er.pkSupplier}"></span></div>
+            <div style="clear: both" th:switch="${er.buyChannelId}">单号:<span th:text="${er.orderNumber}">0000001</span>&nbsp;类型:&nbsp;<span th:case="3">单一来源</span><span th:case="4">询价采购</span><span th:case="5">单一采购</span>&nbsp;供应商:<span th:text="${er.pkSupplier}"></span></div>
             <span class="label label-primary " th:text="${er.goodsType}"></span>
             <span class="label label-warning " th:text="${er.status}"></span>
             <span style="float: right;margin-right: 18px" class="glyphicon-time list_down" aria-hidden="true" th:text="${er.createTime}"></span>
@@ -189,7 +189,7 @@
                             chann="单一采购"
                         }
                         var h="";
-                        if (data[i].expertReward ==null || data[i].expertReward==""){
+                        if (!data[i].expertReview){
                             h="<div class=\"list\">\n" +
                                 "        <a href=\"/index/selectOne?id="+data[i].id+"\" style=\"text-decoration: none;color: black;\">\n" +
                                 "            <p style=\"font-size: 16px;font-weight: bold;\">"+data[i].applyCause+"</p>\n" +
@@ -211,7 +211,7 @@
                                 "        </a>\n" +
                                 "    </div>"
                         }
-                        _html+=_h;
+                        _html+=h;
                     }
                     $("#refreshContainer").html("")
                     $("#refreshContainer").html(_html)

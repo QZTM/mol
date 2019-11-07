@@ -13,6 +13,7 @@ import com.mol.purchase.service.dingding.login.LoginService;
 import com.mol.purchase.service.dingding.purchase.StrategyPurchaseService;
 import com.mol.purchase.service.dingding.workBean.TobeNegotiatedService;
 import entity.ServiceResult;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +30,7 @@ import java.util.*;
 @RestController
 @CrossOrigin
 @RequestMapping("/negotiateding")
+@Log
 public class TobeNegotiatedController {
 
     @Autowired
@@ -60,9 +62,11 @@ public class TobeNegotiatedController {
 
 
         if (userId.equals(appUser.getId())){
+            log.info("登录信息属于采购负责人:"+appUser.getUserName());
             //是 展示所有状态，公司符合的order
             list=negotiatedService.findListByOrgId(orgId,status,secondStatus,pageNum,pageSize);
         }else {
+            log.info("登录信息属于不采购负责人:"+appUser.getUserName());
             //查询全部，遍历
             list=negotiatedService.findListIfOk(orgId,status,secondStatus,userId,pageNum,pageSize);
         }

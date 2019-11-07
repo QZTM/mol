@@ -6,6 +6,7 @@ import com.mol.notification.SendNotification;
 import com.mol.purchase.config.ExecutorConfig;
 import com.mol.purchase.entity.ExpertUser;
 import com.mol.purchase.entity.FyQuote;
+import com.mol.purchase.entity.QuotePayresult;
 import com.mol.purchase.entity.SupplierSalesman;
 import com.mol.purchase.entity.activiti.ActHiProcinst;
 import com.mol.purchase.entity.activiti.TaskDTO;
@@ -13,10 +14,7 @@ import com.mol.purchase.entity.dingding.login.AppAuthOrg;
 import com.mol.purchase.entity.dingding.login.AppUser;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
 import com.mol.purchase.entity.dingding.solr.fyPurchase;
-import com.mol.purchase.mapper.newMysql.BdSupplierSalesmanMapper;
-import com.mol.purchase.mapper.newMysql.ExpertRecommendMapper;
-import com.mol.purchase.mapper.newMysql.ExpertUserMapper;
-import com.mol.purchase.mapper.newMysql.FyQuoteMapper;
+import com.mol.purchase.mapper.newMysql.*;
 import com.mol.purchase.mapper.newMysql.dingding.activiti.ActHiCommentMapper;
 import com.mol.purchase.mapper.newMysql.dingding.activiti.ActHiProcinstMapper;
 import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseDetailMapper;
@@ -50,6 +48,8 @@ import org.springframework.stereotype.Service;
 import com.mol.purchase.mapper.newMysql.dingding.org.AppOrgMapper;
 import com.mol.purchase.mapper.newMysql.dingding.user.AppUserMapper;
 import org.springframework.util.concurrent.ListenableFuture;
+import util.IdWorker;
+import util.TimeUtil;
 
 
 import java.util.*;
@@ -101,6 +101,8 @@ public class ActService {
     SendNotification sendNotificationImp;
     @Autowired
     private TokenService tokenService;
+    @Autowired
+    private QuotePayresultMapper quotePayresultMapper;
 
 
 
@@ -148,7 +150,7 @@ public class ActService {
      * @return
      */
     public List<TaskDTO> getTask(String assignee,int pageNum,int pageSize) {
-        List<Task> list=taskService.createTaskQuery().taskAssignee(assignee).listPage(pageNum,pageSize);
+        List<Task> list=taskService.createTaskQuery().taskAssignee(assignee).list();
         System.out.println("任务："+list);
         List<TaskDTO> list1 = new ArrayList<>();
         for (Task task : list){
@@ -514,6 +516,9 @@ public class ActService {
     //4.专家
     @Async
     public ListenableFuture<Integer> getExpertSendMessage(List<PurchaseDetail> detailList,SendMsmHandler sendMsmHandler,XiaoNiuMsmTemplate templateName) {
+        if (detailList.get(0).getExpertId()==null){
+            return new AsyncResult<>(0);
+        }
         Set<String> expetSet = new HashSet<>();
         for (PurchaseDetail purchaseDetail : detailList) {
             String[] split = purchaseDetail.getExpertId().split(",");
@@ -585,6 +590,9 @@ public class ActService {
     }
 
     public void updataExpertRecommendChecked(String  pur, List<PurchaseDetail> detailList) {
+        if (detailList==null || detailList.size()==0){
+            return;
+        }
         String expertIdString = detailList.get(0).getExpertId();
         String[] expertIdArr = expertIdString.split(",");
         for (String expertId : expertIdArr) {
@@ -594,5 +602,31 @@ public class ActService {
 
     public void updataExpertRecommendNotChecked(String pur) {
         expertRecommendMapper.updataAdoptNotChecked(pur);
+    }
+
+    public void saveQuotePayresult(fyPurchase pur, List<PurchaseDetail> detailList) {
+        if (detailList!=null && detailList.size()>0){
+            String[] split = detailList.get(0).getExpertId().split(",");
+            for (String s : split) {
+                QuotePayresult t=new QuotePayresult();
+                t.setId(new IdWorker(2,2).nextId()+"");
+                t.setPurchaseId(pur.getId());
+                t.setSupplierId(s);
+                t.setPayResult(0+"");
+                quotePayresultMapper.insert(t);
+            }
+        }
+    }
+
+    public void updataPurchaseApprovalStartTime(String purId) {
+        actLogger.info("审批环节时间设定");
+        String nowDateTime = TimeUtil.getNowDateTime();
+        purchaseMapper.updataApprovalStartTime(purId,nowDateTime);
+    }
+
+    public void updataPurchaseApprovalEndTime(String purId) {
+        actLogger.info("审批结束时间设定");
+        String nowDateTime = TimeUtil.getNowDateTime();
+        purchaseMapper.updataApprovalEndTime(purId,nowDateTime);
     }
 }

@@ -78,14 +78,17 @@ public class EsService {
         for (SearchHit searchHit : searchHits) {
             fyPurchase pur=new fyPurchase();
             Map<String, Object> sourceAsMap = searchHit.getSourceAsMap();
-            pur.setTitle((String) sourceAsMap.get("title"));
+            //pur.setTitle((String) sourceAsMap.get("title"));
             pur.setId((String) sourceAsMap.get("id"));
-           // pur.setOrderNumber((String) sourceAsMap.get("order_number"));
+            // pur.setOrderNumber((String) sourceAsMap.get("order_number"));
             pur.setGoodsType((String) sourceAsMap.get("goods_type"));
+            pur.setApplyCause((String) sourceAsMap.get("apply_cause"));
             pur.setStatus((String) sourceAsMap.get("status"));
             pur.setCreateTime((String) sourceAsMap.get("create_time"));
             pur.setOrderNumber((String) sourceAsMap.get("order_number"));
             pur.setBuyChannelId((Integer) sourceAsMap.get("buy_channel_id"));
+            pur.setExpertReview((String) sourceAsMap.get("expert_review"));
+            pur.setExpertReward((String) sourceAsMap.get("expert_reward"));
             System.out.println(pur);
             pur = StatusUtils.getStatusIntegerToString(pur);
             purList.add(pur);

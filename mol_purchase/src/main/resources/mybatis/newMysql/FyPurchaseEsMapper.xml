@@ -7,8 +7,8 @@
         SELECT * FROM `fy_purchase_es` where id=#{id}
     </select>
     <insert id="insert" parameterType="com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj">
-        insert  into fy_purchase_es (id,buy_channel_id,goods_type,goods_brand,goods_name,goods_specs,goods_branch,goods_detail,create_time,status,title,staff_id,apply_cause,order_number,quoteSellerNum,supplierSellerNum,remarks,pk_supplier)
-        values (#{id},#{buyChannelId},#{goodsType},#{goodsBrand},#{goodsName},#{goodsSpecs},#{goodsBranch},#{goodsDetail},#{createTime},#{Status},#{title},#{staffId},#{applyCause},#{orderNumber},#{quoteSellerNum},#{supplierSellerNum},#{remarks},#{pkSupplier})
+        insert  into fy_purchase_es (id,buy_channel_id,goods_type,goods_brand,goods_name,goods_specs,goods_branch,goods_detail,create_time,status,title,staff_id,apply_cause,order_number,quoteSellerNum,supplierSellerNum,remarks,pk_supplier,expert_review,expert_reward)
+        values (#{id},#{buyChannelId},#{goodsType},#{goodsBrand},#{goodsName},#{goodsSpecs},#{goodsBranch},#{goodsDetail},#{createTime},#{Status},#{title},#{staffId},#{applyCause},#{orderNumber},#{quoteSellerNum},#{supplierSellerNum},#{remarks},#{pkSupplier},#{expertReview},#{expertReward})
     </insert>
     <update id="updata" parameterType="com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj">
         update
@@ -30,7 +30,9 @@
         quoteSellerNum=#{quoteSellerNum},
         supplierSellerNum=#{supplierSellerNum},
         remarks=#{remarks},
-        pk_supplier=#{pkSupplier}
+        pk_supplier=#{pkSupplier},
+        expert_review=#{expertReview},
+        expert_reward=#{expertReward}
         where
         id=#{id}
     </update>

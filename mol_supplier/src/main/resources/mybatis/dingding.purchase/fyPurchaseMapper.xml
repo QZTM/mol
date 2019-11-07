@@ -117,4 +117,33 @@
             #{item}
         </foreach>
     </select>
+    <select id="findListByBuyChannIdAndMarbascAndStatus" resultType="com.mol.supplier.entity.dingding.solr.fyPurchase" parameterType="java.lang.String">
+        SELECT
+        *
+        FROM
+            `fy_purchase`
+        WHERE
+            buy_channel_id = #{buyId}
+        <if test="goodsType!=null and goodsType!=''">
+            AND pk_marbasclass = #{goodsType}
+        </if>
+        <if test="status!=null and status!=''">
+            AND STATUS = #{status}
+        </if>
+        order by create_time desc
+    </select>
+    <select id="findCountByBuyChannIdAndMarbascAndStatus" resultType="java.lang.Integer" parameterType="java.lang.String">
+        SELECT
+        count(id)
+        FROM
+        `fy_purchase`
+        WHERE
+        buy_channel_id = #{buyId}
+        <if test="goodsType!=null and goodsType!=''">
+            AND pk_marbasclass = #{goodsType}
+        </if>
+        <if test="status!=null and status!=''">
+            AND STATUS = #{status}
+        </if>
+    </select>
 </mapper>

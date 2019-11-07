@@ -108,7 +108,7 @@
 <!--            -->
             <!--    查询到的专家的电话号码放到此处        -->
             <!--            -->
-            <p>技术支持&nbsp;: &nbsp;<span  th:text="${tst}" style="color: blue;">11111</span></p>
+            <p>技术支持&nbsp;: &nbsp;<span id="callNumber"  th:text="${tst}" style="color: blue;" onclick="call(this.id)"></span></p>
         </span>
     </div>
     <!--编号结束-->
@@ -168,8 +168,32 @@
     <!--我要报价结束-->
 
 </div>
-<script>
-</script>
 </body>
+<script th:src="@{/js/dingtalk.open.js}"></script>
+<script th:inline="javascript">
 
+    function call () {
+        var num_2=$("#callNumber").text();
+        //$("#subBtn").css("disable",)
+
+        dd.ready(function() {
+            // dd.ready参数为回调函数，在环境准备就绪时触发，jsapi的调用需要保证在该回调函数触发后调用，否则无效。
+            dd.biz.telephone.showCallMenu({
+                phoneNumber: num_2, // 期望拨打的电话号码
+                code: '+86', // 国家代号，中国是+86
+                showDingCall: true, // 是否显示钉钉电话
+                onSuccess : function(e) {
+                    alert(JSON.stringify(e));
+                },
+                onFail : function(err) {
+                    alert(JSON.stringify(err));
+                }
+            })
+        });
+
+
+
+    }
+
+</script>
 </html>

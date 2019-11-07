@@ -100,7 +100,7 @@
             <!--            <p>单号<span th:text="${er.orderNumber}">0000001</span></p>-->
             <span style="float: right;margin-right: 6px" th:if="${er.expertReview=='true'}">需支付评审奖励<text th:text="${er.expertReward}" style="color: red;"></text>元</span>
 
-            <p th:switch="${er.buyChannelId}">单号&nbsp;&nbsp;&nbsp;<span th:text="${er.orderNumber}">0000001</span>&nbsp;&nbsp;&nbsp;&nbsp;类型&nbsp;&nbsp;&nbsp;<span th:case="3">战略采购</span><span th:case="4">询价采购</span><span th:case="5">单一采购</span></p>
+            <p th:switch="${er.buyChannelId}">单号&nbsp;&nbsp;&nbsp;<span th:text="${er.orderNumber}">0000001</span>&nbsp;&nbsp;&nbsp;&nbsp;类型&nbsp;&nbsp;&nbsp;<span th:case="3">战略采购</span><span th:case="4">询价采购</span><span th:case="5">单一采购</span><span th:case="6">加工维修</span></p>
 
 
             <span class="label label-primary " th:text="${er.status}">正在采集报价</span>

@@ -186,7 +186,7 @@
                             chann="单一采购"
                         }
                         var h="";
-                        if (data[i].expertReward ==null || data[i].expertReward==""){
+                        if (!data[i].expertReview){
                             h="<div class=\"list\">\n" +
                                 "        <a href=\"/index/selectOne?id="+data[i].id+"\" style=\"text-decoration: none;color: black;\">\n" +
                                 "            <p style=\"font-size: 16px;font-weight: bold;\">"+data[i].applyCause+"</p>\n" +
@@ -208,7 +208,7 @@
                                 "        </a>\n" +
                                 "    </div>"
                         }
-                        _html+=_h;
+                        _html+=h;
                     }
 
 
@@ -291,7 +291,7 @@
                             chann="单一采购"
                         }
                         var re="";
-                        if (data[i].expertReward ==null || data[i].expertReward==""){
+                        if (!data[i].expertReview){
                             re="<div class=\"list\">\n" +
                                 "        <a href=\"/index/selectOne?id="+data[i].id+"\" style=\"text-decoration: none;color: black;\">\n" +
                                 "            <p style=\"font-size: 16px;font-weight: bold;\">"+data[i].applyCause+"</p>\n" +

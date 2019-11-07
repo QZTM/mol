@@ -4,6 +4,7 @@ import com.alipay.api.domain.Sale;
 import com.github.pagehelper.PageInfo;
 import com.mol.purchase.config.OrderStatus;
 import com.mol.purchase.entity.FyQuote;
+import com.mol.purchase.entity.QuotePayresult;
 import com.mol.purchase.entity.SupplierSalesman;
 import com.mol.purchase.entity.activiti.ActHiComment;
 import com.mol.purchase.entity.activiti.ActHiProcinst;
@@ -76,15 +77,7 @@ public class SchedulerRepairController {
 
 
             }
-
-
-            //报价公司
-            //1if (detailList!=null && detailList.size()>0){
-                //List<Supplier> supplierList
-            //}
         }
-//        if (pur.get)
-        supplierList=schedulerRepairService.getPayExpertResult(supplierList,id);
         map.put("quote",detailList);
         map.put("supplier",supplierList);
 
@@ -134,5 +127,20 @@ public class SchedulerRepairController {
         String id =schedulerRepairService.getSalemanId(purId,supplierId);
         SupplierSalesman man=schedulerRepairService.getSaleManById(id);
         return ServiceResult.success(man);
+    }
+
+    /**
+     * 供应商支付专家推荐费用情况
+     * @param supplierId
+     * @param purId
+     * @return
+     */
+    @GetMapping("/getPayresult")
+    public ServiceResult getPayR(String supplierId,String purId){
+        QuotePayresult qp=schedulerRepairService.getPayExpertResult(supplierId,purId);
+        if (qp ==null){
+            return ServiceResult.failureMsg("查询失败！");
+        }
+        return ServiceResult.success(qp);
     }
 }

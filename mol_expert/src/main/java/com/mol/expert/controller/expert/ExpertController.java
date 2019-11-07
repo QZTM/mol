@@ -177,9 +177,8 @@ public class ExpertController {
 
         String purId = er.getPurchaseId();
         fyPurchase pur = es.findPurById(purId);
-        String nowTime = TimeUtil.getNow();
-        String deadLineTime = pur.getDeadLine();
-        if (pur.getStatus()!="5"){
+        String status = pur.getStatus();
+        if (Integer.parseInt(status) != OrderStatus.EXPERTREVIEW){
 
             return ServiceResult.failureMsg("本次订单推荐已经截止了");
         }
@@ -191,7 +190,7 @@ public class ExpertController {
         es.changeExpertRecommend(er);
         //报价中专家数量加 一
         es.addCiShu(er.getPurchaseId(),er.getSupplierId());
-        return ServiceResult.success("推荐成功");
+        return ServiceResult.successMsg("推荐成功");
     }
 
 }

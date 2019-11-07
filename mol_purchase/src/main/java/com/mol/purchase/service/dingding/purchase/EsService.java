@@ -86,6 +86,8 @@ public class EsService {
             pur.setCreateTime((String) sourceAsMap.get("create_time"));
             pur.setOrderNumber((String) sourceAsMap.get("order_number"));
             pur.setBuyChannelId((Integer) sourceAsMap.get("buy_channel_id"));
+            pur.setExpertReview((String) sourceAsMap.get("expert_review"));
+            pur.setExpertReward((String) sourceAsMap.get("expert_reward"));
             System.out.println(pur);
             pur = StatusUtils.getStatusIntegerToString(pur);
             purList.add(pur);

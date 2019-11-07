@@ -92,14 +92,14 @@
 
         </div>
 
-        <div class="col-md-4 col-xs-4" >
+        <!--<div class="col-md-4 col-xs-4" >-->
 
 
-            <select class="js-example-basic-single js-states form-control " id="selectss" >
-                <option  style="font-size: 12px" value="">--请选择行业类别--</option>
-                <option th:each="er,in:${marList}" th:text="${er.name}" th:value="${er.pkMarbasclass}"></option>
-            </select>
-        </div>
+            <!--<select class="js-example-basic-single js-states form-control " id="selectss" >-->
+                <!--<option  style="font-size: 12px" value="">&#45;&#45;请选择行业类别&#45;&#45;</option>-->
+                <!--<option th:each="er,in:${marList}" th:text="${er.name}" th:value="${er.pkMarbasclass}"></option>-->
+            <!--</select>-->
+        <!--</div>-->
         <div  class="col-md-3 col-xs-3">
             <p style="margin-top: 5px;font-size: 12px">共<font style="color: red" th:text="${count}" id="count"> </font>条数据</p>
         </div>
@@ -191,7 +191,7 @@
                             chann="加工维修"
                         }
                         var h="";
-                        if (data[i].expertReward ==null || data[i].expertReward==""){
+                        if (!data[i].expertReview){
                             h="<div class=\"list\">\n" +
                                 "        <a href=\"/index/selectOne?id="+data[i].id+"\" style=\"text-decoration: none;color: black;\">\n" +
                                 "            <p style=\"font-size: 16px;font-weight: bold;\">"+data[i].applyCause+"</p>\n" +
@@ -213,7 +213,7 @@
                                 "        </a>\n" +
                                 "    </div>"
                         }
-                        _html+=_h;
+                        _html+=h;
                     }
                     $("#refreshContainer").html("")
                     $("#refreshContainer").html(_html)
@@ -297,7 +297,7 @@
                             chann="加工维修"
                         }
                         var re="";
-                        if (data[i].expertReward ==null || data[i].expertReward==""){
+                        if (!data[i].expertReview){
                             re="<div class=\"list\">\n" +
                                 "        <a href=\"/index/selectOne?id="+data[i].id+"\" style=\"text-decoration: none;color: black;\">\n" +
                                 "            <p style=\"font-size: 16px;font-weight: bold;\">"+data[i].applyCause+"</p>\n" +

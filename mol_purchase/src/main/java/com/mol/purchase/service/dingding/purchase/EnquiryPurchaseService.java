@@ -3,6 +3,7 @@ import com.mol.config.Constant;
 import com.mol.notification.SendNotification;
 import com.mol.purchase.entity.Supplier;
 import com.mol.purchase.entity.SupplierSalesman;
+import com.mol.purchase.entity.dingding.solr.fyPurchase;
 import com.mol.purchase.mapper.newMysql.BdSupplierSalesmanMapper;
 import com.mol.purchase.mapper.newMysql.dingding.purchase.BdMarbasclassMapper;
 import com.alibaba.fastjson.JSON;
@@ -84,7 +85,7 @@ public class EnquiryPurchaseService {
     private BdSupplierSalesmanMapper bdSupplierSalesmanMapper;
 
     @Transient
-    public StraregyObj save(PageArray pageArray, String staId, String orgId)  {
+    public synchronized StraregyObj save(PageArray pageArray, String staId, String orgId)  {
         //申请事由
         String applyCause = pageArray.getApplyCause();
         //采购详情
@@ -129,7 +130,7 @@ public class EnquiryPurchaseService {
         stObj.setTitle(purchaseList.get(0).getTypeName() + "询价采购");
         stObj.setStaffId(staId);
         stObj.setOrgId(orgId);
-        stObj.setOrderNumber(makeOrderNum());
+        stObj.setOrderNumber(makeOrderNum(BuyChannelResource.ENQUIRY));
         stObj.setQuoteSellerNum(quoteSellerNum+"");
         stObj.setSupplierSellerNum(supplierSellerNum+"");
         stObj.setApplyCause(applyCause);
@@ -222,20 +223,26 @@ public class EnquiryPurchaseService {
     /**
      * 产生订单号
      */
-    private String makeOrderNum(){
+    private String makeOrderNum(String buyChannalId){
         String orderNum="";
-        orderNum+="xj";
-        String[] splits = TimeUtil.getNowOnlyDate().split("-");
-        String a="";
-        for (int i=0;i<splits.length;i++){
-            if (i==splits.length-1){
-                orderNum+=splits[i]+"_";
-            }else {
-                orderNum+=splits[i];
-            }
+        orderNum+="XJ";
+        String time=TimeUtil.getNowOnlyDateNoline();
+        orderNum+=time;
+
+
+        List<fyPurchase> list=purchaseMapper.findPurListByLikeCreateTime(TimeUtil.getNowOnlyDate(),buyChannalId);
+        if ( list.size()==0){
+            orderNum+="001";
+        }else{
+            String substring = list.get(0).getOrderNumber().substring(10);
+            int i = Integer.parseInt(substring);
+            i++;
+            String i2="0000"+i;
+            String substring1 = i2.substring(i2.length() - 3);
+            orderNum+=substring1;
         }
-        orederStartNum++;
-        orderNum+=orederStartNum;
+        //orederStartNum++;
+        //orderNum+=orederStartNum;
         return orderNum;
     }
 

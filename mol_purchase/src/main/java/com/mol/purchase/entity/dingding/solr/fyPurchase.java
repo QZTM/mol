@@ -66,4 +66,12 @@ public class fyPurchase implements Serializable {
     private String budget;
     //参与订单评审的专家数量
     private String expertCounts;
+    //订单状态进入专家推荐的时间
+    private String expertTime;
+    //订单状态进入议价环节的时间
+    private String bargainingTime;
+    //订单状态进入审批环节的时间
+    private String approvalStartTime;
+    //订单状态结束审批的时间（最终的订单状态）
+    private String approvalEndTime;
 }

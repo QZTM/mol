@@ -8,6 +8,7 @@ import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseA
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj;
 import com.mol.purchase.entity.dingding.purchase.strategPurchaseEntity.PageArray;
+import com.mol.purchase.entity.dingding.solr.fyPurchase;
 import com.mol.purchase.mapper.fyOracle.dingding.purchase.StrategyOraclMapper;
 import com.mol.purchase.mapper.newMysql.BdSupplierSalesmanMapper;
 import com.mol.purchase.mapper.newMysql.FyPurchaseEsMapper;
@@ -70,7 +71,7 @@ public class SingleSourceService {
 
 
     @Transient
-    public StraregyObj save(PageArray pageArray, String staId, String orgId) throws IOException, DocumentException, IllegalAccessException {
+    public synchronized StraregyObj save(PageArray pageArray, String staId, String orgId) throws IOException, DocumentException, IllegalAccessException {
         //申请事由
         String applyCause = pageArray.getApplyCause();
         //采购详情
@@ -113,7 +114,7 @@ public class SingleSourceService {
         //stObj.setGoodsQuantity(purchaseList.get(0).getCount()+"");
         stObj.setGoodsDetail(toJson(pageArray));//----------------------->
         stObj.setCreateTime(TimeUtil.getNowDateTime());
-        stObj.setOrderNumber(makeOrderNum());
+        stObj.setOrderNumber(makeOrderNum(BuyChannelResource.SINGLESOURCE));
         stObj.setStatus(OrderStatus.waitingQuote+"");
         stObj.setTitle(purchaseList.get(0).getTypeName()+"单一采购");
         stObj.setStaffId(staId);
@@ -128,6 +129,7 @@ public class SingleSourceService {
         stObj.setExpertReview(expertReview);
         stObj.setExpertReward(expertReward);
         stObj.setQuoteCounts(0+"");
+        stObj.setQuoteSellerNum(1+"");
         purchaseMapper.insertStrategyPur(stObj);
         String []page_text={"申请理由："+applyCause,"单一供应商："+singleSource,"电话："+telePhone,"备注："+remarks};
         new Cread_PDF().Cread_PDF_function("战略采购清单",purchaseList,page_text);//生成pdf
@@ -199,20 +201,29 @@ public class SingleSourceService {
     /**
      * 产生订单号
      */
-    private String makeOrderNum(){
+    /**
+     * 产生订单号
+     */
+    private String makeOrderNum(String buyChannalId){
         String orderNum="";
-        orderNum+="dy";
-        String[] splits = TimeUtil.getNowOnlyDate().split("-");
-        String a="";
-        for (int i=0;i<splits.length;i++){
-            if (i==splits.length-1){
-                orderNum+=splits[i]+"_";
-            }else {
-                orderNum+=splits[i];
-            }
+        orderNum+="DY";
+        String time=TimeUtil.getNowOnlyDateNoline();
+        orderNum+=time;
+
+
+        List<fyPurchase> list=purchaseMapper.findPurListByLikeCreateTime(TimeUtil.getNowOnlyDate(),buyChannalId);
+        if (list.size()==0){
+            orderNum+="001";
+        }else{
+            String substring = list.get(0).getOrderNumber().substring(10);
+            int i = Integer.parseInt(substring);
+            i++;
+            String i2="0000"+i;
+            String substring1 = i2.substring(i2.length() - 3);
+            orderNum+=substring1;
         }
-        orederStartNum++;
-        orderNum+=orederStartNum;
+        //orederStartNum++;
+        //orderNum+=orederStartNum;
         return orderNum;
     }
 

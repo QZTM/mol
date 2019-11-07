@@ -118,4 +118,13 @@
         </foreach>
         ORDER BY create_time DESC
     </select>
+    <select id="findPurListByLikeCreateTime" parameterType="java.lang.String" resultType="com.mol.purchase.entity.dingding.solr.fyPurchase">
+        SELECT order_number FROM `fy_purchase` where buy_channel_id=#{buyChannalId} and create_time like #{nowOnlyDate}"%" ORDER BY create_time desc
+    </select>
+    <update id="updataApprovalStartTime" parameterType="java.lang.String">
+        UPDATE fy_purchase set approval_start_time =#{time} where  id =#{purId}
+    </update>
+    <update id="updataApprovalEndTime" parameterType="java.lang.String">
+        UPDATE fy_purchase set approval_end_time =#{time} where  id =#{purId}
+    </update>
 </mapper>

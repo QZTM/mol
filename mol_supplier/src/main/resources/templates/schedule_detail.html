@@ -125,7 +125,7 @@
             <tr th:each="en,f:${purList}">
                 <td th:text="${f.index+1}" style="width: 12%">序号</td>
                 <td th:text="${en.itemName}" style="width: 32%;">名称</td>
-                <td th:text="${en.typeName}"  style="width: 32%;">规格</td>
+                <td th:text="${en.norms}"  style="width: 32%;">规格</td>
                 <td th:text="${en.unit}" style="width: 12%">单位</td>
                 <td th:text="${en.count}" style="width: 12%">数量</td>
             </tr>
@@ -171,7 +171,7 @@
             <tr th:each="en,f:${purList}">
                 <td th:text="${f.index+1}" style="width: 9%">序号</td>
                 <td th:text="${en.itemName}" style="width: 27%;">名称</td>
-                <td th:text="${en.typeName}"  style="width: 27%;">规格</td>
+                <td th:text="${en.norms}"  style="width: 27%;">规格</td>
                 <td th:text="${en.count}" style="width: 12%">数量</td>
                 <td th:text="${en.quote}" style="width: 12%">报价</td>
                 <td th:text="${en.sum}" style="width: 13%">总计</td>
@@ -199,7 +199,7 @@
                 <tr th:each="en,f:${okList}">
                     <td th:text="${f.index+1}" style="width: 9%">序号</td>
                     <td th:text="${en.itemName}" style="width: 27%;">名称</td>
-                    <td th:text="${en.typeName}"  style="width: 27%;">规格</td>
+                    <td th:text="${en.norms}"  style="width: 27%;">规格</td>
                     <td th:text="${en.count}" style="width: 12%">数量</td>
                     <td th:text="${en.quote}" style="width: 12%">报价</td>
                     <td th:text="${en.sum}" style="width: 13%">总计</td>
