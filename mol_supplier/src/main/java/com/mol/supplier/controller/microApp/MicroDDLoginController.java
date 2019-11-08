@@ -3,14 +3,11 @@ package com.mol.supplier.controller.microApp;
 import com.alibaba.fastjson.JSONObject;
 import com.dingtalk.api.response.OapiDepartmentGetResponse;
 import com.dingtalk.api.response.OapiUserGetResponse;
-import com.dingtalk.oapi.lib.aes.DingTalkJsApiSingnature;
 import com.mol.cache.CacheHandle;
-import com.mol.supplier.config.MicroAttr;
 import com.mol.supplier.entity.MicroApp.DDDept;
 import com.mol.supplier.entity.MicroApp.DDUser;
 import com.mol.supplier.entity.MicroApp.Salesman;
 import com.mol.supplier.entity.MicroApp.Supplier;
-import com.mol.supplier.exception.microApp.OApiException;
 import com.mol.supplier.service.microApp.*;
 import entity.ServiceResult;
 import org.apache.commons.lang3.StringUtils;
@@ -23,8 +20,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import tk.mybatis.mapper.entity.Example;
-import util.RandomStr;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.net.URL;
@@ -60,6 +55,9 @@ public class MicroDDLoginController {
 
     @Autowired
     private CacheHandle cacheHandle;
+
+    @Autowired
+    private MicroDdJsApiAuthService microDdJsApiAuthService;
 
 
     /**
@@ -218,7 +216,7 @@ public class MicroDDLoginController {
             Map map = new HashMap();
             map.put("user",salesman);
             map.put("supplier",getdSupplier);
-            Map configValue = getConfig(request);
+            Map configValue = microDdJsApiAuthService.getAuthMap(request);
             map.putAll(configValue);
 
 
@@ -231,74 +229,6 @@ public class MicroDDLoginController {
         }
 
     }
-
-
-
-    /**
-     * 计算当前请求的jsapi的签名数据<br/>
-     * <p>
-     * 如果签名数据是通过ajax异步请求的话，签名计算中的url必须是给用户展示页面的url
-     *
-     * @param request
-     * @return
-     */
-    public Map getConfig(HttpServletRequest request) {
-//        String urlString = request.getRequestURL().toString();
-//        String queryString = request.getQueryString();
-//
-//        String queryStringEncode = null;
-//        String url;
-//        if (queryString != null) {
-//            queryStringEncode = URLDecoder.decode(queryString);
-//            url = urlString + "?" + queryStringEncode;
-//        } else {
-//            url = urlString;
-//        }
-        String url = "http://fyycg88.vaiwan.com/index/findAll";
-
-        /**
-         * 确认url与配置的应用首页地址一致
-         */
-        //System.out.println(url);
-
-        /**
-         * 随机字符串
-         */
-        String nonceStr = RandomStr.getRandom(7, RandomStr.TYPE.LETTER);
-        long timeStamp = System.currentTimeMillis() / 1000;
-        String signedUrl = url;
-        //String accessToken = microTokenService.getToken();;
-        String ticket = microJsapiTicketService.getJsApiTicket();;
-        String signature = null;
-
-        try {
-            signature = sign(ticket, nonceStr, timeStamp, signedUrl);
-        } catch (OApiException e) {
-            e.printStackTrace();
-        }
-
-        Map<String, Object> configValue = new HashMap<>();
-        configValue.put("jsticket", ticket);
-        configValue.put("signature", signature);
-        configValue.put("nonceStr", nonceStr);
-        configValue.put("timeStamp", timeStamp);
-        configValue.put("corpId", MicroAttr.CROPID);
-        configValue.put("agentId", MicroAttr.AGENTID);
-        //String config = JSON.toJSONString(configValue);
-        return configValue;
-    }
-
-
-
-    public String sign(String ticket, String nonceStr, long timeStamp, String url) throws OApiException {
-        try {
-            return DingTalkJsApiSingnature.getJsApiSingnature(url, nonceStr, timeStamp, ticket);
-        } catch (Exception ex) {
-            throw new OApiException();
-        }
-    }
-
-
 
 
     private String check(String url,String corpId,String suiteKey) throws Exception{

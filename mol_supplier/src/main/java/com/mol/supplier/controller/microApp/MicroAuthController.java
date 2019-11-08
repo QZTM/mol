@@ -8,7 +8,9 @@ import com.mol.supplier.entity.thirdPlatform.BdMarbasclass;
 import com.mol.supplier.mapper.microApp.MicroSupplierMapper;
 import com.mol.supplier.mapper.third.BdMarbasclassMapper;
 import com.mol.supplier.service.microApp.MicroAuthService;
+import com.mol.supplier.service.microApp.MicroDdJsApiAuthService;
 import com.mol.supplier.service.microApp.MicroUserService;
+import com.mol.supplier.util.PageUrlUtils;
 import entity.ServiceResult;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
@@ -90,6 +93,9 @@ public class MicroAuthController {
     @Autowired
     private BdMarbasclassMapper bdMarbasclassMapper;
 
+    @Autowired
+    private MicroDdJsApiAuthService microDdJsApiAuthService;
+
 
     @RequestMapping("/attr")
     public String showAuthChoosePage(HttpSession session) {
@@ -100,7 +106,7 @@ public class MicroAuthController {
     }
 
     @RequestMapping("/pay/{authType}")
-    public String showAuthPayPage(@PathVariable String authType,HttpSession session,Model model){
+    public String showAuthPayPage(@PathVariable String authType, HttpSession session, Model model,HttpServletRequest request){
         log.info("authType:"+authType);
 
         String pageName = "";
@@ -111,6 +117,9 @@ public class MicroAuthController {
             model.addAttribute("cost",0.01);
             pageName = "authenticate_pay_danyi";
         }
+
+        model.addAttribute("jsauthmap",microDdJsApiAuthService.getAuthMap(request));
+
         return pageName;
     }
 

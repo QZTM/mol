@@ -9,8 +9,8 @@ import com.alipay.api.request.AlipayTradeFastpayRefundQueryRequest;
 import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.request.AlipayTradeRefundRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
-import com.mol.supplier.entity.dingding.Pay.pui_supplier_deposit;
-import com.mol.supplier.mapper.dingding.Pay.AlipayMapper;
+import com.mol.supplier.entity.dingding.Pay.PuiSupplierDeposit;
+import com.mol.supplier.mapper.dingding.Pay.PayMapper;
 import net.sf.json.JSONObject;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ import java.util.Map;
 public class AlipayService//支付宝支付等业务体
 {
     @Resource
-    private AlipayMapper alipay_mapper;
+    private PayMapper alipay_mapper;
     static final String previt_key="MIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDIf7i/APc6IeZq5mMC3nCIdrAPTTOXQyp4GZrf+jTQbCWhh6qepx2Qv2fhuPH6+wcCWyc8gVaNMG/vkTNzoNLQfeHhag01DutWbRCPKebaUVUhRtFUnZjF8ulsUPUtPoQ6pyMzzywWcoh+YF7J1+9MVY67u75tCJg5d3URNMAKtVnAH6/xWt+3oV6y8KW2e/FrImL0zlf8UKYJceFQ59/CwQ5yQZgKreGcjhhS74ce+iU/28hAXq689yLgFiMbfWbvwR3cWag7bfr5IZ+GdkTuYohcXqtH/hcfUOni9Iar1lc7cVMcIY8A+IDjG3/DNFKIM/aB31YJr2tA6hyJenZlAgMBAAECggEBAJupVYStOkQex6adIae7jQDVrNDkbjZ0xgciUfSsa86Y+ApVquir9C9J+1vq26uwsvtoS6kU/V52iaEkSR7vcFzALtt0G7bi02FxIZcUwA8lcAN62NBp3o9ojUM0A3XSAJUM6C60HJV87G25Yj4w8K+CCWPFWg2Ky6xqCzCFlMd6LpL86usOTcdx1j3RfHQNif9esFlEbcetXVhm/k/5YOtF36rBGklZbN3NZ/SbA1YW6YpHEuTyN7p5ryjI3zCGpt4TX6RSGcUbfnxCTIZ1W5u9WPM4w8Hlb6xf1MFZsN3lyE7EXShF1bemli628dU1ZMQMz6RTWrbhNvNG0SNko4ECgYEA7BIwwIAJZ4r32V7Ck/OKEbCNluBU3Nteb/6DLsYxTHjLDMKg8KZub9lVHyIkUxtbUFRTxnApVtCAi1qOKZYZHExV17Fy/56LMRtsEeY80ufVr9ameH/VfsEsyfJKEeO6sffcn7EKXY+nO17b6aiuooI34XP/CSA0q5DNdGwOYgUCgYEA2WzFFw9C3UAezuJC9Uqa5t0eNGe6t5mVABADKphRyv9sLuUC5VCtZfupr9apkFqcdry/KOwAP9CkkfbymBeQMrnJhdDPnVdxIJ4nf85VDp7qKevxXqMFbupY3iOkJptOPBdJWg2olDnGXzmrBywcVNAYl2aQUmpG/f5heS++EOECgYEAtQNNto12qJp6aYarlF7No7rJFsN0ztS2mRGC7T6zVnvY1jP2zBAR5lmzV2gKil8TqYi/pA0k5ZiCuFf7Yg/huT0fJYC/ORoMiN8KAr+UK/PweiARDZyXy9W7zi2mdgk0gnoYBaru08bu6CtYXNYm8hz/VDRpfknfmR4zK+4fKTECgYBs7gOoU+sJ8g/9Unp9bg1BUNLLKpTvWzC9QUh01K9V5rYKoI3c2ZimGXmgMQnu2pa9Hj8ff214i02IG5LbBCMoZtBCDKWXjLGOx+2+KF+Q3akvq5fX9BDKyvoPAQhCl1iQ3pHPXjxxVqi+GKRJCZ6AF2naoHX59Gjw47tt/a9ZwQKBgFd6iPfueBlNFr4SejE6td/q0WEY/4pQZB1+NaFPp57IwCn8cFRS0RgWXky3eUFV6RiCKQncjSD/9csdq2qPX5PZxaY2lKiunRF1mTPZ6kPHUYbIGY6I2ptih3zhEZh6NnMHEknp71mLcFntYdFcVzhETghIZhZF8CfdCqGebdpx";
     static final String public_key="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAla/6pfAy7aK8yjBmYFZS+mPqmBS3s2vlrvt5dHEmwuOlbxjbRKcWbHHe/ozWHEizyIBSMPH9EXUN6ns/RZjoSFO8w03CMgOpfm01NlsstKoGV3KlD5yvh4qERKTdW+d0PS3TfqG2tcrnEyY9lHZbiwxS2VJi7kyz5erKtEu7eiIWrLIiGfnrdDI+hYPix5G+DVwxVbAcAIC3+RG1dTVrB5IuY0Evrr9YSjLxOm0KX75GfNyYMUvvSFhtM8WA0BocY+Giwv7hwhGJdvIhbdvxlMuVkcJRJ+MaLBXu01Vt62wQ3A8OKoGQgHs2dGiBLySoiqGJpThzaDicy37LTqrf7wIDAQAB";
     AlipayClient alipayClient = new DefaultAlipayClient("https://openapi.alipay.com/gateway.do","2019072665956811",previt_key, "json", "utf-8",public_key, "RSA2");
@@ -35,8 +35,8 @@ public class AlipayService//支付宝支付等业务体
     {
         Map map=new HashMap();
         try {
-            List<pui_supplier_deposit> supplier_deposits=alipay_mapper.select_supplier(supplierId);//遍历数据库供应商的所有缴纳押金的订单
-            for (pui_supplier_deposit supplier_deposit:supplier_deposits)
+            List<PuiSupplierDeposit> supplier_deposits=alipay_mapper.select_supplier(supplierId);//遍历数据库供应商的所有缴纳押金的订单
+            for (PuiSupplierDeposit supplier_deposit:supplier_deposits)
             {
                 if (supplier_deposit.getReturnMoney().equals("否"))//判断供应商是否已经缴纳押金防止重复缴纳
                 {
@@ -85,7 +85,7 @@ public class AlipayService//支付宝支付等业务体
             {
                 if (alipay_mapper.select_order(order_id,"支付宝")==null)//本地数据库没有的情况下保存订单到本地数据库
                 {
-                    pui_supplier_deposit deposit=new pui_supplier_deposit();//
+                    PuiSupplierDeposit deposit=new PuiSupplierDeposit();//
                     deposit.setOrderId(order_id);
                     deposit.setSupplierId(supplier_id);
                     deposit.setMoney((String) result.get("total_amount"));//金额""total_amount" -> "0.01"
@@ -113,7 +113,7 @@ public class AlipayService//支付宝支付等业务体
         Map map=new HashMap();
         try
         {
-            pui_supplier_deposit supplier_deposit=alipay_mapper.select_order(Order_id,"支付宝");
+            PuiSupplierDeposit supplier_deposit=alipay_mapper.select_order(Order_id,"支付宝");
             if (supplier_deposit==null)
             {
                 map.put("status",false);

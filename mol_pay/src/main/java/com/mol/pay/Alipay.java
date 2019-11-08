@@ -1,15 +1,20 @@
 package com.mol.pay;
 
+import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
+import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.mol.pay.entity.AlipayCreateInfo;
 import com.mol.pay.entity.AlipayCreateInfoBuilder;
 import lombok.Data;
 import util.TimeUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -32,6 +37,9 @@ public class Alipay {
     private static String public_key="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAla/6pfAy7aK8yjBmYFZS+mPqmBS3s2vlrvt5dHEmwuOlbxjbRKcWbHHe/ozWHEizyIBSMPH9EXUN6ns/RZjoSFO8w03CMgOpfm01NlsstKoGV3KlD5yvh4qERKTdW+d0PS3TfqG2tcrnEyY9lHZbiwxS2VJi7kyz5erKtEu7eiIWrLIiGfnrdDI+hYPix5G+DVwxVbAcAIC3+RG1dTVrB5IuY0Evrr9YSjLxOm0KX75GfNyYMUvvSFhtM8WA0BocY+Giwv7hwhGJdvIhbdvxlMuVkcJRJ+MaLBXu01Vt62wQ3A8OKoGQgHs2dGiBLySoiqGJpThzaDicy37LTqrf7wIDAQAB";
     private static AlipayClient alipayClient = new DefaultAlipayClient(serverUrl,appId,previt_key,dataFormat,charset,public_key,signType);
     private static Alipay alipay = new Alipay();
+
+    public static final String MAPKEY_PAYINFO = "payInfo";
+    public static final String MAPKEY_OUTTRADENO = "outTradeNo";
     private Alipay(){
 
     }
@@ -41,8 +49,9 @@ public class Alipay {
      * 形成支付订单信息payInfo
      * @throws AlipayApiException
      */
-    public static synchronized  String getPayInfo(AlipayCreateInfo info) throws AlipayApiException {
+    public static synchronized Map getPayInfo(AlipayCreateInfo info) throws AlipayApiException {
         AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
+        Map resultMap = new HashMap();
         request.setNotifyUrl(info.getCallbackUrl());//回调地址
         //SDK已经封装掉了公共参数，这里只需要传入业务参数。以下方法为sdk的model入参方式(model和biz_content同时存在的情况下取biz_content)。
         AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
@@ -55,21 +64,23 @@ public class Alipay {
         request.setBizModel(model);
         //  request.setNotifyUrl("商户外网可以访问的异步地址");
         AlipayTradeAppPayResponse response = alipayClient.sdkExecute(request); //这里和普通的接口调用不同，使用的是sdkExecute
-        return response.getBody();
+        resultMap.put(MAPKEY_PAYINFO,response.getBody());
+        resultMap.put(MAPKEY_OUTTRADENO,info.getOutTradeNo());
+        return resultMap;
     }
 
-    public static void main(String[] args) {
-        String orderId = TimeUtil.getNow(TimeUtil.payOrderFormat);
-        System.out.println("orderId:");
-        System.out.println(orderId);
-        AlipayCreateInfo info = AlipayCreateInfoBuilder.getBuilder().builder("专家认证费用","注册成为战略供应商", orderId,"30m","","0.01");
-        try {
-            String payInfo = Alipay.getPayInfo(info);
-            System.out.println(payInfo);
-        } catch (AlipayApiException e) {
-            e.printStackTrace();
-        }
-    }
+//    public static void main(String[] args) {
+//        String orderId = TimeUtil.getNow(TimeUtil.payOrderFormat);
+//        System.out.println("orderId:");
+//        System.out.println(orderId);
+//        AlipayCreateInfo info = AlipayCreateInfoBuilder.getBuilder().builder("专家认证费用","注册成为战略供应商", orderId,"30m","","0.01");
+//        try {
+//            Map payInfo = Alipay.getPayInfo(info);
+//            System.out.println(payInfo.toString());
+//        } catch (AlipayApiException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
 
@@ -158,6 +169,31 @@ public class Alipay {
 //            return  false;
 //        }
 //    }
+
+
+
+    public static synchronized boolean ifOrderSuccess(String orderId){
+        AlipayTradeQueryRequest alipayRequest = new AlipayTradeQueryRequest();
+        alipayRequest.setBizContent("{\"out_trade_no\":\""+ orderId+"\"}");
+        try {
+            String body = alipayClient.execute(alipayRequest).getBody();
+            System.out.println("checkOrderStatus....response.getbody:"+body);
+            JSONObject obj = JSONObject.parseObject(body);
+            JSONObject result = (JSONObject) obj.get("alipay_trade_query_response");
+            if ((result.get("code")).equals("10000") && (result.get("msg")).equals("Success")){
+                //支付成功
+                return true;
+            }
+
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+
+
 //
 //    public Map Return_money(String Order_id)//退还押金,参数：商家订单id 备注 退款金额
 //    {
