@@ -12,16 +12,16 @@
      <div>
          <div style="margin: 15px; width:97%;height: 110px; background-color: #009F95;border-radius:12px;color: #fbfbfb;padding: 16px">
              <div style="width: 100%;">
-                 <p id="Tilte_name" style="font-size: 24px;display: inline-block">标题零部件名字</p>
+                 <p id="Tilte_name" style="font-size: 24px;display: inline-block" th:text="${goods_name}">标题零部件名字</p>
                  <p style="font-size: 16px;display: inline-block;margin-top: 6px;float:right;cursor:pointer;margin-right: 12px" onclick="return_top()">返 回</p>
              </div>
              <div style="font-size: 16px;width: 100%;float: left;margin-top: 12px">
-                 <p style="display: inline-block" th:text="${Oreder_number}"></p><!--订单编号-->
-                 <p  id="People" style="display: inline-block;float: right;margin-right: 12px" >申请人:王XX</p>
+                 <p id="PurchasId"  style="display: inline-block" th:text="${Oreder_number}"></p><!--订单编号-->
+                 <p  id="People" style="display: inline-block;float: right;margin-right: 12px" th:text="${user_name}" >申请人:王XX</p>
              </div>
              <div style="width: 100%; float: left;margin-top: 12px;font-size: 16px;">
                  <p id="Merchant_number" style="float: left;" >已报价商家:2</p>
-                 <p  id="Create_time" style="float:right;margin-right: 12px"  color="#FBFBFB" >申请时间:2019-09-01</p>
+                 <p  id="Create_time" style="float:right;margin-right: 12px"  color="#FBFBFB" th:text="${create_time}" >申请时间:2019-09-01</p>
              </div>
          </div>
      </div>
@@ -32,7 +32,7 @@
              <li class="layui-timeline-item">
                  <i class="layui-icon layui-timeline-axis"></i>
                  <div class="layui-timeline-content layui-text">
-                     <h3 class="layui-timeline-title">8月18日</h3>
+                     <h3 class="layui-timeline-title" th:text="${create_time}">8月18日</h3>
                      <h3 class="layui-timeline-title">发出申请</h3>
                      <div id="list1" >
 
@@ -107,34 +107,110 @@
 
          layui.use('table', function(){
              var table = layui.table;
-             var Data = [{"id":"BeJson","username":"http://www.bejson.com","sex":true,"city":"12","number":"12","experience":"12","all":"100"}]
-             table.render({
-                 elem: '#list1table1'
-                 // ,url:'/demo/table/user/'
-                 , data:Data
-                 ,cols: [
-                     [
-                         {field:'id', width:80, title: '序号', sort: true}
-                         ,{field:'username', width:150, title: '名称'}
-                         ,{field:'sex', width:100, title: '规格', sort: true}
-                         ,{field:'city', width:80, title: '单位'}
-                         ,{field:'number', width:80,title: '数量', minWidth: 150}
-                         ,{field:'experience', width:120, title: '报价', sort: true}
-                         ,{field:'all', width:120, title: '共计', sort: true}
 
-                     ]
-                 ]
-                 ,page: true
+             $.ajax({
+                 type: 'POST',
+                 url: '/PurchasOrderinfor/PlannedPurchaseben',
+                 dataType: 'json',
+                 data:{PurchasId:document.getElementById("PurchasId").innerText.split(":")[1]},
+                 // headers:{  'eticket': app.globalData.eticket},
+                 success: function (data) {
+                     var Data=data
+                     table.render({
+                         elem: '#list1table1'
+                         // ,url:'/demo/table/user/'
+                         , data:Data
+                         ,cols: [
+                             [
+                                 {field:'number', width:80, title: '序号', sort: true}
+                                 ,{field:'name', width:150, title: '名称'}
+                                 ,{field:'materialspec', width:100, title: '规格', sort: true}
+                                 ,{field:'pk_measdoc', width:80, title: '单位'}
+                                 ,{field:'goods_quantity', width:80,title: '数量', minWidth: 150}
+                             ]
+                         ]
+                         ,page: true
+                     });
+                 },
+                 error: function (data) {
+                     alert("获取审核议价信息失败")
+                 }
              });
          });
 
 
-         //报价商家区域
-         var  Data2=[{"Compayny_name":"山东XXX科技有限公司","data":[{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"},{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"}]},{"Compayny_name":"江苏XXX网络科技有限公司","data":[{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"},{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"}]}]
-         Add_data_table("list2",Data2)
+
+         //获取供应商报价
+         $.ajax({
+             type: 'POST',
+             url: '/PurchasOrderinfor/OrderDetailedinfor',
+             dataType: 'json',
+             data:{PurchasId:document.getElementById("PurchasId").innerText.split(':')[1]},
+             // headers:{  'eticket': app.globalData.eticket},
+             success: function (data) {
+                 Add_data_table("list2",data)
+                 document.getElementById("Merchant_number").innerText="已报价公司:"+data.length+"家";
+             },
+             error: function (data) {
+                 alert("获取审核议价信息失败")
+             }
+         });
 
          //专家评审区域
-         var  Data3=[{"Compayny_name":"山东XXX科技有限公司","data":[{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"},{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"}]},{"Compayny_name":"江苏XXX网络科技有限公司","data":[{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"},{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"}]}]
+         $.ajax({
+             type: 'POST',
+             url: '/PurchasOrderinfor/OrderDetailedinfor',
+             dataType: 'json',
+             data:{PurchasId:document.getElementById("PurchasId").innerText.split(':')[1]},
+             // headers:{  'eticket': app.globalData.eticket},
+             success: function (data) {
+                 Add_data_table("list3",data)
+             },
+             error: function (data) {
+                 alert("获取审核议价信息失败")
+             }
+         });
+
+
+         //采购部议价区域
+         $.ajax({
+             type: 'POST',
+             url: '/TimeProcessController/SupperlierQuoteFinally',
+             dataType: 'json',
+             data:{PurchasId:document.getElementById("PurchasId").innerText.split(':')[1]},
+             // headers:{  'eticket': app.globalData.eticket},
+             success: function (data) {
+                 Add_data_table("list4",data)
+             },
+             error: function (data) {
+                 alert("获取审核议价信息失败")
+             }
+         });
+
+         //采购通过
+         $.ajax({
+             type: 'POST',
+             url: '/TimeProcessController/PurchasOver',
+             dataType: 'json',
+             data:{PurchasId:document.getElementById("PurchasId").innerText.split(':')[1]},
+             // headers:{  'eticket': app.globalData.eticket},
+             success: function (data) {
+                 Add_data_table("list5",data)
+             },
+             error: function (data) {
+                 alert("获取审核议价信息失败")
+             }
+         });
+
+
+
+
+/*         //报价商家区域
+         var  Data2=[{"Compayny_name":"山东XXX科技有限公司","data":[{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"},{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"}]},{"Compayny_name":"江苏XXX网络科技有限公司","data":[{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"},{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"}]}]
+         Add_data_table("list2",Data2)*/
+
+         //专家评审区域
+/*         var  Data3=[{"Compayny_name":"山东XXX科技有限公司","data":[{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"},{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"}]},{"Compayny_name":"江苏XXX网络科技有限公司","data":[{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"},{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"}]}]
          Add_data_table("list3",Data3)
 
          //采购部议价区域
@@ -147,28 +223,25 @@
          var  Data5=[{"Compayny_name":"山东XXX科技有限公司","data":[{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"},{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"}]},{"Compayny_name":"江苏XXX网络科技有限公司","data":[{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"},{"id":"BeJson","username":"http://www.bejson.com","sex":true,"number":"12","experience":"12","all":"100"}]}]
          Add_data_table("list5",Data4);
          var log_Data5 =[{"people":"BeJson","state":"http://www.bejson.com","time":true,"opinion":"12"}]
-         Log_Process("list5",log_Data5);
-
-
-
+         Log_Process("list5",log_Data5);*/
      }
 
 
+     var table_number=0;
      function Add_data_table(list_name,Data)//生成商家报价 专家审核等表单 参数 对应日期框的div的id 和多个公司数据
      {
-         //Data数据结构  var  Data2=
-         // [
-         // {"Compayny_name":"山东XXX科技有限公司","data":[{"id":"BeJson","all":"100"},{"id":"BeJson","all":"100"}]},第一家报价公司
-         // {"Compayny_name":"江苏XXX网络科技有限公司","data":[{"id":"BeJson","all":"100"},{"id":"BeJson","all":"100"}]}第二家报价公司
-         // ]
 
+         if (Data.length==0)
+         {
+           document.getElementById(list_name).style.display='none'
+         }
          for (var n=0;n<Data.length;n++)//循环一次代表一个公司的表单被生成
          {
              if (n>0)//报价公司大于1家时加一个分界线
              {
                  var line=document.createElement('div');
                  line.innerHTML=
-                     '<div style="margin: 12px">'+
+                     '<div style="margin: 12px;margin-top: 38px">'+
                      '<hr class="layui-bg-green">'+
                      '</div>';
                  document.getElementById(list_name.toString()).appendChild(line);
@@ -176,13 +249,13 @@
 
              var div_table=document.createElement('div');//容纳公司名 报价表等
              div_table.id='div_table'+list_name+n.toString();
-             document.getElementById(list_name).appendChild(div_table)
+             document.getElementById(list_name).appendChild(div_table);
 
              //报价的厂家名
-             var Company_name=document.createElement('div');//创建一个表头
-             Company_name.innerHTML=
+             var Company_quote=document.createElement('div');//创建一个表头
+             Company_quote.innerHTML=
                  '<div style="width:16%;margin-top: 12px;margin-left:6px;padding: 6px;background-color: #2D93CA;color: #fbfbfb;font-size: 16px;border-radius: 6px;display: inline-block;text-align: center">'+
-                 ' <label >'+Data[n].Compayny_name+'</label>'+
+                 ' <label >'+Data[n][0].corp_name+'</label>'+
                  '</div>'+
              '<div style="width:60px;margin-right: 6px;margin-top: 12px;padding: 6px;background-color:#009688;color: #fbfbfb;font-size: 16px;border-radius: 6px;display: inline-block;float: right;text-align: center;cursor:pointer">'+
              ' <label style=";cursor:pointer" onclick="Table_visible(this)">收起</label>'+
@@ -190,42 +263,95 @@
              '<div style="width:auto;margin-right: 6px;margin-top: 12px;padding: 6px;background-color:#eb7350;color: #fbfbfb;font-size: 16px;border-radius: 6px;display: inline-block;float: right;text-align: center;cursor:pointer">'+
              ' <label>总计:100000元</label>'+
              '</div>'
-             document.getElementById('div_table'+list_name+n.toString()).appendChild(Company_name);
-
-
-
+             document.getElementById('div_table'+list_name+n.toString()).appendChild(Company_quote);
              var table=document.createElement('table');//创建一个表
              table.id=list_name.toString()+'table'+n.toString();
              table.class='layui-hide';
              document.getElementById('div_table'+list_name+n.toString()).appendChild(table);
 
-             layui.use('table', function(){
 
+             layui.use('table', function(){
                  var table = layui.table;
                  table.render({
                      elem: '#'+list_name.toString()+'table'+n.toString()
                      // ,url:'/demo/table/user/'
-                     , data:Data[n].data
+                     , data:Data[n]
                      ,cols: [
                          [
-                             {field:'id', width:80, title: '序号', sort: true}
-                             ,{field:'username', width:300, title: '名称'}
-                             ,{field:'sex', width:200, title: '规格', sort: true}
-                             ,{field:'number', width:80,title: '数量', minWidth: 150}
-                             ,{field:'experience', width:150, title: '报价', sort: true}
-                             ,{field:'all', width:120, title: '共计', sort: true}
+                             {field:'number', width:80, title: '序号', sort: true}
+                             ,{field:'material_name', width:150, title: '物料名称'}
+                             ,{field:'materialspec', width:200, title: '规格'}
+                             ,{field:'unit', width:150, title: '单位'}
+                             ,{field:'quote', width:150, title: '报价', sort: true}
                          ]
                      ]
                      ,page: true
                  });
              });
 
+
+             table_number=n;
+             if (list_name==='list3')//有专家推荐栏
+             {
+                 var div_table=document.createElement('div');//容纳专家信息和按钮栏
+                 div_table.id='div_table_expert'+list_name+n.toString();
+                 document.getElementById('div_table'+list_name+n.toString()).appendChild(div_table);
+
+                 //报价的厂家名
+                 var Company_quote1=document.createElement('div');//创建一个表头
+                 Company_quote1.innerHTML=
+                     '<div style="width:80px;margin-top: 12px;margin-left:6px;padding: 6px;background-color: darksalmon;color: #fbfbfb;font-size: 16px;border-radius: 6px;display: inline-block;text-align: center">'+
+                     ' <label >专家推荐</label>'+
+                     '</div>'+
+                     '<div style="width:120px;margin-right: 6px;margin-top: 12px;padding: 6px;background-color:#009688;color: #fbfbfb;font-size: 16px;border-radius: 6px;display: inline-block;float: right;text-align: center;cursor:pointer">'+
+                     ' <label style=";cursor:pointer" onclick="Exper_Table_visible(this)">收起专家推荐</label>'+
+                     '</div>'
+
+                 document.getElementById('div_table_expert'+list_name+n.toString()).appendChild(Company_quote1);
+                 var table=document.createElement('table');//创建一个表
+                 table.id=list_name.toString()+'table_expert'+n.toString();
+                 table.class='layui-hide';
+                 document.getElementById('div_table_expert'+list_name+n.toString()).appendChild(table);
+
+
+                 $.ajax({//获取专家推荐信息
+                     type: 'POST',
+                     url: '/TimeProcessController/ExperreCommend',
+                     dataType: 'json',
+                     data:{purchase_id:document.getElementById("PurchasId").innerText.split(':')[1],supplier_id:Data[table_number][0].pk_supplier_id},
+                     // headers:{  'eticket': app.globalData.eticket},
+                     success: function (expert_data) {
+
+
+                         layui.use('table', function(){
+                             var table = layui.table;
+                             table.render({
+                                 elem: '#'+list_name.toString()+'table_expert'+table_number.toString()
+                                 , data:expert_data
+                                 ,cols: [
+                                     [
+                                         {field:'number', width:80, title: '序号', sort: true}
+                                         ,{field:'expert_id', width:150, title: '专家id'}
+                                         ,{field:'experName', width:200, title: '专家姓名'}
+                                         ,{field:'recommend_reason', width:150, title: '推荐理由'}
+                                         ,{field:'create_time', width:150, title: '推荐日期'}
+                                     ]
+                                 ]
+                                 ,page: true
+                             });
+                         });
+                     },
+                     error: function (data) {
+                         alert("获取审核议价信息失败")
+                     }
+                 });
+             }
          }
      }
 
      function Log_Process(List_name,log_Data)//审批日志 参数 对应日期框的div的id 和审批日志数据
      {
-        // var Data = [{"id":"BeJson","username":"http://www.bejson.com","sex":true,"city":"12","number":"12","experience":"12","all":"100"}]
+         // var Data = [{"id":"BeJson","username":"http://www.bejson.com","sex":true,"city":"12","number":"12","experience":"12","all":"100"}]
          //审批日志
          var Company_name=document.createElement('div')
          Company_name.innerHTML=
@@ -271,19 +397,59 @@
          {
              e.innerText="显示";
              table[2].style.display='none';
+             if (table.length>=3)
+             {
+                 table[3].style.display='none';
+             }
          }
          else
          {
              e.innerText="收起";
              table[2].style.display='block';
+             if (table.length>=3)
+             {
+                 table[3].style.display='block';
+             }
+         }
+     }
+
+     function Exper_Table_visible(e)//专家推荐隐藏或显示表单
+     {
+         var Contrels=e.parentElement;
+         var Contrels1=Contrels.parentElement.parentElement;
+         var table=Contrels1.childNodes;//找到表格所在的父级div
+
+         
+         if (table[2].style.display!='none')
+         {
+             e.innerText="显示专家推荐";
+             table[2].style.display='none';
+         }
+         else
+         {
+             e.innerText="收起专家推荐";
+             table[2].style.display='block';
          }
 
+/*       if (document.getElementById("list3table_expert0").style.display!='none')
+       {
+          // e.innerText="显示专家推荐";
+           console.log(1)
+           document.getElementById("list3table_expert0").style.display='none';
+       }
+       else
+       {
+           console.log(2)
+          // e.innerText="收起专家推荐";
+           document.getElementById("list3table_expert0").style.display='block';
+       }*/
      }
 
      function return_top()//返回上一层
      {
          parent.close_Details_page();
      }
+
 
 
  </script>

@@ -8,6 +8,7 @@ public class PurchasOrderinforben //供应商单个商品报价实体
     private String unit;//单位
     private String corp_name;//公司名称
     private String quote;//报价
+    private String pk_supplier_id;//供应商id
 
     public String getMaterial_name() {
         return material_name;
@@ -55,5 +56,13 @@ public class PurchasOrderinforben //供应商单个商品报价实体
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public String getPk_supplier_id() {
+        return pk_supplier_id;
+    }
+
+    public void setPk_supplier_id(String pk_supplier_id) {
+        this.pk_supplier_id = pk_supplier_id;
     }
 }

@@ -53,6 +53,23 @@ public class Dingding_Tools
         return access_token;
     }
 
+    public static String GetScanCodeUserinfor(String loginCode)//获取扫码登录个人信息
+    {
+
+        try {
+            DefaultDingTalkClient  client = new DefaultDingTalkClient("https://oapi.dingtalk.com/sns/getuserinfo_bycode");
+            OapiSnsGetuserinfoBycodeRequest req = new OapiSnsGetuserinfoBycodeRequest();
+            req.setTmpAuthCode(loginCode);
+            OapiSnsGetuserinfoBycodeResponse response = client.execute(req,"dingoa95guzn8q0hi2h69z","Gvg-lNJOSZ_q_CsxXJEnZDntE5ivCVKDm8kFiMsckTvMy_yNWvZOhcXZiLPZIEIQ");
+            return   response.getBody();
+        }
+        catch (Exception e)
+        {
+      return "erre";
+        }
+
+    }
+
 
     //获取持久登录
     public  static String get_persistent_code(String accessToken, String code){
@@ -172,6 +189,23 @@ public class Dingding_Tools
 
         }
 
+    }
+
+    public static String GetDepartmentAllUser(String DepartmentId)
+    {
+        try {
+            DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/user/getDeptMember");
+            OapiUserGetDeptMemberRequest req = new OapiUserGetDeptMemberRequest();
+            req.setDeptId( DepartmentId);
+            req.setHttpMethod("GET");
+            OapiUserGetDeptMemberResponse rsp = client.execute(req, Dingding_config.DingdingAPP_Token);
+            return rsp.getBody();
+
+        }
+        catch (Exception e)
+        {
+            return e.toString();
+        }
     }
 
     public static String GetDepartmentUser(long userId)//获取部门里的用户

@@ -17,15 +17,17 @@ public class PurchasOrderinforController//订单详情信息
 {
     @Resource
     PurchasOrderinforService purchasOrderinforService;
+    @RequestMapping("/PlannedPurchaseben")//预计订单明细
+    public ArrayList<PlannedPurchaseben> plannedPurchasebens(@RequestParam String PurchasId)
+    {
+        return   purchasOrderinforService.plannedPurchasebensLogic(PurchasId);
+    }
+
     @RequestMapping("/OrderDetailedinfor")//供应商报价明细
     public ArrayList<ArrayList<PurchasOrderinforben>> OrderDetailedinfor(@RequestParam String PurchasId)
     {
      return  purchasOrderinforService.OrderDetailedinforLogic(PurchasId);
     }
 
-    @RequestMapping("/PlannedPurchaseben")//预计订单明细
-    public ArrayList<PlannedPurchaseben> plannedPurchasebens(@RequestParam String PurchasId)
-    {
-      return   purchasOrderinforService.plannedPurchasebensLogic(PurchasId);
-    }
+
 }

@@ -8,6 +8,8 @@
 	<script src="/echarts.min.js"></script>
 	<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js" type="text/javascript"></script>
 
+	<script src="https://g.alicdn.com/dingding/dingtalk-jsapi/2.7.13/dingtalk.open.js"></script>
+
 	<body onload="landing()"><!--width:1679px-->
 		<div style="width:100%; height: 1000px;"><!--width: 1679px-->
 			<div style="margin: 24px;"><!--日期-->
@@ -172,7 +174,7 @@
 		</div>
 		<script src="/layui/layui.all.js"></script>
 
-		
+
 		<script>
 			function landing()//psot后端数据
 			{
@@ -183,6 +185,27 @@
 				Get_purchase_infor(0);
 				Get_real_time();//获取正在审核的采购订单
 				Get_Supplier_review_real_time()//获取供应商审核进程
+				dingdinglanding();
+			}//
+
+			dd.ready(function() {
+
+				dd.runtime.permission.requestAuthCode({
+					corpId: "ding6ef23b66fc0611a335c2f4657eb6378f", // 企业id
+					onSuccess: function (info) {
+						code = info.code // 通过该免登授权码可以获取用户身份
+						alert('免登码'+code)
+					},
+					onFail: function(){
+						alert('免登码获取失败')
+					}
+				});
+			});
+			function dingdinglanding()
+			{
+				console.log(dd)
+
+
 			}
 
 			function select_change(e)//下拉选择的相应事件

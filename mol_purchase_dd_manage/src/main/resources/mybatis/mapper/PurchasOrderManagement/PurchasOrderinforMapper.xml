@@ -3,7 +3,7 @@
 <mapper namespace="com.mol.ddmanage.mapper.PurchasOrderManagement.PurchasOrderinforMapper">
 
     <select id="OrderDetailedinfor"  resultType="com.mol.ddmanage.Ben.PurchasOrderManagement.PurchasOrderinforben">
-    SELECT fy_quote.quote,
+    SELECT fy_quote.quote,fy_quote.pk_supplier_id,
     (SELECT bd_material.`name` FROM bd_material WHERE fy_quote.pk_material_id=bd_material.pk_material)material_name,
     (SELECT bd_measdoc.`name` FROM bd_measdoc WHERE bd_measdoc.pk_measdoc=(SELECT bd_material.pk_measdoc FROM bd_material WHERE bd_material.pk_material=fy_quote.pk_material_id))unit,
     (SELECT bd_supplier.`name` FROM bd_supplier WHERE bd_supplier.pk_supplier=fy_quote.pk_supplier_id)corp_name,
@@ -14,7 +14,8 @@
     </select>
 
     <select id="plannedPurchasebens"  resultType="com.mol.ddmanage.Ben.PurchasOrderManagement.PlannedPurchaseben">
-SELECT (SELECT bd_material.`name`FROM bd_material WHERE bd_material.pk_material=fy_purchase_detail.pk_material)'name',
+SELECT
+(SELECT bd_material.`name`FROM bd_material WHERE bd_material.pk_material=fy_purchase_detail.pk_material)'name',
 (SELECT bd_material.materialspec FROM bd_material WHERE bd_material.pk_material=fy_purchase_detail.pk_material)materialspec,
 (SELECT bd_measdoc.`name` FROM bd_measdoc WHERE bd_measdoc.pk_measdoc=(SELECT bd_material.pk_measdoc FROM bd_material WHERE bd_material.pk_material=fy_purchase_detail.pk_material))pk_measdoc,
 fy_purchase_detail.goods_quantity

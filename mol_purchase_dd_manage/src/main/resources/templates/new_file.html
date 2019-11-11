@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -39,7 +39,9 @@
   </li>
 <!--  用户头像-->
   <li class="layui-nav-item " style="float:right " lay-unselect="">
-    <a href="javascript:;"><img src="/imge/timg.jpg" class="layui-nav-img">我</a>
+    <a href="javascript:;" th:text="${name}">>
+      <img src="/imge/timg.jpg" class="layui-nav-img"  >
+    </a>
     <dl class="layui-nav-child">
       <dd><a href="javascript:;">修改信息</a></dd>
       <dd><a href="javascript:;">安全管理</a></dd>
@@ -137,6 +139,9 @@
 
 <script src="/layui/layui.all.js"></script>
 <script>
+
+
+
   function test1()
   {
     // document.getElementById("tongji").click();
@@ -220,7 +225,7 @@ layui.use('element', function(){
   	}
   	else
   	{
-  		active.tabAdd('G2I2_bat_id',"审核议价历史",'<div id="G2I2_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/Push_history"></iframe></div>');
+  		active.tabAdd('G2I2_bat_id',"审核议价历史",'<div id="G2I2_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/ReviewBargainingHistoryList"></iframe></div>');
     active.tabChange('G2I2_bat_id');   
   	}
   });

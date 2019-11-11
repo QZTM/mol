@@ -1,17 +1,17 @@
 package com.mol.ddmanage.Service.Office;
 
 import com.mol.ddmanage.Ben.Office.Push_history_list_ben;
-import com.mol.ddmanage.mapper.Office.PushHistoryMapper;
+import com.mol.ddmanage.mapper.Office.ReviewBargainingHistoryListMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 
 @Service
-public class Push_history_Service
+public class ReviewBargainingHistoryListService
 {
     @Resource
-    private PushHistoryMapper push_history_mapper;
+    private ReviewBargainingHistoryListMapper push_history_mapper;
     public ArrayList<Push_history_list_ben> Push_history_list(String status)
     {
         ArrayList<Push_history_list_ben> push_history_bens=push_history_mapper.Set_Push_history_list(status);
