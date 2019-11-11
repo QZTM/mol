@@ -12,11 +12,9 @@ import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
 import com.mol.cache.CacheHandle;
-import lombok.Setter;
 import lombok.extern.java.Log;
 import org.apache.commons.lang.StringUtils;
 import util.RandomStr;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 

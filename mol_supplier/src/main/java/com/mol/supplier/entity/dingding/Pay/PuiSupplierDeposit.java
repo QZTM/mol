@@ -37,6 +37,17 @@ public class PuiSupplierDeposit {
          */
         @Id
         private String orderId;   //订单id
+
+        /**
+         * 支付的商品名称：
+         */
+        private String itemName;
+
+        /**
+         * 商品描述
+         */
+        private String itemSubject;
+
         /**
          * 供应商id
          */

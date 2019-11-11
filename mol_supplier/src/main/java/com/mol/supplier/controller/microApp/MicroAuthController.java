@@ -1,16 +1,18 @@
 package com.mol.supplier.controller.microApp;
+
 import com.alibaba.fastjson.JSON;
 import com.mol.sms.SendMsmHandler;
 import com.mol.supplier.config.MicroAttr;
 import com.mol.supplier.entity.MicroApp.Salesman;
 import com.mol.supplier.entity.MicroApp.Supplier;
+import com.mol.supplier.entity.dingding.Pay.PuiSupplierDeposit;
 import com.mol.supplier.entity.thirdPlatform.BdMarbasclass;
+import com.mol.supplier.mapper.dingding.Pay.PayMapper;
 import com.mol.supplier.mapper.microApp.MicroSupplierMapper;
 import com.mol.supplier.mapper.third.BdMarbasclassMapper;
 import com.mol.supplier.service.microApp.MicroAuthService;
 import com.mol.supplier.service.microApp.MicroDdJsApiAuthService;
 import com.mol.supplier.service.microApp.MicroUserService;
-import com.mol.supplier.util.PageUrlUtils;
 import entity.ServiceResult;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import tk.mybatis.mapper.entity.Example;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -96,6 +99,9 @@ public class MicroAuthController {
     @Autowired
     private MicroDdJsApiAuthService microDdJsApiAuthService;
 
+    @Autowired
+    private PayMapper payMapper;
+
 
     @RequestMapping("/attr")
     public String showAuthChoosePage(HttpSession session) {
@@ -106,15 +112,29 @@ public class MicroAuthController {
     }
 
     @RequestMapping("/pay/{authType}")
-    public String showAuthPayPage(@PathVariable String authType, HttpSession session, Model model,HttpServletRequest request){
+    public String showAuthPayPage(@PathVariable String authType,Model model,HttpServletRequest request,HttpSession session){
         log.info("authType:"+authType);
+        Supplier supplier = (Supplier)session.getAttribute("supplier");
+
+        //根据supplierId 和payfor判断支付状态：
+        Example example = new Example(PuiSupplierDeposit.class);
 
         String pageName = "";
         if ("zhanlve".equals(authType)) {
             model.addAttribute("cost",0.01);
+            example.and().andEqualTo("supplierId",supplier.getPkSupplier()).andEqualTo("payFor",PuiSupplierDeposit.ORDER_PAY_FOR_STRATEGY_SUPPLIER_SERVICE);
+            PuiSupplierDeposit puiSupplierDepositGet = payMapper.selectOneByExample(example);
+            if(puiSupplierDepositGet != null && puiSupplierDepositGet.getStatus().equals(PuiSupplierDeposit.ORDER_STATUS_SUCCESS)){
+                return "pay_success";
+            }
             pageName = "authenticate_pay_zhanlve";
         }else if("danyi".equals(authType)){
             model.addAttribute("cost",0.01);
+            example.and().andEqualTo("supplierId",supplier.getPkSupplier()).andEqualTo("payFor",PuiSupplierDeposit.ORDER_PAY_FOR_SINGON_SUPPLIER_SERVICE);
+            PuiSupplierDeposit puiSupplierDepositGet = payMapper.selectOneByExample(example);
+            if(puiSupplierDepositGet != null && puiSupplierDepositGet.getStatus().equals(PuiSupplierDeposit.ORDER_STATUS_SUCCESS)){
+                return "pay_success";
+            }
             pageName = "authenticate_pay_danyi";
         }
 

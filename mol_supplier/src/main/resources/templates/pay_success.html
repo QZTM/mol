@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta charset="UTF-8">
+    <title>供应商认证</title>
+    <!-- Bootstrap -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery) -->
+    <script th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。 -->
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet">
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script src="https://g.alicdn.com/dingding/dingtalk-jsapi/2.7.13/dingtalk.open.js"></script>
+    <style>
+
+    </style>
+</head>
+<body>
+	<div id="1" style="width: 100%;margin-top: 15px;position:relative">
+
+        <div id="pay_success_img_div" style="width:20%;position:absolute;left:32%;top:80px;">
+            <img th:src="@{/img/paysuccess.png}" >
+        </div>
+
+        <div class="info_text" style="position: absolute;top:235px;left: 30%;">
+		  <h1  style="text-indent: 1em;"> <small>已支付</small></h1>
+		</div>
+	</div>
+</body>
+<script th:src="@{/js/common.js}"></script>
+<script>
+    window.addEventListener("popstate", function (e) {
+        // alert("我监听到了浏览器的返回按钮事件啦"); //根据自己的需求实现自己的功能
+        window.location.href("/auth/attr");
+    }, false);
+</script>
+</html>
