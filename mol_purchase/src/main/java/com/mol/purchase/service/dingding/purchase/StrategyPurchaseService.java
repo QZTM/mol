@@ -4,6 +4,7 @@ package com.mol.purchase.service.dingding.purchase;
 import com.alibaba.fastjson.JSON;
 import com.mol.purchase.entity.Supplier;
 import com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.*;
+import com.mol.purchase.entity.dingding.solr.fyPurchase;
 import com.mol.purchase.mapper.newMysql.FyPurchaseEsMapper;
 import com.mol.purchase.mapper.newMysql.dingding.purchase.*;
 import com.mol.purchase.config.BuyChannelResource;
@@ -59,7 +60,7 @@ public class StrategyPurchaseService {
     @Resource
     private BdSupplierMapper supplierMapper;
 
-    public StraregyObj save(PageArray pageArray, String orgId, String staffId) throws DocumentException, IllegalAccessException, IOException {
+    public synchronized StraregyObj save(PageArray pageArray, String orgId, String staffId) throws DocumentException, IllegalAccessException, IOException {
         //申请事由
         String applyCause = pageArray.getApplyCause();
         //采购详情
@@ -81,6 +82,9 @@ public class StrategyPurchaseService {
         String technicalSupportTelephone = pageArray.getTechnicalSupportTelephone();
         //专家评审
         String expertReview = pageArray.getExpertReview();
+        if (expertReview==null ||expertReview==""){
+            expertReview="false";
+        }
         //评审奖励
         String expertReward = pageArray.getExpertReward();
         ServiceResult result = null;
@@ -100,7 +104,7 @@ public class StrategyPurchaseService {
         stObj.setTitle(purchaseList.get(0).getTypeName() + "战略采购");
         stObj.setStaffId(staffId);
         stObj.setOrgId(orgId);
-        stObj.setOrderNumber(makeOrderNum());
+        stObj.setOrderNumber(makeOrderNum(BuyChannelResource.STRATEGY));
         stObj.setQuoteSellerNum(quoteSellerNum+"");
         stObj.setSupplierSellerNum(supplierSellerNum+"");
         stObj.setApplyCause(applyCause);
@@ -191,20 +195,26 @@ public class StrategyPurchaseService {
     /**
      * 产生订单号
      */
-    private String makeOrderNum(){
+    private String makeOrderNum(String buyChannalId){
         String orderNum="";
-        orderNum+="zl";
-        String[] splits = TimeUtil.getNowOnlyDate().split("-");
-        String a="";
-        for (int i=0;i<splits.length;i++){
-            if (i==splits.length-1){
-                orderNum+=splits[i]+"_";
-            }else {
-                orderNum+=splits[i];
-            }
+        orderNum+="ZL";
+        String time=TimeUtil.getNowOnlyDateNoline();
+        orderNum+=time;
+
+
+        List<fyPurchase> list=purchaseMapper.findPurListByLikeCreateTime(TimeUtil.getNowOnlyDate(),buyChannalId);
+        if (list.size()==0){
+            orderNum+="001";
+        }else{
+            String substring = list.get(0).getOrderNumber().substring(10);
+            int i = Integer.parseInt(substring);
+            i++;
+            String i2="0000"+i;
+            String substring1 = i2.substring(i2.length() - 3);
+            orderNum+=substring1;
         }
-        orederStartNum++;
-        orderNum+=orederStartNum;
+        //orederStartNum++;
+        //orderNum+=orederStartNum;
         return orderNum;
     }
 

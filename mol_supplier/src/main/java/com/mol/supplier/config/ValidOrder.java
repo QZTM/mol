@@ -1,6 +1,6 @@
 package com.mol.supplier.config;
 
-import com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
+import com.mol.supplier.mapper.dingding.purchase.fyPurchaseMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;

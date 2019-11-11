@@ -41,7 +41,7 @@ public class ScheController {
      * @return
      */
     @RequestMapping(value = "/findList",method = RequestMethod.GET)
-    public String getScheduleList(String status_first, String status_second,String status_thrid,int pageNum, int pageSize, ModelMap map, HttpSession session){
+    public String getScheduleList(String status_first, String status_second,String status_thrid,String status_four,int pageNum, int pageSize, ModelMap map, HttpSession session){
 
         String supplierId = microUserService.getUserFromSession(session).getPkSupplier();
 
@@ -55,26 +55,17 @@ public class ScheController {
         if (status_thrid == null || status_thrid == "") {
             status_thrid="";
         }
+        if (status_four == null || status_four == "") {
+            status_four="";
+        }
         List<String> purIdList=scheService.findPurIdListBySupplierId(supplierId);
-        List<fyPurchase> list=scheService.findListByIdList(status_first,status_second,status_thrid,purIdList);
+        List<fyPurchase> list=scheService.findListByIdList(status_first,status_second,status_thrid,status_four,purIdList);
 
-        //List<fyPurchase> fList=scheService.findListByStatus(status_first,status_second,status_thrid,pageNum,pageSize);
+
+
         map.addAttribute("list",list);
-
-        //数量 不做查询
-        //int count =scheService.findCountByStatus(status_first,status_second,status_thrid);
-        //map.addAttribute("count",count);
-
-
-        //PageBean pb = new PageBean();
-        //pb.setCurrentPage(pageNum);
-        //pb.setPageSize(pageSize);
-        //pb.setTotalCount(count);
-        //pb.setTotalPage(pb.getTotalCount()%pb.getPageSize()==0?pb.getTotalCount()/pb.getPageSize():pb.getTotalCount()/pb.getPageSize()+1);
-        //设置页码
-//        pb.setList(platformService.getPageNumList(pb));
-//        map.addAttribute("pb",pb);
         map.addAttribute("status",status_first);
+        map.addAttribute("pageindex","schedule");
         return "schedule";
     }
 

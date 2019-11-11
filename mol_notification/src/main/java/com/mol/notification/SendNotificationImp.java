@@ -90,6 +90,7 @@ public class SendNotificationImp implements SendNotification{
         msg.getOa().setMessageUrl("http://fyycg2.vaiwan.com/index/findAll");
         msg.getOa().setHead(new OapiMessageCorpconversationAsyncsendV2Request.Head());
         msg.getOa().getHead().setText("摩尔易购");
+        msg.getOa().getHead().setBgcolor("FFBBBBBB");
         msg.getOa().setBody(new OapiMessageCorpconversationAsyncsendV2Request.Body());
         msg.getOa().getBody().setContent(TimeUtil.getNowDateTime()+"有新的采购订单来了，快去报价吧！");
         msg.getOa().getBody().setImage("http://140.249.22.202:8082/static/upload/imgs/supplier/ask.png");

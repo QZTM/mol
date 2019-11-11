@@ -21,7 +21,7 @@ public class ActivitiConfig extends AbstractProcessEngineAutoConfiguration {
     //注入数据源和事务管理器
     @Bean
     public SpringProcessEngineConfiguration springProcessEngineConfiguration(
-            @Qualifier("newMysqlDataSource") DataSource dataSource,
+            @Qualifier("dataSource") DataSource dataSource,
             SpringAsyncExecutor springAsyncExecutor) throws IOException {
         return this.baseSpringProcessEngineConfiguration(dataSource, transactionManager, springAsyncExecutor);
     }

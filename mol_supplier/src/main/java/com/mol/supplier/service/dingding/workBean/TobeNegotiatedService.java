@@ -2,7 +2,6 @@ package com.mol.supplier.service.dingding.workBean;
 
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.mol.supplier.config.OrderStatus;
 import com.mol.supplier.entity.dingding.login.AppUser;
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
@@ -13,18 +12,16 @@ import com.mol.supplier.entity.dingding.purchase.workBench.toBeNegotiated.MaterI
 import com.mol.supplier.entity.dingding.purchase.workBench.toBeNegotiated.NegotiatIng;
 import com.mol.supplier.entity.dingding.solr.fyPurchase;
 import com.mol.supplier.entity.thirdPlatform.FyQuote;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.BdSupplierMapper;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseDetailMapper;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
-import com.mol.supplier.mapper.newMysql.dingding.user.AppUserMapper;
-import com.mol.supplier.mapper.newMysql.dingding.workBench.PoOrderMapper;
-import com.mol.supplier.mapper.newMysql.third.FyQuoteMapper;
+import com.mol.supplier.mapper.dingding.purchase.BdSupplierMapper;
+import com.mol.supplier.mapper.dingding.purchase.fyPurchaseDetailMapper;
+import com.mol.supplier.mapper.dingding.purchase.fyPurchaseMapper;
+import com.mol.supplier.mapper.dingding.user.AppUserMapper;
+import com.mol.supplier.mapper.dingding.workBench.PoOrderMapper;
+import com.mol.supplier.mapper.third.FyQuoteMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.plaf.SeparatorUI;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +62,7 @@ public class TobeNegotiatedService {
     }
 
     public List<fyPurchase> findListByIdListAndStatus(String status, List<String> quoteIdList) {
-        return fyPurchaseMapper.findListByIdlistAndStatus(status,null,null,quoteIdList);
+        return fyPurchaseMapper.findListByIdlistAndStatus(status,null,null,null,quoteIdList);
     }
 
     public List<fyPurchase> findListByOrgId(String orgId, String status,String secondStatus) {

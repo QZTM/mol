@@ -21,9 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import util.TimeUtil;
 
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -170,13 +173,24 @@ public class ExpertController {
     @ResponseBody
     public ServiceResult save(ExpertRecommend er, HttpSession session){
         ExpertUser user = (ExpertUser) session.getAttribute("user");
+
+
+        String purId = er.getPurchaseId();
+        fyPurchase pur = es.findPurById(purId);
+        String status = pur.getStatus();
+        if (Integer.parseInt(status) != OrderStatus.EXPERTREVIEW){
+
+            return ServiceResult.failureMsg("本次订单推荐已经截止了");
+        }
+
+
         //根据订单id，专家id  查询是否已经报过价
         er = es.saveExRecommend(er, user);
         //该公司报价专家推荐设置 1
         es.changeExpertRecommend(er);
         //报价中专家数量加 一
         es.addCiShu(er.getPurchaseId(),er.getSupplierId());
-        return ServiceResult.success("推荐成功");
+        return ServiceResult.successMsg("推荐成功");
     }
 
 }

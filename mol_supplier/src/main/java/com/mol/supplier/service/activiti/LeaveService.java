@@ -1,6 +1,6 @@
 package com.mol.supplier.service.activiti;
 
-import com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
+import com.mol.supplier.mapper.dingding.purchase.fyPurchaseMapper;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

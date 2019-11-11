@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+        <!--导航模块开始-->
+        <div th:fragment="footer">
+            <div class="bottom_div" th:fragment="footer">
+                <div class="bottom_div_adiv">
+                    <!--        不用topage，发送请求-->
+                    <th:block th:if="${pageindex == 'index'}"><img class="bottom_icon_img" src="/img/bottom-icon-index-flow.png" id="botton_icon_index_img_id"></th:block>
+                    <th:block th:if="${pageindex != 'index'}"><img class="bottom_icon_img" src="/img/bottom-icon-index.png" id="botton_icon_index_img_id"></th:block>
+                    <a th:href="@{'/index/findAll'}"><span class="bottom_a_span">首页</span></a>
+                </div>
+                <div class="bottom_div_adiv">
+                    <th:block th:if="${pageindex == 'schedule'}"><img class="bottom_icon_img" src="/img/bottom-icon-schedule-flow.png" id="botton_icon_schedule_img_id"></th:block>
+                    <th:block th:if="${pageindex != 'schedule'}"><img class="bottom_icon_img" src="/img/bottom-icon-schedule.png" id="botton_icon_schedule_img_id"></th:block>
+                    <a th:href="@{'/sche/findList?status_first=1&status_second=4&status_thrid=6&pageNum=1&pageSize=8'}" id="processa"><span class="bottom_a_span">进度</span></a>
+                </div>
+                <div class="bottom_div_adiv">
+                    <!--        <a th:href="@{'/toPage?url='+my}">我的</a>-->
+                    <th:block th:if="${pageindex == 'person'}"><img class="bottom_icon_img" src="/img/bottom-icon-person-flow.png" id="botton_icon_person_img_id"></th:block>
+                    <th:block th:if="${pageindex != 'person'}"><img class="bottom_icon_img" src="/img/bottom-icon-person.png" id="botton_icon_person_img_id"></th:block>
+                    <a th:href="@{'/microApp/my/show'}"><span class="bottom_a_span">我的</span></a>
+
+                </div>
+            </div>
+        </div>
+</body>

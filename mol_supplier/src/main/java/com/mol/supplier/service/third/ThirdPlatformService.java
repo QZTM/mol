@@ -2,17 +2,20 @@ package com.mol.supplier.service.third;
 
 import com.github.pagehelper.PageHelper;
 import com.mol.supplier.entity.MicroApp.Salesman;
+import com.mol.supplier.entity.MicroApp.Supplier;
+import com.mol.supplier.entity.dingding.login.AppAuthOrg;
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
 import com.mol.supplier.entity.dingding.solr.fyPurchase;
 import com.mol.supplier.entity.thirdPlatform.*;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.BdSupplierMapper;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseDetailMapper;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
-import com.mol.supplier.mapper.newMysql.dingding.workBench.PoOrderMapper;
-import com.mol.supplier.mapper.newMysql.microApp.MicroSalesmanMapper;
-import com.mol.supplier.mapper.newMysql.third.BdMarbasclassMapper;
-import com.mol.supplier.mapper.newMysql.third.FyQuoteMapper;
-import com.mol.supplier.mapper.newMysql.third.TpMapper;
+import com.mol.supplier.mapper.dingding.org.AppOrgMapper;
+import com.mol.supplier.mapper.dingding.purchase.BdSupplierMapper;
+import com.mol.supplier.mapper.dingding.purchase.fyPurchaseDetailMapper;
+import com.mol.supplier.mapper.dingding.purchase.fyPurchaseMapper;
+import com.mol.supplier.mapper.dingding.workBench.PoOrderMapper;
+import com.mol.supplier.mapper.microApp.MicroSalesmanMapper;
+import com.mol.supplier.mapper.third.BdMarbasclassMapper;
+import com.mol.supplier.mapper.third.FyQuoteMapper;
+import com.mol.supplier.mapper.third.TpMapper;
 import com.mol.supplier.util.StatusUtils;
 import entity.PageBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +56,11 @@ public class ThirdPlatformService {
     private IdWorker idWorker;
 
     @Autowired
+    private AppOrgMapper appOrgMapper;
+
+    @Autowired
     private MicroSalesmanMapper salesmanMapper;
+
 
     //enter排版
     public List<Enter> findAll() {
@@ -168,8 +175,8 @@ public class ThirdPlatformService {
      * @return
      */
     public Integer findCount(String buyId,String status,String goodsType) {
-        List<PurchaseDetail> purchaseDetailList = getPurChaseDetail(goodsType);
-        return fyPurchaseMapper.findCountByIdAndStatus(buyId, status,purchaseDetailList);
+//        List<PurchaseDetail> purchaseDetailList = getPurChaseDetail(goodsType);
+        return fyPurchaseMapper.findCountByBuyChannIdAndMarbascAndStatus(buyId, status,goodsType);
     }
 
 
@@ -178,11 +185,19 @@ public class ThirdPlatformService {
 //    }
 
     public fyPurchase selectOneById(String id) {
-        fyPurchase fyPurchase = tpMapper.selectOneById(id);
-        fyPurchase = StatusUtils.getStatusIntegerToString(fyPurchase);
-        String supplierNameById = bdSupplierMapper.getSupplierNameById(fyPurchase.getPkSupplier());
-        fyPurchase.setPkSupplier(supplierNameById);
-        return fyPurchase;
+        fyPurchase pur = tpMapper.selectOneById(id);
+//        fyPurchase = StatusUtils.getStatusIntegerToString(fyPurchase);
+//        String supplierNameById = bdSupplierMapper.getSupplierNameById(fyPurchase.getPkSupplier());
+//        fyPurchase.setPkSupplier(supplierNameById);
+        return pur;
+    }
+
+    //将字段改为中文显示
+    public fyPurchase ToChineseString(fyPurchase purchase){
+        purchase = StatusUtils.getStatusIntegerToString(purchase);
+        String supplierNameById = bdSupplierMapper.getSupplierNameById(purchase.getPkSupplier());
+        purchase.setPkSupplier(supplierNameById);
+        return purchase;
     }
 
     //获取公司上次该物料的报价
@@ -302,18 +317,24 @@ public class ThirdPlatformService {
 
     public List<fyPurchase> findLIstByStatusAndGoodsTypeAndBuyChannelId(String buyId, String status, String goodsType, Integer pageNumber,Integer pageSize) {
 
-        List<PurchaseDetail> purDetailList = getPurChaseDetail(goodsType);
-        List<fyPurchase> ceshi = fyPurchaseMapper.findList(buyId, status, purDetailList);
-        System.out.println("测试length："+ceshi.size());
-        PageHelper.startPage(pageNumber, pageSize);
-        List<fyPurchase> list = fyPurchaseMapper.findList(buyId, status, purDetailList);
-        System.out.println("响应length:"+list.size());
-        List<fyPurchase> new_List=new ArrayList<>();
+        PageHelper.startPage(pageNumber,pageSize);
+        List<fyPurchase> list = fyPurchaseMapper.findListByBuyChannIdAndMarbascAndStatus(buyId, goodsType, status);
         for (fyPurchase pur : list) {
-            fyPurchase fp = StatusUtils.getStatusIntegerToString(pur);
-            new_List.add(fp);
+            pur.setStatus(StatusUtils.getStatusIntegerToString(pur).getStatus());
         }
-        return new_List;
+        return list;
+//        List<PurchaseDetail> purDetailList = getPurChaseDetail(goodsType);
+//        List<fyPurchase> ceshi = fyPurchaseMapper.findList(buyId, status, purDetailList);
+//        System.out.println("测试length："+ceshi.size());
+//        PageHelper.startPage(pageNumber, pageSize);
+//        List<fyPurchase> list = fyPurchaseMapper.findList(buyId, status, purDetailList);
+//        System.out.println("响应length:"+list.size());
+//        List<fyPurchase> new_List=new ArrayList<>();
+//        for (fyPurchase pur : list) {
+//            fyPurchase fp = StatusUtils.getStatusIntegerToString(pur);
+//            new_List.add(fp);
+//        }
+        //return new_List;
     }
 
     private List<PurchaseDetail> getPurChaseDetail(String goodsType){
@@ -346,5 +367,35 @@ public class ThirdPlatformService {
         Salesman t=new Salesman();
         t.setDdUserId(ddUserId);
         return salesmanMapper.selectOne(t);
+    }
+
+    public List<fyPurchase> getPkSupplierToCHinese(List<fyPurchase> list) {
+        if (list!=null && list.size()>0){
+            for (fyPurchase pur : list) {
+                pur.setPkSupplier(bdSupplierMapper.getSupplierNameById(pur.getPkSupplier()));
+            }
+        }
+        return list;
+    }
+
+    //将订单采购方  公司id  -->  公司名称
+    public List<fyPurchase> PurchaseToChinese(List<fyPurchase> orderList) {
+        if (orderList!=null && orderList.size()>0){
+            for (fyPurchase purchase : orderList) {
+                if (purchase.getOrgId()!=null){
+                    AppAuthOrg t=new AppAuthOrg();
+                    t.setId(purchase.getOrgId());
+                    purchase.setOrgId(appOrgMapper.selectOne(t).getOrgName());
+                }
+            }
+        }
+        return orderList;
+    }
+
+
+    public Supplier getSupplierById(String supplierId) {
+        Supplier t=new Supplier();
+        t.setPkSupplier(supplierId);
+        return bdSupplierMapper.selectOne(t);
     }
 }

@@ -104,5 +104,7 @@ public class Supplier implements Serializable {
     //最后修改人
     private String lastUpdateUser;
 
+    private Integer version;
+
 
 }

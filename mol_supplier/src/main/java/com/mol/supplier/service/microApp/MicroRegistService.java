@@ -2,8 +2,8 @@ package com.mol.supplier.service.microApp;
 
 import com.mol.supplier.entity.MicroApp.Salesman;
 import com.mol.supplier.entity.MicroApp.Supplier;
-import com.mol.supplier.mapper.newMysql.microApp.MicroSalesmanMapper;
-import com.mol.supplier.mapper.newMysql.microApp.MicroSupplierMapper;
+import com.mol.supplier.mapper.microApp.MicroSalesmanMapper;
+import com.mol.supplier.mapper.microApp.MicroSupplierMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +29,20 @@ public class MicroRegistService {
 
     /*供应商注册*/
     public String suppliseRegist(Supplier supplier) {
+
+        Example example = new Example(Supplier.class);
+        example.and().andEqualTo("name",supplier.getName());
+        Supplier checkSupplier = microSupplierMapper.selectOneByExample(example);
+        if(checkSupplier != null){
+            return checkSupplier.getPkSupplier();
+        }
+
         String newId = idWorker.nextId() + "";
         supplier.setPkSupplier(newId);
         String nowTime = TimeUtil.getNowDateTime();
         supplier.setRegistTime(nowTime);
         supplier.setLastUpdateTime(nowTime);
+        supplier.setVersion(1);
         try {
             microSupplierMapper.insert(supplier);
             return newId;
@@ -46,6 +55,15 @@ public class MicroRegistService {
     }
 
     public String salesmanRegist(Salesman salesman) {
+
+        Example example = new Example(Salesman.class);
+        example.and().andEqualTo("name",salesman.getName());
+        example.and().andEqualTo("phone",salesman.getPhone());
+        Salesman checkedSalesman = microSalesmanMapper.selectOneByExample(example);
+        if(checkedSalesman != null){
+            return checkedSalesman.getId();
+        }
+
         String newId = idWorker.nextId() + "";
         salesman.setId(newId);
         String nowTime = TimeUtil.getNowDateTime();

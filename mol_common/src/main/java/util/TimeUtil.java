@@ -12,8 +12,10 @@ public class TimeUtil {
 
 
     public static String dateFormaterDateTime = "yyyy-MM-dd HH:mm:ss";
+    public static String dateFormaterDateTimeWithOutSecond = "yyyy-MM-dd HH:mm";
     public static String dateFormaterOnlyDate = "yyyy-MM-dd";
     public static String payOrderFormat = "yyyyMMddHHmmssSSS";
+    public static String dataFormateOnlyDateNoLine="yyyyMMdd";
 
     /**
      * 把时间戳转换为LocalDateTime类型的日期时间格式
@@ -58,6 +60,15 @@ public class TimeUtil {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormaterDateTime);
         return now.format(formatter);
     }
+    /**
+     * 获取当前年月日时分秒"yyyy-MM-dd HH:mm"
+     * @return
+     */
+    public static String getNowWitchOutSecond(){
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormaterDateTimeWithOutSecond);
+        return now.format(formatter);
+    }
 
     public static String getNow(String format){
         LocalDateTime now = LocalDateTime.now();
@@ -85,6 +96,16 @@ public class TimeUtil {
         return now.format(formatter);
     }
 
+
+    /**
+     * 获取当前日期   mmmmXXyy
+     * @return
+     */
+    public static  String getNowOnlyDateNoline(){
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dataFormateOnlyDateNoLine);
+        return now.format(formatter);
+    }
     /**
      * 获取去年同月日期
      * @return

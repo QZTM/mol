@@ -53,7 +53,7 @@ public class AppAuthOrg {
     /**
      * 采购负责人
      */
-    private AppUser purchaseMainPerson;
+    private String purchaseMainPerson;
 
     /**
      * 审批领导

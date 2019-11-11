@@ -7,11 +7,11 @@ import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PageArray
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseArray;
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj;
-import com.mol.supplier.mapper.fyOracle.dingding.purchase.EnquiryOraclMapper;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.EnquiryPurMapper;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseDetailMapper;
-import com.mol.supplier.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
-import com.mol.supplier.mapper.newMysql.third.FyPurchaseEsMapper;
+import com.mol.supplier.mapper.EnquiryOraclMapper;
+import com.mol.supplier.mapper.dingding.purchase.EnquiryPurMapper;
+import com.mol.supplier.mapper.dingding.purchase.fyPurchaseDetailMapper;
+import com.mol.supplier.mapper.dingding.purchase.fyPurchaseMapper;
+import com.mol.supplier.mapper.third.FyPurchaseEsMapper;
 import com.mol.supplier.util.Cread_PDF;
 import entity.ServiceResult;
 import org.slf4j.Logger;

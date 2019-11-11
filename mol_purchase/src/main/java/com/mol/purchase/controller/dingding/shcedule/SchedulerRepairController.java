@@ -1,8 +1,10 @@
 package com.mol.purchase.controller.dingding.shcedule;
 
 import com.alipay.api.domain.Sale;
+import com.github.pagehelper.PageInfo;
 import com.mol.purchase.config.OrderStatus;
 import com.mol.purchase.entity.FyQuote;
+import com.mol.purchase.entity.QuotePayresult;
 import com.mol.purchase.entity.SupplierSalesman;
 import com.mol.purchase.entity.activiti.ActHiComment;
 import com.mol.purchase.entity.activiti.ActHiProcinst;
@@ -38,8 +40,8 @@ public class SchedulerRepairController {
 
 
     @RequestMapping(value = "/getList",method = RequestMethod.GET)
-    public ServiceResult getList(String orgId, String userId){
-        List<fyPurchase> purList=schedulerRepairService.getList(orgId,userId);
+    public ServiceResult getList(String orgId, String userId,int pageNum,int pageSize){
+        List<fyPurchase> purList=schedulerRepairService.getList(orgId,userId,pageNum,pageSize);
         return ServiceResult.success(purList);
     }
 
@@ -75,14 +77,7 @@ public class SchedulerRepairController {
 
 
             }
-
-
-            //报价公司
-            //1if (detailList!=null && detailList.size()>0){
-                //List<Supplier> supplierList
-            //}
         }
-        supplierList=schedulerRepairService.getPayExpertResult(supplierList,id);
         map.put("quote",detailList);
         map.put("supplier",supplierList);
 
@@ -132,5 +127,20 @@ public class SchedulerRepairController {
         String id =schedulerRepairService.getSalemanId(purId,supplierId);
         SupplierSalesman man=schedulerRepairService.getSaleManById(id);
         return ServiceResult.success(man);
+    }
+
+    /**
+     * 供应商支付专家推荐费用情况
+     * @param supplierId
+     * @param purId
+     * @return
+     */
+    @GetMapping("/getPayresult")
+    public ServiceResult getPayR(String supplierId,String purId){
+        QuotePayresult qp=schedulerRepairService.getPayExpertResult(supplierId,purId);
+        if (qp ==null){
+            return ServiceResult.failureMsg("查询失败！");
+        }
+        return ServiceResult.success(qp);
     }
 }

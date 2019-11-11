@@ -20,6 +20,7 @@ import com.mol.sms.XiaoNiuMsm;
 import com.mol.sms.XiaoNiuMsmTemplate;
 import entity.ServiceResult;
 import entity.dd.DDUser;
+import lombok.extern.java.Log;
 import org.activiti.bpmn.model.BpmnModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/ac")
+@Log
 public class ActController {
     private static final Logger logger=LoggerFactory.getLogger(ActController.class);
 
@@ -62,7 +64,7 @@ public class ActController {
     /**
      * 部署流程实例
      * @param name  自定义实例名称
-     * @param processId  流程id
+     * @param processId  流程id（key）
      * @param processName   流程name
      * @param orgId   公司id
      * @return
@@ -84,6 +86,7 @@ public class ActController {
                 list.add(s);
             }
         }
+        log.info("流程部署参与人员list："+list);
         BpmnModel model = actService.getModel(processId, processName, list);
 
 
@@ -95,29 +98,33 @@ public class ActController {
     /**
      * 启动流程实例
      * @param processKey 流程实例Key
-     * @param businessKey 业务对象id
+     * @param businessKey 业务对象id(订单id)
      * @return
      */
     @PostMapping("/start")
     public ServiceResult start(@RequestParam String processKey,@RequestParam String businessKey,HttpServletRequest request){
-        //System.out.println("流程："+processKey);
-        //System.out.println("订单："+businessKey);
+
         actService.startProcessInstance(processKey,businessKey);
+        //设置订单的进入审批环节的时间
+        actService.updataPurchaseApprovalStartTime(businessKey);
+
         //发送通知
         DDUser user = JWTUtil.getUserByRequest(request);
         sendNotificationImp.sendOaFromE(user.getUserid(),user.getName(),tokenService.getToken(), Constant.AGENTID);
+
         //发送短信通知
         sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, XiaoNiuMsmTemplate.提醒领导审批订单模板(),user.getMobile());
-        System.out.println("------工作流已启动-------");
+        log.info("----审批流程已经启动----");
+
         return ServiceResult.success("流程实例已启动");
     }
 
     //查询当前个人任务
     @RequestMapping(value = "/task",method = RequestMethod.GET)
     @ResponseBody
-    public ServiceResult taskQuery(@RequestParam String assignee){
+    public ServiceResult taskQuery(@RequestParam String assignee,int pageNum,int pageSize){
         //获取当前用户，
-        return ServiceResult.success(actService.getTask(assignee));
+        return ServiceResult.success(actService.getTask(assignee,pageNum,pageSize));
     }
 
     //完成个人任务
@@ -150,6 +157,7 @@ public class ActController {
                 sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, XiaoNiuMsmTemplate.提醒领导审批订单模板(),appUserById.getMobile());
             }else {
                 logger.info("审批通过");
+
                 //审批任务完成
                 //查询订单相关信息
                 //1.订单ID
@@ -158,18 +166,25 @@ public class ActController {
                 fyPurchase pur=actService.findPurchaseById(hiProcinst.getBusinessKey());
                 //3.订单详情
                 List<PurchaseDetail> detailList =actService.findPurchaseDetailListByPurId(pur.getId());
-                //修改选中的专家推荐表中的adopt
+                //修改选中的专家推荐表中的采纳状态
                 actService.updataExpertRecommendChecked(pur.getId(),detailList);
-                //修改未选中的专家推荐表中的adopt
+                //修改未选中的专家推荐表中的采纳状态
                 actService.updataExpertRecommendNotChecked(pur.getId());
+
+
+
+                //保存订单，选中的供应商，是否支付
+                actService.saveQuotePayresult(pur,detailList);
+                //设置订单结束审批的时间
+                actService.updataPurchaseApprovalEndTime(pur.getId());
+
+
                 //1.给采购部门主管发短信，通知
 
                 //2.给选中的专家发短信，通知
                 ListenableFuture<Integer> expertSendMessage = actService.getExpertSendMessage(detailList, sendMsmHandler, XiaoNiuMsmTemplate.给专家推送评审成功结果模板());
-
                 //3.给发起采购的采购人员发短信，通知
                 ListenableFuture<Integer> auSendMessage = actService.getAuSendMessage(pur.getStaffId(), sendMsmHandler, XiaoNiuMsmTemplate.推送中标结果模板());
-
                 //4.给供应商下的报价人发短信，通知
                 ListenableFuture<Integer> saleManSendMessage = actService.getSaleManSendMessage(detailList, sendMsmHandler, XiaoNiuMsmTemplate.推送中标结果模板());
             }

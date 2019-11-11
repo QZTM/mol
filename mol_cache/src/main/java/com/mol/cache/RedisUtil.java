@@ -21,19 +21,27 @@ public class RedisUtil {
         // jedispool为null则初始化，
         if (pool == null) {
             String ip = "140.249.22.202";
+            //String ip = "192.168.1.187";
             String password = "ald377";
             int port = 6379;
             JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
             // 如果赋值为-1，则表示不限制；如果pool已经分配了maxTotal个jedis实例，则此时pool的状态为exhausted(耗尽）.
             jedisPoolConfig.setMaxTotal(500);
             // 控制一个pool最多有多少个状态为idle(空闲的)的jedis实例
-            jedisPoolConfig.setMaxIdle(10);
+            jedisPoolConfig.setMaxIdle(50);
+            jedisPoolConfig.setMinIdle(8);
             // 表示当borrow(引入)一个jedis实例时，最大的等待时间，如果超过等待时间，则直接抛出JedisConnectionException；
             jedisPoolConfig.setMaxWaitMillis(1000*200);
             // 在borrow一个jedis实例时，是否提前进行validate操作；如果为true，则得到的jedis实例均是可用的；
             jedisPoolConfig.setTestOnBorrow(true);
             jedisPoolConfig.setTestWhileIdle(true);
             jedisPoolConfig.setTestOnReturn(true);
+            //表示idle object evitor两次扫描之间要sleep的毫秒数
+            //表示idle object evitor每次扫描的最多的对象数
+            jedisPoolConfig.setNumTestsPerEvictionRun(200);
+            jedisPoolConfig.setTimeBetweenEvictionRunsMillis(30000);
+            //表示一个对象至少停留在idle状态的最短时间，然后才能被idle object evitor扫描并驱逐；这一项只有在timeBetweenEvictionRunsMillis大于0时才有意义
+            jedisPoolConfig.setMinEvictableIdleTimeMillis(30000);
             //pool = new JedisPool(jedisPoolConfig, ip, port, 10000, password);
             // redis 未设置密码
             pool = new JedisPool(jedisPoolConfig, ip, port, 10000 ,password);

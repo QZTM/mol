@@ -1,6 +1,7 @@
 package com.mol.supplier.controller.third;
 
 import com.alibaba.fastjson.JSON;
+import com.mol.supplier.config.OrderStatus;
 import com.mol.supplier.entity.MicroApp.DDUser;
 import com.mol.supplier.entity.MicroApp.Salesman;
 import com.mol.supplier.entity.MicroApp.Supplier;
@@ -11,6 +12,7 @@ import com.mol.supplier.entity.thirdPlatform.*;
 import com.mol.supplier.service.dingding.purchase.EsService;
 import com.mol.supplier.service.microApp.MicroUserService;
 import com.mol.supplier.service.third.ThirdPlatformService;
+import com.taobao.api.internal.toplink.netcat.NetCatOuputWriter;
 import entity.PageBean;
 import entity.ServiceResult;
 import lombok.extern.java.Log;
@@ -22,10 +24,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import util.TimeUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -96,6 +101,7 @@ public class ThirdPlatformController {
         map.addAttribute("orderList", orderList);
         map.addAttribute("pageName", pageName);
         map.addAttribute("index", true);
+        map.addAttribute("pageindex","index");
         return "index";
     }
 
@@ -107,6 +113,7 @@ public class ThirdPlatformController {
     public List<fyPurchase> getOrderList(String buyId, String status) {
         //List<fyPurchase> orderList = platformService.findList(buyId, 1, 5);
         List<fyPurchase> orderList = platformService.findListByStatusAndId(buyId, 1, 8, status);
+        orderList=platformService.PurchaseToChinese(orderList);
         return orderList;
     }
 
@@ -138,6 +145,12 @@ public class ThirdPlatformController {
                 buyId = 6 + "";
                 htmlName = "index_jgwx";
                 break;
+            default:
+                htmlName="error_enter";
+                break;
+        }
+        if (htmlName=="error_enter"){
+            return htmlName;
         }
         if (keyword == null || keyword == "") {
             keyword = "";
@@ -157,14 +170,15 @@ public class ThirdPlatformController {
             list = pb.getList();
             count = pb.getTotalCount();
         } else {
-//            //获取采购内容的list
+            //获取采购内容的list
             list = platformService.findLIstByStatusAndGoodsTypeAndBuyChannelId(buyId, status, goodsType, pageNumber, pageSize);
             count = platformService.findCount(buyId, status, goodsType);
         }
+        //单一页面  将公司id切换为中文显示
+        if (buyId==5+""){
+            list=platformService.getPkSupplierToCHinese(list);
+        }
         map.addAttribute("list", list);
-
-        //设置pageBean的值
-//        int count=platformService.findCount(buyId);
         map.addAttribute("count", count);
         pb.setTotalCount(count);
         pb.setPageSize(pageSize);
@@ -175,10 +189,6 @@ public class ThirdPlatformController {
         List<BdMarbasclass> marbasFirstList = platformService.findMarbasClassFirstList();
         map.addAttribute("marList", marbasFirstList);
 
-        //设置pb页面的页码
-        //pb.setList(platformService.getPageNumList(pb));
-        //map.addAttribute("pb",pb);
-        //System.out.println(pb);
         map.addAttribute("searchVal", "");
         map.addAttribute("keyword", keyword);
         map.addAttribute("status", status);
@@ -207,6 +217,13 @@ public class ThirdPlatformController {
         return list;
     }
 
+    /**
+     * 数量
+     * @param buyChannelId
+     * @param status
+     * @param goodsType
+     * @return
+     */
     @RequestMapping("/getMarbasClassNameList/getCount")
     @ResponseBody
     public Integer getCount(String buyChannelId, String status, String goodsType) {
@@ -227,7 +244,7 @@ public class ThirdPlatformController {
 
         System.out.println(id);
         fyPurchase purchase = platformService.selectOneById(id);
-
+        purchase=platformService.ToChineseString(purchase);
         //查询报价商家的数量
         String quoteCounts = purchase.getQuoteCounts();
         modelMap.addAttribute("quoteCount", quoteCounts);
@@ -321,11 +338,19 @@ public class ThirdPlatformController {
         fyPurchase purchase = platformService.selectOneById(id);
         if (purchase.getBuyChannelId() == 3) {
             //判断供应商是不是战略供应商，不是则跳转报错页面；
+            Supplier su=platformService.getSupplierById(supplierId);
+            if (su.getIfAttrStrategy()!=1){
+                return "error_quote";
+            }
         }
         if (purchase.getBuyChannelId() == 5) {
             //判断供应商是不是单一供应商，不是则跳转；
+            String pkSupplier = purchase.getPkSupplier();
+            if (pkSupplier==null || !pkSupplier.equals(supplierId)){
+                return "error_quote";
+            }
         }
-
+        purchase=platformService.ToChineseString(purchase);
         //定义最后要传递到页面的list
         List<PurchaseArray> purList = new ArrayList<>();
         //解析json字段
@@ -363,18 +388,59 @@ public class ThirdPlatformController {
         DDUser ddUser = (DDUser)session.getAttribute("ddUser");
         String ddUserId = ddUser.getUserid();
 
+        //判断订单报价状态
+        //1.status
+        //2.dealTime
+        String purId = quotes.getQuotes().get(0).getFyPurchaseId();
+        fyPurchase pur=platformService.selectOneById(purId);
+        String nowTime = TimeUtil.getNowWitchOutSecond();
+        String deadLineTime = pur.getDeadLine();
+
+        long l=0L;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            Date nowT = sdf.parse(nowTime);
+            long nowTimel = nowT.getTime();
+            //long nowTimel = sdf.parse(nowTime).getTime();
+            log.info(nowTime+"现在时间："+nowTimel);
+            //long dealTimeL = sdf.parse(deadLineTime).getTime();
+            Date deT = sdf.parse(deadLineTime);
+            long dealTimeL = deT.getTime();
+            log.info(deadLineTime+"截止时间："+dealTimeL);
+            l =dealTimeL- nowTimel;
+            log.info("时间结果："+l);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        int st=Integer.parseInt(pur.getStatus());
+        if ( l<0){
+            log.info("阻止报价操作：超过订单报价截止日期，");
+            log.info("时间："+l);
+            return ServiceResult.failureMsg("本次订单报价已经截止了");
+        }
+        if (st != OrderStatus.waitingQuote){
+            log.info("阻止报价操作：不符合订单报价状态");
+            return ServiceResult.failureMsg("本次订单报价已经截止了");
+        }
+
+
+
+
 
         if (quotes == null) {
             return null;
         }
         //通过ddid查询对应人员id
         Salesman salesman=platformService.findSalesManId(ddUserId);
-
-        platformService.saveQuote(quotes, supplierId, salesman);
+        try{
+            platformService.saveQuote(quotes, supplierId, salesman);
+        }catch (Exception e){
+            return ServiceResult.failureMsg("发生异常,请重新报价");
+        }
         //添加报价记录
         platformService.addQuoteCountsByPkMaterialId(quotes.getQuotes().get(0).getFyPurchaseId());
         //return "redirect:/index/findAll";
-        return ServiceResult.success("报价成功");
+        return ServiceResult.successMsg("报价成功");
 
     }
 

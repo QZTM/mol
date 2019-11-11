@@ -3,6 +3,7 @@ package com.mol.purchase.service.dingding.workBean;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
 import com.mol.purchase.config.OrderStatus;
 import com.mol.purchase.entity.ExpertRecommend;
 import com.mol.purchase.entity.ExpertUser;
@@ -24,6 +25,7 @@ import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseDetailMapper
 import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
 import com.mol.purchase.mapper.newMysql.dingding.user.AppUserMapper;
 import com.mol.purchase.mapper.newMysql.dingding.workBench.PoOrderMapper;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +47,7 @@ import java.util.Map;
  * @author:yangjiangyan
  */
 @Service
+@Log
 public class TobeNegotiatedService {
 
     @Autowired
@@ -80,7 +83,9 @@ public class TobeNegotiatedService {
         return fyPurchaseMapper.findListByIdlistAndStatus(status,null,null,quoteIdList);
     }
 
-    public List<fyPurchase> findListByOrgId(String orgId, String status,String secondStatus) {
+    public List<fyPurchase> findListByOrgId(String orgId, String status,String secondStatus,int pageNum,int pageSize) {
+
+        PageHelper.startPage(pageNum,pageSize);
          return fyPurchaseMapper.findListByOrgIdAndStatus(orgId,status,secondStatus);
     }
 
@@ -140,10 +145,10 @@ public class TobeNegotiatedService {
      * @param userId
      * @return
      */
-    public List<fyPurchase> findListIfOk(String orgId, String status,String secondStatus, String userId) {
+    public List<fyPurchase> findListIfOk(String orgId, String status,String secondStatus, String userId,int pageNum,int pageSize) {
 
         List<fyPurchase> overList=new ArrayList<>();
-
+        PageHelper.startPage(pageNum,pageSize);
         List<fyPurchase> list = fyPurchaseMapper.findListByOrgIdAndStatus(orgId, status,secondStatus);
         for (fyPurchase fyPurchase : list) {
             String negotiatePerson = fyPurchase.getNegotiatePerson();
@@ -208,14 +213,18 @@ public class TobeNegotiatedService {
         //合并
         for(int k=0;k<mts.size();k++){
             String idString="";
-            for (int v=0;v<ste.size();v++){
-                if (mts.get(k).getSupplierId().equals(ste.get(v).getSuId())){
-                    //专家id 字符串
-                    //List<ExpertUser> expertList = ste.get(v).getExpertList();
-                    String eId = ste.get(v).getExId();
-                    idString+=eId+",";
+            if (ste!=null){
+                log.info("订单有专家参与推荐。。。");
+                for (int v=0;v<ste.size();v++){
+                    if (mts.get(k).getSupplierId().equals(ste.get(v).getSuId())){
+                        //专家id 字符串
+                        //List<ExpertUser> expertList = ste.get(v).getExpertList();
+                        String eId = ste.get(v).getExId();
+                        idString+=eId+",";
+                    }
                 }
             }
+
             String materId = mts.get(k).getMaterId();
             String supplierId = mts.get(k).getSupplierId();
             //保存物料对应关系

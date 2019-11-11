@@ -3,15 +3,14 @@ package com.mol.supplier.controller.microApp;
 import com.alibaba.fastjson.JSONObject;
 import com.dingtalk.api.response.OapiDepartmentGetResponse;
 import com.dingtalk.api.response.OapiUserGetResponse;
-import com.dingtalk.oapi.lib.aes.DingTalkJsApiSingnature;
-import com.mol.supplier.config.MicroAttr;
+import com.mol.cache.CacheHandle;
 import com.mol.supplier.entity.MicroApp.DDDept;
 import com.mol.supplier.entity.MicroApp.DDUser;
 import com.mol.supplier.entity.MicroApp.Salesman;
 import com.mol.supplier.entity.MicroApp.Supplier;
-import com.mol.supplier.exception.microApp.OApiException;
 import com.mol.supplier.service.microApp.*;
 import entity.ServiceResult;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +20,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import tk.mybatis.mapper.entity.Example;
-import util.RandomStr;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.net.URL;
@@ -34,6 +31,10 @@ import java.util.Map;
 @Controller
 @RequestMapping("/microApp/login")
 public class MicroDDLoginController {
+
+    private Integer getDDUserIdCounts = 5;
+
+    private Integer tryCounts = 0;
 
     private Logger logger = LoggerFactory.getLogger(MicroDDLoginController.class);
 
@@ -52,6 +53,12 @@ public class MicroDDLoginController {
     @Autowired
     private MicroTokenService microTokenService;
 
+    @Autowired
+    private CacheHandle cacheHandle;
+
+    @Autowired
+    private MicroDdJsApiAuthService microDdJsApiAuthService;
+
 
     /**
      * 显示登陆/注册页面
@@ -63,6 +70,24 @@ public class MicroDDLoginController {
     public String login(String registType, Model model) {
         model.addAttribute("registType", registType);
         return "login";
+    }
+
+    /**
+     * 显示普通供应商注册协议
+     * @return
+     */
+    @RequestMapping("/showProtocolPage")
+    public String showProtocolPage(){
+        return "茉尔易购用户注册协议";
+    }
+
+    /**
+     * 显示隐私协议
+     * @return
+     */
+    @RequestMapping("/showprivacyagreePage")
+    public String showPrivacyAgreePage(){
+        return "茉尔易购隐私声明";
     }
 
 
@@ -91,7 +116,27 @@ public class MicroDDLoginController {
     public ServiceResult getSticket(String code, HttpSession session, HttpServletRequest request) {
         logger.info("进入initUserInfo方法");
         /*获取钉钉用户id*/
-        String userId = microGetDDUserInfoService.getDDUserId(code);
+        String userId = "";
+        try{
+             userId = microGetDDUserInfoService.getDDUserId(code);
+        }catch (Exception e){
+            logger.info(e.getMessage());
+            tryCounts++;
+            if(!(tryCounts>=getDDUserIdCounts)){
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
+                getSticket(code,session,request);
+            }else{
+                logger.info("尝试"+tryCounts+"次依然没获取到用户的钉钉id");
+                tryCounts = 0;
+                return ServiceResult.failure("未获取到用户钉钉id");
+            }
+
+
+        }
         logger.info("getDDUserId()....return : userId:" + userId);
 
         /*获取钉钉用户详情：*/
@@ -162,10 +207,16 @@ public class MicroDDLoginController {
 
             session.setAttribute("user", salesman);
             session.setAttribute("supplier", getdSupplier);
+            Integer getedVersion = getdSupplier.getVersion();
+            Integer cacheVersion = 0;
+            String supplierVersionStr = cacheHandle.getStr(getdSupplier.getPkSupplier()+"version");
+            if(StringUtils.isEmpty(supplierVersionStr) || Integer.valueOf(supplierVersionStr)<getedVersion){
+                cacheHandle.saveStr(getdSupplier.getPkSupplier()+"version",24*60*60,getedVersion+"");
+            }
             Map map = new HashMap();
             map.put("user",salesman);
             map.put("supplier",getdSupplier);
-            Map configValue = getConfig(request);
+            Map configValue = microDdJsApiAuthService.getAuthMap(request);
             map.putAll(configValue);
 
 
@@ -178,74 +229,6 @@ public class MicroDDLoginController {
         }
 
     }
-
-
-
-    /**
-     * 计算当前请求的jsapi的签名数据<br/>
-     * <p>
-     * 如果签名数据是通过ajax异步请求的话，签名计算中的url必须是给用户展示页面的url
-     *
-     * @param request
-     * @return
-     */
-    public Map getConfig(HttpServletRequest request) {
-//        String urlString = request.getRequestURL().toString();
-//        String queryString = request.getQueryString();
-//
-//        String queryStringEncode = null;
-//        String url;
-//        if (queryString != null) {
-//            queryStringEncode = URLDecoder.decode(queryString);
-//            url = urlString + "?" + queryStringEncode;
-//        } else {
-//            url = urlString;
-//        }
-        String url = "http://fyycg88.vaiwan.com/index/findAll";
-
-        /**
-         * 确认url与配置的应用首页地址一致
-         */
-        //System.out.println(url);
-
-        /**
-         * 随机字符串
-         */
-        String nonceStr = RandomStr.getRandom(7, RandomStr.TYPE.LETTER);
-        long timeStamp = System.currentTimeMillis() / 1000;
-        String signedUrl = url;
-        //String accessToken = microTokenService.getToken();;
-        String ticket = microJsapiTicketService.getJsApiTicket();;
-        String signature = null;
-
-        try {
-            signature = sign(ticket, nonceStr, timeStamp, signedUrl);
-        } catch (OApiException e) {
-            e.printStackTrace();
-        }
-
-        Map<String, Object> configValue = new HashMap<>();
-        configValue.put("jsticket", ticket);
-        configValue.put("signature", signature);
-        configValue.put("nonceStr", nonceStr);
-        configValue.put("timeStamp", timeStamp);
-        configValue.put("corpId", MicroAttr.CROPID);
-        configValue.put("agentId", MicroAttr.AGENTID);
-        //String config = JSON.toJSONString(configValue);
-        return configValue;
-    }
-
-
-
-    public String sign(String ticket, String nonceStr, long timeStamp, String url) throws OApiException {
-        try {
-            return DingTalkJsApiSingnature.getJsApiSingnature(url, nonceStr, timeStamp, ticket);
-        } catch (Exception ex) {
-            throw new OApiException();
-        }
-    }
-
-
 
 
     private String check(String url,String corpId,String suiteKey) throws Exception{

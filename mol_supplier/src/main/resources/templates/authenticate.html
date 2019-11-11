@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -49,21 +49,52 @@
 				<a class="auth-sub-text" href="/auth/attr/jichu">点击认证</a>
 			</div>
 		</div>
-		<div class="one-div">
-			<div class="auth-attr-text">
-				战略协议供应商认证
+		<th:block th:if="${session.supplier.supstateSingle != 1 &amp;&amp; session.supplier.supstateSingle != 2}">
+			<div class="one-div">
+				<div class="auth-attr-text">
+					战略协议供应商认证
+				</div>
+				<div class="auth-sub-div">
+					<a class="auth-sub-text" href="/auth/attr/zhanlve">点击认证</a>
+				</div>
 			</div>
-			<div class="auth-sub-div">
-				<a class="auth-sub-text" href="/auth/attr/zhanlve">点击认证</a>
-			</div>
-		</div>
-		<div class="one-div">
-			<div class="auth-attr-text">
-				单一来源供应商认证
-			</div>
-			<div class="auth-sub-div">
-				<a class="auth-sub-text" href="/auth/attr/danyi">点击认证</a>
-			</div>
-		</div>
+		</th:block>
+				<th:block th:if="${session.supplier.supstateStrategy != 1 &amp;&amp; session.supplier.supstateStrategy != 2}">
+					<div class="one-div">
+						<div class="auth-attr-text">
+							单一来源供应商认证
+						</div>
+						<div class="auth-sub-div">
+								<a class="auth-sub-text" href="/auth/attr/danyi">点击认证</a>
+						</div>
+					</div>
+				</th:block>
+<script>
+	$(function(){
+		var scroll_start=0;//定义滑动时的起点
+		function handler(){//禁止默认滑动函数
+			console.log("handler");
+			event.preventDefault();
+		}
+		document.addEventListener("touchstart",function(e){
+			scroll_start = e.changedTouches[0].clientY;//设置起点为触摸时的点
+			console.log("touchstart,,,,scroll_start:"+scroll_start);
+			console.log("#bodycthead').offset().top:"+$('#bodycthead').offset().top);
+			if($('#bodycthead').offset().top==0){//如果触摸时是滑动块在顶部则禁用默认滑动
+				document.addEventListener('touchmove', handler, false);
+			}
+		});
+		document.addEventListener("touchmove",function(e){
+			$("title").html(e.changedTouches[0].clientY-scroll_start);
+			if($('#bodycthead').offset().top==0){//想做的是中断滑动并禁用默认滑动，暂时没找到中断的方法
+				document.addEventListener('touchmove', handler, false);
+			}
+			if((e.changedTouches[0].clientY-scroll_start)<0){//如果是向上滑动则恢复默认滑动
+				document.removeEventListener('touchmove', handler, false);
+			}
+		});
+
+	})
+</script>
 </body>
 </html> 
