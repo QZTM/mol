@@ -4,8 +4,34 @@ import lombok.Data;
 
 import javax.persistence.Id;
 
+/**
+ * 支付订单记录实体类
+ */
 @Data
 public class PuiSupplierDeposit {
+
+        /**
+         * 订单状态常量，1为未支付未过期，2为未支付已过期，4为被用户取消，5为支付正常完成
+         */
+        public static final String ORDER_STATUS_UNPAID_UNEXPIRED = "1";
+        public static final String ORDER_STATUS_UNPAID_EXPIRED = "2";
+        public static final String ORDER_STATUS_CANCELLED = "4";
+        public static final String ORDER_STATUS_SUCCESS = "5";
+
+        /**
+         * 支付目的常量（1，战略供应商服务费，2.单一供应商服务费，3.供应商缴纳专家评审费用，4.供应商缴纳合同费用）
+         */
+        public static final String ORDER_PAY_FOR_STRATEGY_SUPPLIER_SERVICE = "1";
+        public static final String ORDER_PAY_FOR_SINGON_SUPPLIER_SERVICE = "2";
+        public static final String ORDER_PAY_FOR_EXPERT_REVIEW_FEE = "3";
+        public static final String ORDER_PAY_FOR_CONTRACT_FEE = "4";
+
+        /**
+         * 支付方式常量 支付宝1    微信2
+         */
+        public static final String ORDER_PAY_TYPE_ALIPAY = "1";
+        public static final String ORDER_PAY_TYPE_WEIXIN = "2";
+
         /**
          * 订单id
          */

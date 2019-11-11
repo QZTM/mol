@@ -171,7 +171,11 @@ public class Alipay {
 //    }
 
 
-
+    /**
+     * 根据自定义订单号验证是否支付成功
+     * @param orderId
+     * @return
+     */
     public static synchronized boolean ifOrderSuccess(String orderId){
         AlipayTradeQueryRequest alipayRequest = new AlipayTradeQueryRequest();
         alipayRequest.setBizContent("{\"out_trade_no\":\""+ orderId+"\"}");
@@ -190,7 +194,6 @@ public class Alipay {
         }
         return false;
     }
-
 
 
 

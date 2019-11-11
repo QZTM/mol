@@ -8,13 +8,12 @@ import com.mol.supplier.entity.dingding.Pay.PuiSupplierDeposit;
 import com.mol.supplier.mapper.dingding.Pay.PayMapper;
 import com.mol.supplier.service.microApp.MicroAlipayService;
 import com.mol.supplier.service.microApp.MicroUserService;
-import com.netflix.discovery.converters.Auto;
 import entity.ServiceResult;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import tk.mybatis.mapper.entity.Example;
 import util.TimeUtil;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -62,12 +61,40 @@ public class MicroAlipayController {
     }
 
 
-
+    /**
+     * 根据自定义订单id获取支付状态，(走的是阿里的查询订单支付状态接口)
+     * @param orderid           自定义支付订单id
+     * @return
+     */
     @RequestMapping("/getOrderStatus")
     @ResponseBody
     public ServiceResult getOrderStatus(String orderid){
-        boolean ifSuccess = Alipay.ifOrderSuccess(orderid);
+        boolean ifSuccess = false;
+        try {
+            ifSuccess = microAlipayService.getOrderStatus(orderid).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
         if(ifSuccess){
+            return ServiceResult.successMsg("支付成功");
+        }
+        return ServiceResult.failureMsg("支付失败");
+    }
+
+    /**
+     * 根据自定义订单id获取支付状态，（走的是查询本地数据库的订单状态）
+     * @param orderid           自定义支付订单id
+     * @return
+     */
+    @RequestMapping("/getOrderStatus2")
+    @ResponseBody
+    public ServiceResult getOrderStatus2(String orderid){
+        Example example = new Example(PuiSupplierDeposit.class);
+        example.and().andEqualTo("orderId",orderid);
+        PuiSupplierDeposit puiSupplierDeposit = payMapper.selectOneByExample(example);
+        if(puiSupplierDeposit != null && puiSupplierDeposit.getStatus() == PuiSupplierDeposit.ORDER_STATUS_SUCCESS){
             return ServiceResult.successMsg("支付成功");
         }
         return ServiceResult.failureMsg("支付失败");
@@ -95,16 +122,16 @@ public class MicroAlipayController {
             log.info("支付宝支付回调事件——支付成功--orderId:"+orderId);
             PuiSupplierDeposit puiSupplierDeposit = new PuiSupplierDeposit();
             puiSupplierDeposit.setOrderId(orderId);
-            puiSupplierDeposit.setStatus("5");
+            puiSupplierDeposit.setStatus(PuiSupplierDeposit.ORDER_STATUS_SUCCESS);
             puiSupplierDeposit.setTradeNo((String)map.get("trade_no"));
             PuiSupplierDeposit puiSupplierDepositGet = payMapper.selectByPrimaryKey(puiSupplierDeposit);
             if(puiSupplierDepositGet == null){
                 puiSupplierDeposit.setMoney((String)map.get("buyer_pay_amount"));
-                puiSupplierDeposit.setPayType("1");
+                puiSupplierDeposit.setPayType(PuiSupplierDeposit.ORDER_PAY_TYPE_ALIPAY);
                 puiSupplierDeposit.setCreadTime(TimeUtil.getNowDateTime());
                 puiSupplierDeposit.setReturnMoney("0");
                 puiSupplierDeposit.setSupplierId(microUserService.getSupplierFromSession(session).getPkSupplier());
-                puiSupplierDeposit.setPayFor("1");
+                puiSupplierDeposit.setPayFor(PuiSupplierDeposit.ORDER_PAY_FOR_STRATEGY_SUPPLIER_SERVICE);
                 payMapper.insertSelective(puiSupplierDeposit);
             }else{
                 payMapper.updateByPrimaryKeySelective(puiSupplierDeposit);
