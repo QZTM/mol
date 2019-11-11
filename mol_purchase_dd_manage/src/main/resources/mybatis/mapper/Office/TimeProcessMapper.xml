@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.ddmanage.mapper.Office.TimeProcessMapper">
+
+    <select id="ExperreCommend" resultType="com.mol.ddmanage.Ben.Office.TimeProcessExperreCommendben">
+       select (select expert_user.`name` from expert_user where expert_user.id=expert_recommend.expert_id)experName,
+       expert_recommend.*
+       from expert_recommend
+       where expert_recommend.supplier_id=#{supplier_id} and expert_recommend.purchase_id=#{purchase_id}
+    </select>
+
+    <select id="SupperlierQuoteFinally" resultType="com.mol.ddmanage.Ben.PurchasOrderManagement.PurchasOrderinforben">
+ SELECT
+(SELECT fy_quote.quote from fy_quote WHERE fy_purchase_detail.quote_id=fy_quote.id)quote,
+(SELECT bd_material.`name` FROM bd_material WHERE fy_purchase_detail.pk_material=bd_material.pk_material)material_name,
+(SELECT bd_material.materialspec FROM bd_material WHERE fy_purchase_detail.pk_material=bd_material.pk_material)materialspec,
+(SELECT bd_measdoc.`name` FROM bd_measdoc WHERE bd_measdoc.pk_measdoc=(SELECT bd_material.pk_measdoc FROM bd_material WHERE bd_material.pk_material=fy_purchase_detail.pk_material))unit,
+(SELECT bd_supplier.`name` FROM bd_supplier WHERE bd_supplier.pk_supplier=(SELECT fy_quote.pk_supplier_id FROM fy_quote WHERE fy_quote.id=fy_purchase_detail.quote_id))corp_name,
+fy_purchase_detail.*
+FROM fy_purchase_detail
+WHERE fy_purchase_detail.fy_purchase_id=#{PurchasId} and fy_purchase_detail.quote_id is not null
+    </select>
+
+    <select id="PurchasOver" resultType="com.mol.ddmanage.Ben.PurchasOrderManagement.PurchasOrderinforben">
+ SELECT
+(SELECT fy_quote.quote from fy_quote WHERE fy_purchase_detail.quote_id=fy_quote.id)quote,
+(SELECT bd_material.`name` FROM bd_material WHERE fy_purchase_detail.pk_material=bd_material.pk_material)material_name,
+(SELECT bd_material.materialspec FROM bd_material WHERE fy_purchase_detail.pk_material=bd_material.pk_material)materialspec,
+(SELECT bd_measdoc.`name` FROM bd_measdoc WHERE bd_measdoc.pk_measdoc=(SELECT bd_material.pk_measdoc FROM bd_material WHERE bd_material.pk_material=fy_purchase_detail.pk_material))unit,
+(SELECT bd_supplier.`name` FROM bd_supplier WHERE bd_supplier.pk_supplier=(SELECT fy_quote.pk_supplier_id FROM fy_quote WHERE fy_quote.id=fy_purchase_detail.quote_id))corp_name,
+fy_purchase_detail.*
+FROM fy_purchase_detail
+WHERE fy_purchase_detail.fy_purchase_id=(SELECT fy_purchase.id FROM fy_purchase WHERE fy_purchase.id=#{PurchasId} AND fy_purchase.`status`='7')
+    </select>
+
+</mapper>
