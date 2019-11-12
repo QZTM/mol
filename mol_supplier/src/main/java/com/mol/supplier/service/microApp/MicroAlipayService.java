@@ -68,7 +68,7 @@ public class MicroAlipayService {
         puiSupplierDeposit.setReturnMoney("0");
         puiSupplierDeposit.setPayType(payType);
         puiSupplierDeposit.setPayFor(payFor);
-
+        puiSupplierDeposit.setStatus(PuiSupplierDeposit.ORDER_STATUS_UNPAID_UNEXPIRED);
         //验证支付订单：
         Example example = new Example(PuiSupplierDeposit.class);
         example.and().andEqualTo("orderId",puiSupplierDeposit.getOrderId());

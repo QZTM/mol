@@ -22,7 +22,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -39,47 +38,7 @@ import java.util.List;
 @Log
 public class MicroAuthController {
 
-    /**
-     * 营业执照
-     */
-    private static final String WHICHIMAGE_BUSSINESSLICENCEIMG = "bussinessLicence";
-    /**
-     * 身份证正面
-     */
-    private static final String WHICHIMAGE_LEGALBODYIDFRONTIMG = "legalBodyIdFront";
-    /**
-     * 身份证反面
-     */
-    private static final String WHICHIMAGE_LEGALBODYIDBACKIMG = "legalBodyIdBack";
 
-
-    /**
-     * 文件常量
-     */
-    /**
-     * 协议书
-     */
-    private static final String WHICHFILE_PROTOCOL = "protocolFile";
-
-    /**
-     * 专利文件
-     */
-    private static final String WHICHFILE_PATENT = "patentFile";
-
-    /**
-     * 代理商资质证明文件1
-     */
-    private static final String WHICHFILE_AGENTQUALIFICATION1 = "agentQualificationFile1";
-
-    /**
-     * 代理商资质证明文件2
-     */
-    private static final String WHICHFILE_AGENTQUALIFICATION2 = "agentQualificationFile2";
-
-    /**
-     * 代理商资质证明文件3
-     */
-    private static final String WHICHFILE_AGENTQUALIFICATION3 = "agentQualificationFile3";
 
 
     @Autowired
@@ -101,7 +60,6 @@ public class MicroAuthController {
 
     @Autowired
     private PayMapper payMapper;
-
 
     @RequestMapping("/attr")
     public String showAuthChoosePage(HttpSession session) {
@@ -162,7 +120,8 @@ public class MicroAuthController {
         //获取行业类别（物料分类的第一级）
         List<BdMarbasclass> bdMarbasclassList = bdMarbasclassMapper.findMarbasFirstList();
         model.addAttribute("itemTypeList",bdMarbasclassList);
-
+        String paySuccessed = "0";
+        Example example = new Example(PuiSupplierDeposit.class);
         if ("jichu".equals(authType)) {
             model.addAttribute("pagenametitlefront", "基础");
             pageName = "authenticate_jichu2";
@@ -179,9 +138,6 @@ public class MicroAuthController {
                 }
         } else if ("zhanlve".equals(authType)) {
             model.addAttribute("pagenametitlefront", "战略");
-
-
-
                 if(supplier.getSupstateStrategy() == MicroAttr.SUPSTATE_LOADING){
                     pageName = "authenticate_shenhe";
                     return pageName;
@@ -191,8 +147,6 @@ public class MicroAuthController {
                 }else if(supplier.getSupstateStrategy() == MicroAttr.SUPSTATE_SUCCESS){
                     pageName = "authenticate_success";
                     return pageName;
-                }else if(supplier.getSupstateStrategy() == MicroAttr.SUPSTATE_BEFORE_PAYOVER){
-                    //转到支付订单页面
                 }
             /**
              * 如果已经认证过了基础供应商，且未在其他状态，那么显示认证页面2，如果没有认证过基础供应商，那么显示认证页面1
@@ -202,18 +156,43 @@ public class MicroAuthController {
             }else{
                 pageName = "authenticate_zhanlve";
             }
+
+            //查询支付情况：(根据supplierId和payFor查询)
+
+            example.and().andEqualTo("supplierId",supplier.getPkSupplier()).andEqualTo("payFor",PuiSupplierDeposit.ORDER_PAY_FOR_STRATEGY_SUPPLIER_SERVICE);
+            PuiSupplierDeposit puiSupplierDepositGet = payMapper.selectOneByExample(example);
+            if(puiSupplierDepositGet != null && puiSupplierDepositGet.getStatus().equals(PuiSupplierDeposit.ORDER_STATUS_SUCCESS)){
+                paySuccessed = "1";
+            }
         } else if ("danyi".equals(authType)) {
             model.addAttribute("pagenametitlefront", "单一");
-            pageName = "authenticate_danyi";
                 if(supplier.getSupstateSingle() == MicroAttr.SUPSTATE_LOADING){
                     pageName = "authenticate_shenhe";
+                    return pageName;
                 }else if(supplier.getSupstateSingle() == MicroAttr.SUPSTATE_FAIL){
                     pageName = "authenticate_update_danyi";
+                    return pageName;
                 }else if(supplier.getSupstateSingle() == MicroAttr.SUPSTATE_SUCCESS){
                     pageName = "authenticate_success";
+                    return pageName;
                 }
+            /**
+             * 如果已经认证过了基础供应商，且未在其他状态，那么显示认证页面2，如果没有认证过基础供应商，那么显示认证页面1
+             */
+            if(supplier.getSupstateNormal() == MicroAttr.SUPSTATE_SUCCESS || supplier.getSupstateSingle() == MicroAttr.SUPSTATE_BEFORE_CREATE_PAY){
+                pageName = "authenticate_danyi2";
+            }else{
+                pageName = "authenticate_danyi";
+            }
+            //查询支付情况：(根据supplierId和payFor查询)
+            example.and().andEqualTo("supplierId",supplier.getPkSupplier()).andEqualTo("payFor",PuiSupplierDeposit.ORDER_PAY_FOR_SINGON_SUPPLIER_SERVICE);
+            PuiSupplierDeposit puiSupplierDepositGet = payMapper.selectOneByExample(example);
+            if(puiSupplierDepositGet != null && puiSupplierDepositGet.getStatus().equals(PuiSupplierDeposit.ORDER_STATUS_SUCCESS)){
+                paySuccessed = "1";
+            }
         }
-        System.out.println("pageName:"+pageName);
+        model.addAttribute("payed",paySuccessed);
+        System.out.println("finally.....pageName:"+pageName);
         return pageName;
     }
 
@@ -289,21 +268,21 @@ public class MicroAuthController {
         Supplier supplier = new Supplier();
         supplier.setPkSupplier(orgId);
         switch (whichImg) {
-            case WHICHIMAGE_BUSSINESSLICENCEIMG:
+            case Supplier.WHICHIMAGE_BUSSINESSLICENCEIMG:
                 try {
                     supplier.setBusinessLicenceImg(file.getBytes());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 break;
-            case WHICHIMAGE_LEGALBODYIDFRONTIMG:
+            case Supplier.WHICHIMAGE_LEGALBODYIDFRONTIMG:
                 try {
                     supplier.setLegalbodyCardFrontImg(file.getBytes());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 break;
-            case WHICHIMAGE_LEGALBODYIDBACKIMG:
+            case Supplier.WHICHIMAGE_LEGALBODYIDBACKIMG:
                 try {
                     supplier.setLegalbodyCardBackImg(file.getBytes());
                 } catch (IOException e) {
@@ -339,30 +318,44 @@ public class MicroAuthController {
         Supplier supplier = new Supplier();
         supplier.setPkSupplier(orgId);
         switch (whichFile) {
-            case WHICHFILE_PROTOCOL:
+            case Supplier.WHICHFILE_PROTOCOL:
                 try {
                     supplier.setStrategySupplierProtocol(fileToUpload.getBytes());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 break;
-            case WHICHFILE_AGENTQUALIFICATION1:
+            case Supplier.WHICHFILE_PROTOCOL_DANYI:
+                try {
+                    supplier.setSingleSupplierProtocol(fileToUpload.getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case Supplier.WHICHFILE_AGENTQUALIFICATION1:
                 try {
                     supplier.setAdditionalOne(fileToUpload.getBytes());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 break;
-            case WHICHFILE_AGENTQUALIFICATION2:
+            case Supplier.WHICHFILE_AGENTQUALIFICATION2:
                 try {
                     supplier.setAdditionalTwo(fileToUpload.getBytes());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 break;
-            case WHICHFILE_AGENTQUALIFICATION3:
+            case Supplier.WHICHFILE_AGENTQUALIFICATION3:
                 try {
                     supplier.setAdditionalThree(fileToUpload.getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case Supplier.WHICHFILE_AGENTQUALIFICATION4:
+                try {
+                    supplier.setAdditionalFour(fileToUpload.getBytes());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

@@ -47,6 +47,7 @@
         .picker .picker-panel .wheel-wrapper .wheel {
             font-size:14px!important;
         }
+
     </style>
 </head>
 <body>
@@ -57,20 +58,45 @@
 </div>
 <!-- 公司名称结束 -->
 <!-- 营业执照号开始 -->
-<div class="input-group" style="margin:10px 6px 0 10px ">
+<div class="input-group" style="margin:10px 6px 0 10px;position: relative">
     <span class="input-group-addon">营业执照号：</span>
-    <input type="text" class="form-control" placeholder="Business license number" aria-describedby="basic-addon1" id="bussinessLicenceNumInput">
+    <input type="text" class="form-control" placeholder="Business license number" aria-describedby="basic-addon1" id="bussinessLicenceNumInput" th:value="${session.supplier.buslicensenum}" disabled="disabled">
+    <!--<span class="layui-badge" style="position: absolute;right:8px;z-index: 9999;top:24%" id="update_lisn_num_btn">修改</span>-->
+    <!--<span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%" id="to_update_lisn_num_btn">保存</span>-->
 </div>
+<script th:inline="javascript">
+    function update_supplier_active(supplier){
+        return new Promise(function(resolve, reject){
+            $.ajax({
+                url:'/auth/update',
+                data:JSON.stringify(supplier),
+                type:'post',
+                headers: {
+                    'Content-type':'application/json'
+                },
+                dateType:'json',
+                success:function(res){
+                    resolve(res);
+                },
+                fail:function(res){
+                    reject(res);
+                }
+            })
+        })
+    }
+
+</script>
 <!--营业执照号开始 -->
 
 <!-- 上传营业执照图片开始 -->
-<div style="margin: 10px 10px 0 10px;">
+<div style="margin: 10px 10px 0 10px;position:relative">
     <ul class="nav nav-tabs">
-        <li role="presentation" class="active"><a href="#">上传营业执照图像</a></li>
+        <li role="presentation" class="active"><a href="#">营业执照图像</a></li>
     </ul>
-    <div class="control-group uploadimg-out-div" id="div-licenceimg" style="width:100%;text-align: center;">
+
+    <div class="control-group uploadimg-out-div" id="div-licenceimg" style="width:100%;text-align: center;pointer-events: none">
         <div id="preview-bussinessLicence" style="width:100%">
-            <img th:src="@{/img/upimg.png}" class="uploadimg-img input-group" id="bussiness_lisn_img_img">
+            <img class="uploadimg-img input-group" id="bussiness_lisn_img_img">
         </div>
         <input type="file" id="bussinessLicence" class="uploadimg-input" onchange="preview(this)"  accept="image/gif,image/jpeg,image/jpg,image/png"/>
     </div>
@@ -78,76 +104,77 @@
 </div>
 <!-- 上传营业执照图片结束 -->
 <!-- 所在地开始 -->
-<div class="input-group" style="margin:10px 6px 0 10px ">
+<div class="input-group" style="margin:10px 6px 0 10px;position: relative;pointer-events: none">
     <span class="input-group-addon">所在地：</span>
-    <span class="form-control" aria-describedby="basic-addon1" id="sel_city"><span style="color:#999">点击选取省市区县</span></span>
+    <span class="form-control" aria-describedby="basic-addon1" id="sel_city"><span>点击选取省市区县</span></span>
 </div>
 <!-- 所在地结束 -->
 <!-- 注册地开始 -->
-<div class="input-group" style="margin:10px 6px 0 10px;clear: both; ">
+<div class="input-group" style="margin:10px 6px 0 10px;clear: both;position: relative;pointer-events: none">
     <span class="input-group-addon">注册地：</span>
-    <input type="text" class="form-control" placeholder="Place of registration" aria-describedby="basic-addon1" id="registAddressInput">
+    <input type="text" class="form-control" placeholder="Place of registration" aria-describedby="basic-addon1" id="registAddressInput" th:value="${session.supplier.registeredAddress}">
 </div>
 <!-- 注册地结束 -->
 <!-- 所属行业开始 -->
-<div class="input-group" style="margin:10px 6px 0 10px ">
+<div class="input-group" style="margin:10px 6px 0 10px;pointer-events: none">
     <span class="input-group-addon">所属行业：</span>
     <!--<span class="form-control" aria-describedby="basic-addon1" id="sel_trade"><span style="color:#aaa">点击选取所属行业</span></span>-->
-    <span>
-        <select class="selectpicker form-control" id="sel_trade">
+    <span id="industry_span">
+        <select class="selectpicker form-control" id="itemtype_select_id" style="background-color: #1b6d85;color:#111" >
             <div th:each="itemType,itemTypeStat : ${itemTypeList}">
-                <option th:text="${itemType.name}" th:typeid="${itemType.pkMarbasclass}" class="itemType-option"></option>
+                <option th:if="${itemType.pkMarbasclass == session.supplier.industryFirst}" th:text="${itemType.name}" th:typeid="${itemType.pkMarbasclass}" class="itemType-option" selected></option>
+                <option th:if="${itemType.pkMarbasclass != session.supplier.industryFirst}" th:text="${itemType.name}" th:typeid="${itemType.pkMarbasclass}" class="itemType-option"></option>
             </div>
         </select>
     </span>
 </div>
 <!-- 所属行业结束 -->
 <!-- 经营范围开始 -->
-<div style="clear: both;margin:10px 6px 0 10px;" id="bussiness-scope-out-div">
+<div style="clear: both;margin:10px 6px 0 10px;position:relative;pointer-events: none;" id="bussiness-scope-out-div">
     <ul class="nav nav-tabs">
         <li role="presentation" class="active"><a href="#bussiness-scope-out-div">经营范围</a></li>
     </ul>
-    <textarea style="width: 100%; " id="bussinessScopeTextarea"></textarea>
+    <textarea style="width: 100%; " id="bussinessScopeTextarea" th:text="${session.supplier.businessScope}"></textarea>
 </div>
 <!-- 经营范围结束 -->
 <!-- 上传法人身份证正反面开始 -->
 <!-- 上传法人身份证正面 -->
-<div style="margin: 6px 10px 0 10px;">
+<div style="margin: 6px 10px 0 10px;position:relative" >
     <ul class="nav nav-tabs">
-        <li role="presentation" class="active"><a href="#">上传法人身份证图像</a></li>
+        <li role="presentation" class="active"><a href="#">法人身份证图像</a></li>
     </ul>
     <div class="control-group uploadimg-out-div" id="div-legal-person-front" style="width:100%;text-align: center">
         <div id="preview-legalBodyIdFront" style="width:100%">
             <img th:src="@{/img/upimg.png}" class="uploadimg-img input-group" id="legalbody_front_img_img">
         </div>
-        <input type="file" id="legalBodyIdFront" class="uploadimg-input" onchange="preview(this)"  accept="image/gif,image/jpeg,image/jpg,image/png"/>
-        <p style="position: absolute;margin: 0 auto;width:100%;height:30px;text-align: center;padding-top:6px;" class="uploadimg-p">身份证正面</p>
+        <input type="file" id="legalBodyIdFront" class="uploadimg-input" onchange="preview(this)"  accept="image/gif,image/jpeg,image/jpg,image/png" disabled="disabled"/>
+        <p style="margin: 0 auto;width:100%;height:30px;text-align: center;padding-top:6px;" class="uploadimg-p">身份证正面</p>
     </div>
-
     <!--上传法人身份证反面-->
     <div class="control-group uploadimg-out-div" id="div-legal-person-back" style="margin-top:40px;width:100%">
         <div id="preview-legalBodyIdBack"  style="width:100%">
-            <img th:src="@{/img/upimg.png}" class="uploadimg-img input-group">
+            <img th:src="@{/img/upimg.png}" class="uploadimg-img input-group" id="legalbody_back_img_img">
         </div>
-        <input type="file" id="legalBodyIdBack" class="uploadimg-input" onchange="preview(this)"  accept="image/gif,image/jpeg,image/jpg,image/png"/>
-        <span style="position: absolute;margin: 0 auto;width:100%;height:30px;text-align: center;padding-top:6px;" class="uploadimg-p">身份证反面</span>
+        <input type="file" id="legalBodyIdBack" class="uploadimg-input" onchange="preview(this)"  accept="image/gif,image/jpeg,image/jpg,image/png" disabled="disabled"/>
+        <p style="margin: 0 auto;width:100%;height:30px;text-align: center;padding-top:6px;" class="uploadimg-p">身份证反面</p>
     </div>
 </div>
+<!--修改法人身份证图片-->
 <!-- 上传法人身份证正反面结束 -->
 <!-- 法人姓名开始 -->
 <div class="input-group" style="margin:40px 6px 0 10px ;clear: both;">
     <span class="input-group-addon">法人姓名：</span>
-    <input type="text" class="form-control" placeholder="Name of legal person" aria-describedby="basic-addon1" id="legalBodyNameInput">
+    <input type="text" class="form-control" placeholder="Name of legal person" aria-describedby="basic-addon1" id="legalBodyNameInput" th:value="${session.supplier.legalbodyName}" disabled="disabled">
 </div>
 <!-- 法人姓名结束 -->
 <!-- 身份证号开始 -->
-<div class="input-group" style="margin:10px 6px 0 10px ">
+<div class="input-group" style="margin:10px 6px 0 10px">
     <span class="input-group-addon">身份证号：</span>
-    <input type="text" class="form-control" placeholder="ID number" aria-describedby="basic-addon1"  id="legalBodyIdCardNumInput">
+    <input type="text" class="form-control" placeholder="ID number" aria-describedby="basic-addon1"  id="legalBodyIdCardNumInput"  th:value="${session.supplier.legalbodyIdcardNumber}" disabled="disabled">
 </div>
 <!-- 身份证号结束 -->
 <!--上传单一供应商协议开始-->
-<div style="margin:10px 6px 0 10px;position: relative;">
+<div style="margin:10px 6px 0 10px;position: relative">
     <a class="layui-badge upbtn" style="position: absolute;right:5px;z-index: 9999;top:10px" id="down_protocol_doc_btn" href="/pdf/单一供应商协议.doc">下载样本</a>
     <ul class="nav nav-tabs">
         <li role="presentation" class="active"><a href="/auth/downZhanlve">上传单一供应商协议</a></li>
@@ -243,6 +270,9 @@
     </div>
 </div>
 <div style="margin:10px 6px 0 10px">
+    <!--<ul class="nav nav-tabs">-->
+    <!--<li role="presentation" class="active"><a href="#">上传单一供应商协议</a></li>-->
+    <!--</ul>-->
     <div style="width:100%;text-align: center">
         <div style="width:100%">
             <img th:src="@{/img/upimg.png}" width="70px" height="70px">
@@ -253,11 +283,12 @@
         </label>
     </div>
 </div>
-<!-- 其他补充材料结束 -->
+
+
 <!-- 手机号开始 -->
 <div class="input-group" style="margin:10px 6px 0 10px ">
     <span class="input-group-addon">手机号：</span>
-    <input type="text" class="form-control" placeholder="Phone number" aria-describedby="basic-addon1" id="phoneNumInput-jc" th:value="${session.user.phone}">
+    <input type="text" class="form-control" placeholder="Phone number" aria-describedby="basic-addon1" id="phoneNumInput-jc" th:value="${session.supplier.authPhone}" disabled="disabled">
 </div>
 <!-- 手机号结束 -->
 <!-- 验证码开始 -->
@@ -269,6 +300,17 @@
         <input class="form-control" type="button" name="" value="获取验证码" onclick="getPhoneCode();" id="getCodeBtn"/>
     </div>
 </div>
+<!-- 验证码结束 -->
+<!-- 手机号结束 -->
+<!-- 验证码开始 -->
+<!--<div class="input-group" style="margin:10px 6px 0 10px;">-->
+    <!--<div class="input-group" style="float: left;">-->
+        <!--<input type="text" class="form-control" placeholder="请输入验证码" aria-describedby="basic-addon2" id="phoneCheckCodeInput">-->
+    <!--</div>-->
+    <!--<div class="input-group" style="float: left;">-->
+        <!--<input class="form-control" type="button" name="" value="获取验证码" onclick="getPhoneCode();" id="getCodeBtn"/>-->
+    <!--</div>-->
+<!--</div>-->
 <!-- 验证码结束 -->
 <script>
 
@@ -350,7 +392,94 @@
 <button type="button" class="btn btn-danger" style="margin-top: 20px;width: 100%;" id="subBtn">提交</button>
 <!-- 提交结束 -->
 </body>
-<script  th:inline="javascript">
+<script th:inline="javascript">
+
+
+
+    $(function() {
+
+        var a = changeInputFileSize;
+        a();
+
+
+
+
+        $("#legalBodyIdCardNumInput").on('blur',function(){
+            var legalBodyIdCardNum = $(this).val();
+            if(!checkIdNum(legalBodyIdCardNum)){
+                alertMsg("身份证号码输入有误");
+                $("#legalBodyIdCardNumInput").focus();
+            }
+        })
+
+        //转换图片二进制位base64
+        //营业执照图片：
+        var bussiness_img_blob = [[${session.supplier.businessLicenceImg}]];
+        if(bussiness_img_blob){
+            // blobToBase64(bussiness_img_blob).then(res => {
+            //     // 转化后的base64
+            //     console.log('base64', res)
+            // })
+            $("#bussiness_lisn_img_img").attr('src','data:image/png;base64,'+bussiness_img_blob);
+            $("#bussiness_lisn_img_img").css("width",'92%');
+            $("#bussiness_lisn_img_img").css("left",'4%');
+            $("#bussiness_lisn_img_img").css("margin-top",'20px');
+            $("#bussiness_lisn_img_img").css("margin-bottom",'20px');
+            var pervDivId = $("#bussiness_lisn_img_img").parent('div').attr('id');
+            console.log("pervDivId:"+pervDivId);
+            $("#"+pervDivId).css('background-color','#2c94ff');
+            $("#"+pervDivId).css('padding-top','1px');
+            $("#"+pervDivId).css('padding-bottom','1px');
+            $("#"+pervDivId).css('border-radius','5px');
+            setTimeout("changeInputFileSize($('#"+pervDivId+"'))",500);
+
+        }
+
+        //身份证正面：
+        var legalbody_front_img_blob = [[${session.supplier.legalbodyCardFrontImg}]];
+        if(legalbody_front_img_blob){
+            // blobToBase64(bussiness_img_blob).then(res => {
+            //     // 转化后的base64
+            //     console.log('base64', res)
+            // })
+            $("#legalbody_front_img_img").attr('src','data:image/png;base64,'+legalbody_front_img_blob);
+            $("#legalbody_front_img_img").css("width",'92%');
+            $("#legalbody_front_img_img").css("left",'4%');
+            var pervDivId = $("#legalbody_front_img_img").parent('div').attr('id');
+            console.log("pervDivId:"+pervDivId);
+            $("#"+pervDivId).css('background-color','#2c94ff');
+            $("#"+pervDivId).css('padding-top','15px');
+            $("#"+pervDivId).css('padding-bottom','15px');
+            $("#"+pervDivId).css('border-radius','5px');
+            setTimeout("changeInputFileSize($('#"+pervDivId+"'))",500);
+        }
+
+        //身份证反面：
+        var legalbody_back_img_blob = [[${session.supplier.legalbodyCardBackImg}]];
+        if(legalbody_back_img_blob){
+            // blobToBase64(bussiness_img_blob).then(res => {
+            //     // 转化后的base64
+            //     console.log('base64', res)
+            // })
+            $("#legalbody_back_img_img").attr('src','data:image/png;base64,'+legalbody_back_img_blob);
+            $("#legalbody_back_img_img").css("width",'92%');
+            $("#legalbody_back_img_img").css("left",'4%');
+            var pervDivId = $("#legalbody_back_img_img").parent('div').attr('id');
+            console.log("pervDivId:"+pervDivId);
+            $("#"+pervDivId).css('background-color','#2c94ff');
+            $("#"+pervDivId).css('padding-top','15px');
+            $("#"+pervDivId).css('padding-bottom','15px');
+            $("#"+pervDivId).css('border-radius','5px');
+            setTimeout("changeInputFileSize($('#"+pervDivId+"'))",500);
+        }
+
+
+
+
+    })
+
+
+
 
 
     $("#subBtn").on("click",function(){
@@ -358,168 +487,139 @@
         $("#subBtn").attr('disabled','disabled');
 
         var supplier = {};
-        var companyName = $("#companyNameInput").val();
-        if(companyName != '' && companyName != 'Company name'){
-            supplier.name = companyName;
-        }
-        var businessLicenceNum = $("#bussinessLicenceNumInput").val();
-        if(businessLicenceNum != '' && businessLicenceNum != 'Business license number'){
-            supplier.buslicensenum = businessLicenceNum;
-        }else{
-            setTimeout(function(){
-                $("#bussinessLicenceNumInput").focus();
-            },1000);
-            alertMsg("请填写营业执照号码！");
-            $("#subBtn").removeAttr('disabled');
-            return ;
-        }
-
-        //验证是否上传了营业执照
-        var ifUpedbl = $("#bussinessLicence").attr("uped");
-        console.log(ifUpedbl);
-        if(!ifUpedbl){
-            setTimeout(function(){
-                $("#bussinessLicence").focus();
-                $("#bussinessLicence").click();
-            },1000);
-            layer.msg("请上传营业执照图片！");
-            $("#subBtn").removeAttr('disabled');
-            return ;
-        }
-        /*验证*/
-        /*所在地*/
-        var placeOnName =  $("#sel_city").text();
-
-        if(placeOnName == undefined || placeOnName == "" || placeOnName == '点击选取省市区县'){
-            setTimeout(function(){
-                $("#sel_city").focus();
-                $("#sel_city").click();
-            },1000);
-            alertMsg("请选择所在地！");
-            $("#subBtn").removeAttr('disabled');
-
-            return ;
-        }
-        supplier.locationProvinceJsIndex = selectedIndex[0];
-        supplier.locationCityJsIndex = selectedIndex[1];
-        supplier.locationAreaJsIndex = selectedIndex[2];
-
-        /*注册地*/
-        var registAddress = $("#registAddressInput").val();
-        console.log("注册地");
-        console.log(registAddress);
-        if(registAddress == undefined || registAddress == ''){
-            setTimeout(function(){
-                $("#registAddressInput").focus();
-            },1000);
-            alertMsg("请填写注册地址！");
-            $("#subBtn").removeAttr('disabled');
-            return ;
-        }
-        supplier.registeredAddress = registAddress;
-
-        /*所属行业*/
-
-        var tradeOn = $(".selectpicker").selectpicker('val');
-        var typeId = $(".selectpicker").find("option:selected").attr("typeid");
-        console.log("所属行业：");
-        console.log(tradeOn);
-        console.log("typeid："+typeId)
-        if(!typeId){
-            setTimeout(function(){
-                $("#sel_trade").click();
-            },1000);
-            alertMsg("请选择所属行业！");
-            $("#subBtn").removeAttr('disabled');
-            return ;
-        }
-        supplier.industryFirst = typeId;
-
-        // var tradeOn = $("#sel_trade").text();
-        // if(tradeOn == undefined || tradeOn == '' || tradeOn == '点击选取所属行业'){
-        //     alertMsg("请选择所属行业！");
+        // var companyName = $("#companyNameInput").val();
+        // if(companyName != '' && companyName != 'Company name'){
+        //     supplier.name = companyName;
+        // }
+        // var businessLicenceNum = $("#bussinessLicenceNumInput").val();
+        // if(businessLicenceNum != '' && businessLicenceNum != 'Business license number'){
+        //     supplier.buslicensenum = businessLicenceNum;
+        // }else{
+        //     setTimeout(function(){
+        //         $("#bussinessLicenceNumInput").focus();
+        //     },1000);
+        //     alertMsg("请填写营业执照号码！");
         //     $("#subBtn").removeAttr('disabled');
-        //     location.href = "#sel_trade";
-        //     $("#sel_trade").click();
         //     return ;
         // }
-        // supplier.industryFirst = checkedTradeValue[0];
-        // supplier.industrySecond = checkedTradeValue[1];
-        // supplier.industryThird = checkedTradeValue[2];
-
-        /*经营范围*/
-        var bussinessScope = $("#bussinessScopeTextarea").val();
-        console.log("经营范围");
-        console.log(bussinessScope);
-        if(!bussinessScope){
-            setTimeout(function(){
-                $("#bussinessScopeTextarea").focus();
-            },1000);
-            alertMsg("请填写经营范围！");
-            $("#subBtn").removeAttr('disabled');
-            return ;
-        }
-        supplier.businessScope=bussinessScope;
-
-        /*法人身份证照片*/
-        var ifUped = $("#legalBodyIdFront").attr("uped");
-        console.log(ifUped);
-        if(!ifUped){
-            setTimeout(function(){
-                $("#legalBodyIdFront").focus();
-                $("#legalBodyIdFront").click();
-            },1000);
-            layer.msg("请上传法人身份证正面照片！");
-            $("#subBtn").removeAttr('disabled');
-            return ;
-        }
-
-        var ifUped2 = $("#legalBodyIdBack").attr("uped");
-        if(!ifUped2){
-            setTimeout(function(){
-                $("#legalBodyIdBack").focus();
-                $("#legalBodyIdBack").click();
-            },1000);
-            layer.msg("请上传法人身份证反面照片！");
-            $("#subBtn").removeAttr('disabled');
-            return ;
-        }
-
-        /*法人姓名*/
-        var legalBodyName = $("#legalBodyNameInput").val();
-        if(!legalBodyName){
-            setTimeout(function(){
-                $("#legalBodyNameInput").focus();
-            },1000);
-            alertMsg("请填写法人姓名！");
-            $("#subBtn").removeAttr('disabled');
-            return ;
-        }
-
-        supplier.legalbodyName = legalBodyName;
-
-
-        /*法人身份证号码*/
-        var legalBodyIdCardNum = $("#legalBodyIdCardNumInput").val();
-        if((!legalBodyIdCardNum)){
-            setTimeout(function(){
-                $("#legalBodyIdCardNumInput").focus();
-            },1000);
-            alertMsg("请填写法人身份证号码！");
-            $("#subBtn").removeAttr('disabled');
-            return ;
-        }
-        if(!checkIdNum(legalBodyIdCardNum)){
-            setTimeout(function(){
-                $("#legalBodyIdCardNumInput").focus();
-            },1000);
-            alertMsg("请填写正确的身份证号码！");
-            $("#subBtn").removeAttr('disabled');
-            return ;
-        }
-
-        supplier.legalbodyIdcardNumber = legalBodyIdCardNum;
-
+        // /*验证*/
+        // /*所在地*/
+        // var placeOnName =  $("#sel_city").text();
+        //
+        // if(placeOnName == undefined || placeOnName == "" || placeOnName == '点击选取省市区县'){
+        //     setTimeout(function(){
+        //         $("#sel_city").focus();
+        //     },1000);
+        //     alertMsg("请选择所在地！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     $("#sel_city").click();
+        //     return ;
+        // }
+        // supplier.locationProvinceJsIndex = selectedIndex[0];
+        // supplier.locationCityJsIndex = selectedIndex[1];
+        // supplier.locationAreaJsIndex = selectedIndex[2];
+        //
+        // /*注册地*/
+        // var registAddress = $("#registAddressInput").val();
+        // console.log("注册地");
+        // console.log(registAddress);
+        // if(registAddress == undefined || registAddress == ''){
+        //     setTimeout(function(){
+        //         $("#registAddressInput").focus();
+        //     },1000);
+        //     alertMsg("请填写注册地址！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     return ;
+        // }
+        // supplier.registeredAddress = registAddress;
+        //
+        // /*所属行业*/
+        //
+        // var tradeOn = $(".selectpicker").selectpicker('val');
+        // var typeId = $(".selectpicker").find("option:selected").attr("typeid");
+        // console.log("所属行业：");
+        // console.log(tradeOn);
+        // console.log("typeid："+typeId)
+        // if(!typeId){
+        //     setTimeout(function(){
+        //         $("#sel_trade").click();
+        //     },1000);
+        //     alertMsg("请选择所属行业！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     return ;
+        // }
+        // supplier.industryFirst = typeId;
+        //
+        // /*经营范围*/
+        // var bussinessScope = $("#bussinessScopeTextarea").val();
+        // console.log("经营范围");
+        // console.log(bussinessScope);
+        // if(!bussinessScope){
+        //     setTimeout(function(){
+        //         $("#bussinessScopeTextarea").focus();
+        //     },1000);
+        //     alertMsg("请填写经营范围！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     return ;
+        // }
+        // supplier.businessScope=bussinessScope;
+        //
+        // /*法人身份证照片*/
+        // var ifUped = $("#legalBodyIdFront").attr("uped");
+        // console.log(ifUped);
+        // if(!ifUped){
+        //     setTimeout(function(){
+        //         $("#legalBodyIdFront").click();
+        //     },1000);
+        //     alertMsg("请上传法人身份证正面照片！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     return ;
+        // }
+        //
+        // var ifUped2 = $("#legalBodyIdBack").attr("uped");
+        // if(!ifUped2){
+        //     setTimeout(function(){
+        //         $("#legalBodyIdBack").click();
+        //     },1000);
+        //     alertMsg("请上传法人身份证反面照片！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     return ;
+        // }
+        //
+        // /*法人姓名*/
+        // var legalBodyName = $("#legalBodyNameInput").val();
+        // if(!legalBodyName){
+        //     setTimeout(function(){
+        //         $("#legalBodyNameInput").focus();
+        //     },1000);
+        //     alertMsg("请填写法人姓名！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     return ;
+        // }
+        //
+        // supplier.legalbodyName = legalBodyName;
+        //
+        //
+        // /*法人身份证号码*/
+        // var legalBodyIdCardNum = $("#legalBodyIdCardNumInput").val();
+        // if((!legalBodyIdCardNum)){
+        //     setTimeout(function(){
+        //         $("#legalBodyIdCardNumInput").focus();
+        //     },1000);
+        //     alertMsg("请填写法人身份证号码！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     return ;
+        // }
+        // if(!checkIdNum(legalBodyIdCardNum)){
+        //     setTimeout(function(){
+        //         $("#legalBodyIdCardNumInput").focus();
+        //     },1000);
+        //     alertMsg("请填写正确的身份证号码！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     return ;
+        // }
+        //
+        // supplier.legalbodyIdcardNumber = legalBodyIdCardNum;
 
         /*验证是否上传了供应商协议*/
         var protocolUploaded = $("#protocol_file_input").attr('upload');
@@ -533,7 +633,6 @@
             return ;
         }
 
-
         /*手机号码*/
         var phoneNum = $("#phoneNumInput-jc").val();
         if(!phoneNum){
@@ -546,11 +645,10 @@
         }
 
         if(!isPhoneNo(phoneNum)){
-            setTimeout(function(){
-                $("#phoneNumInput-jc").focus();
-            },1000);
             alertMsg("请填写正确的手机号码！");
             $("#subBtn").removeAttr('disabled');
+            location.href = "#phoneNumInput-jc";
+            $("#phoneNumInput-jc").focus();
             return ;
         }
         supplier.authPhone = phoneNum;
@@ -568,13 +666,6 @@
 
         /*供应商属性（基础供应商）*/
         supplier.supstateSingle = 5;
-
-
-        /*ajax 提交*/
-
-
-
-
         $.ajax({
             url:'/auth/subData/',
             data :{supplier:JSON.stringify(supplier),phoneCheckCode:phoneCheckCode},
@@ -583,8 +674,8 @@
             success :function(res){
                 console.log(res);
                 if(res.success){
-                    //alertMsg("提交成功,请等待审核");
-
+                    // alertMsg("提交成功,请等待审核");
+                    // location.reload();
                     //显示支付页面：
                     location.href='/auth/pay/danyi';
 
@@ -597,37 +688,9 @@
                 console.log(res);
             }
         })
-
-
     })
 
-    $(function() {
 
-        var a = changeInputFileSize;
-        a();
-
-        //手机号失去焦点事件
-        $("#phoneNumInput-jc").on('blur',function(){
-            var phoneNum = $(this).val();
-            if(!isPhoneNo(phoneNum)){
-                setTimeout(function(){
-                    $("#phoneNumInput-jc").focus();
-                },1000);
-                alertMsg("手机号码输入有误");
-            }
-        })
-
-
-        $("#legalBodyIdCardNumInput").on('blur',function(){
-            var legalBodyIdCardNum = $(this).val();
-            if(!checkIdNum(legalBodyIdCardNum)){
-                alertMsg("身份证号码输入有误");
-                $("#legalBodyIdCardNumInput").focus();
-            }
-        })
-
-
-    })
 
 
     /**
@@ -698,13 +761,25 @@
                 console.log(bl);
             }
         }
-        setTimeout(function(){
-            changeInputFileSize($("#"+pervDivId));
+        setTimeout("changeInputFileSize($('#"+pervDivId+"'))",500);
+        //设置为不可修改状态：
+        var updateBtn = $("#"+pervDivId).parent().parent().find('.upbtn');
+        console.log("updateBtn:");
+        console.log(updateBtn);
+        updateBtn.show();
+        var toupbtn = $("#"+pervDivId).parent().parent().find('.toupbtn');
+        console.log("toupbtn:");
+        console.log(toupbtn);
+        toupbtn.hide();
+        $("#"+thisEveId).attr('disabled','disabled');
+        console.log("$(\"#\"+thisEveId):");
+        console.log($("#"+thisEveId));
 
-        },500);
-        //setTimeout("changeInputFileSize($('#"+pervDivId+"'))",500);
 
     };
+
+
+
 
     /**
      *       用url方式表示的base64图片数据
@@ -830,6 +905,23 @@
 
     var selectedIndex = [0, 0, 0]; /* 默认选中的地区 */
 
+    //所在地：
+    var supplierlocationProvinceJsIndex = [[${session.supplier.locationProvinceJsIndex}]];
+    if(supplierlocationProvinceJsIndex){
+        selectedIndex[0] = supplierlocationProvinceJsIndex;
+    }
+    var supplierlocationCityJsIndex = [[${session.supplier.locationCityJsIndex}]];
+    if(supplierlocationCityJsIndex){
+        selectedIndex[1] = supplierlocationCityJsIndex;
+    }
+
+    var supplierlocationAreaJsIndex = [[${session.supplier.locationAreaJsIndex}]];
+    if(supplierlocationAreaJsIndex){
+        selectedIndex[2] = supplierlocationAreaJsIndex;
+    }
+
+
+
     var checked = [0, 0, 0]; /* 已选选项 */
 
     function creatList(obj, list){
@@ -858,8 +950,14 @@
     var picker = new Picker({
         data: [first, second, third],
         selectedIndex: selectedIndex,
-        title: '地址选择'
+        title: '地址选择',
     });
+
+    var text1 = first[selectedIndex[0]].text;
+    var text2 = second[selectedIndex[1]].text;
+    var text3 = third[selectedIndex[2]] ? third[selectedIndex[2]].text : '';
+
+    nameEl.innerText = text1 + ' ' + text2 + ' ' + text3;
 
     picker.on('picker.select', function (selectedVal, selectedIndex) {
         var text1 = first[selectedIndex[0]].text;
@@ -958,7 +1056,7 @@
         data: [firstTrade, secondTrade, thirdTrade],
         selectedIndex: selectedIndexTrade,
         title: '行业选择'
-    });
+    });;
 
     /*获取分类数据方法，whichLeval可以为1，2,3, 如果是第2  、3级，需要给parentId*/
     function getTrade(whichLeval,parentId){
@@ -1159,7 +1257,20 @@
     //     tradePicker.show();
     // });
 
-
+    function blobToBase64(blob) {
+        console.log(typeof (blob));
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader();
+        fileReader.onload = (e) => {
+            resolve(e.target.result);
+        };
+        // readAsDataURL
+        fileReader.readAsDataURL(blob);
+        fileReader.onerror = () => {
+            reject(new Error('blobToBase64 error'));
+        };
+    });
+    }
 
 
 

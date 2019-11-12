@@ -109,3 +109,97 @@ function snyTimeOut(time,callback){
     })
 }
 
+/**
+ * 去后端获取支付信息
+ * @param payfor                1：申请成为战略供应商      2：申请成为单一供应商
+ * @returns {boolean}
+ */
+function getPayInfo(paramData){
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url:"/pay/alipay/getCreateInfo",
+            data:paramData,
+            dataType:"json",
+            success:function(res){
+                console.log(res);
+                resolve(res);
+            },
+            fail:function(res){
+                alertMsg("获取数据异常，请重试",3000);
+                console.log(res);
+                reject(res);
+            }
+        })
+    })
+}
+
+/**
+ * 调起支付宝支付页面
+ * @param payinfo
+ * @param orderid
+ * @returns {boolean}
+ */
+function toalipay(payinfo,orderid){
+    console.log("toalipay....payinfo:"+payinfo);
+    return new Promise((resolve, reject) => {
+        dd.biz.alipay.pay({
+            info:payinfo,
+            onSuccess: function (result) {
+                // {
+                //     memo: 'xxxx', // 保留参数，一般无内容
+                //         result: 'xxxx', // 本次操作返回的结果数据
+                //     resultStatus: '' // 本次操作的状态返回值，标识本次调用的结果
+                // }
+
+                console.log("支付结果：");
+                console.log(result);
+                showLoading("查询支付结果中");
+                resolve(orderid);
+            },
+            onFail: function (err) {
+                reject(err);
+            }
+        });
+    })
+}
+
+/**
+ * 每2秒访问一次，查询状态
+ * @param orderid
+ * @param count
+ */
+function getOrderStatus(orderid,count){
+    console.log("count is : ", count);
+    if (count == 0) {
+        console.log("All is Done!");
+        alertMsg("未获取到支付结果，如已支付请联系管理员");
+        window.location.reload();
+        return ;
+    }else{
+        count -= 1;
+        setTimeout(function() {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url:"/pay/alipay/getOrderStatus",
+                    data:{'orderid':orderid},
+                    dataType:"json",
+                    success:function(res){
+                        showLoading("查询支付结果中");
+                        if(!res.success){
+                            getOrderStatus(orderid,count);
+                        }else{
+                            setTimeout(function(){
+                                location.href="/attr/zhanlve";
+                            },2000);
+                        }
+                    },
+                    fail:function(res){
+                        console.log(res);
+                        reject(res);
+                    }
+                })
+            })
+        }, 1000);
+    }
+}
+
