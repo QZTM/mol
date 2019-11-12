@@ -1,6 +1,6 @@
 package com.mol.supplier.service.Weixin.Pay;
 
-import com.mol.supplier.entity.dingding.Pay.pui_supplier_deposit;
+import com.mol.supplier.entity.dingding.Pay.PuiSupplierDeposit;
 import com.mol.supplier.mapper.Pay.WeixinPayMapper;
 import com.mol.supplier.util.PayUtil;
 import org.springframework.stereotype.Service;
@@ -40,7 +40,7 @@ public class WeixinPay_service
     public boolean View_JudgePay_Service(Map map)
     {
         String SupplierId=map.get("SupplierId").toString();//获取供应商id
-        for (pui_supplier_deposit deposit_1:weixinPayMapper.select_supplier(SupplierId))//判断供应商是否已经交押金了
+        for (PuiSupplierDeposit deposit_1:weixinPayMapper.select_supplier(SupplierId))//判断供应商是否已经交押金了
         {
             String jj=deposit_1.getReturnMoney();
             if (deposit_1.getReturnMoney().equals("否"))//只要有一个订单没有退款就是已经交押金
@@ -127,7 +127,7 @@ public class WeixinPay_service
            response.put("appid", appid);
             if (weixinPayMapper.select_order(out_trade_no,"微信")==null)//判断数据库是否有此订单号
             {
-                pui_supplier_deposit supplier_deposit=new pui_supplier_deposit();
+                PuiSupplierDeposit supplier_deposit=new PuiSupplierDeposit();
                 supplier_deposit.setOrderId(out_trade_no);
                 supplier_deposit.setSupplierId(SupplierId);//供应商id
                 supplier_deposit.setMoney("未支付");
@@ -228,7 +228,7 @@ public class WeixinPay_service
            {
                if (weixinPayMapper.select_order(select_rest_map.get(("out_trade_no")).toString(),"微信")!=null)//查看数据库订单是否存在
                {
-                   pui_supplier_deposit supplier=new pui_supplier_deposit();
+                   PuiSupplierDeposit supplier=new PuiSupplierDeposit();
                    supplier.setOrderId(select_rest_map.get(("out_trade_no")).toString());
                    supplier.setMoney(String.valueOf(Double.parseDouble(select_rest_map.get("cash_fee").toString())/100));
                    supplier.setCreadTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") .format(new Date()));

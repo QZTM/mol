@@ -8,6 +8,16 @@ public class RedisCacheHandle<T> implements CacheHandle{
 
     private RedisUtil redisUtil = RedisUtil.getRedisUtil();;
 
+
+    /**
+     * 获取工具类，直接使用工具类操作redis
+     * @return
+     */
+    public RedisUtil getUtil(){
+        return redisUtil;
+    }
+
+
     @Override
     public String saveStr(String key, Integer seconds, String value) {
         String setex = "";

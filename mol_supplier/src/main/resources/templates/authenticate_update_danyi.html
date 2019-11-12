@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1.0, user-scalable=0">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta charset="UTF-8">
+    <title th:text="${pagenametitlefront+'供应商认证'}"></title>
+    <!-- Bootstrap -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/common.css}" rel="stylesheet">
+    <link th:href="@{/css/footer.css}" rel="stylesheet">
+    <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery) -->
+    <script th:src="@{/js/jquery-3.2.1.min.js}"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet">
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。 -->
+    <script th:src="@{/js/bootstrap.min.js}"></script>
+    <script th:src="@{/js/picker.min.js}"></script>
+    <script th:src="@{/js/city.js}"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/jquery-cookie.js}"></script>
+
+    <style>
+        .uploadimg-out-div{
+            position:relative;
+            width:100%;
+        }
+        .uploadimg-input{
+            position: absolute;
+            left:0;
+            top:0;
+            opacity:0;
+            filter:alpha(opacity=0);
+            z-index: 6;
+            padding:0px 0px 0px 0px;
+        }
+        input:focus{
+            border:  none;
+        }
+        .picker .picker-panel .wheel-wrapper .wheel {
+            font-size:14px!important;
+        }
+
+    </style>
+</head>
+<body>
+<!-- 公司名称开始 -->
+<div class="input-group" style="margin:16px 6px 0 10px ">
+    <span class="input-group-addon">公司名称：</span>
+    <input type="text" class="form-control" placeholder="Company name" aria-describedby="basic-addon1" id="companyNameInput" th:value="${session.supplier.name}" disabled="disabled">
+</div>
+<!-- 公司名称结束 -->
+<!-- 营业执照号开始 -->
+<div class="input-group" style="margin:10px 6px 0 10px;position: relative">
+    <span class="input-group-addon">营业执照号：</span>
+    <input type="text" class="form-control" placeholder="Business license number" aria-describedby="basic-addon1" id="bussinessLicenceNumInput" th:value="${session.supplier.buslicensenum}" disabled="disabled">
+    <span class="layui-badge" style="position: absolute;right:8px;z-index: 9999;top:24%" id="update_lisn_num_btn">修改</span>
+    <span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%" id="to_update_lisn_num_btn">保存</span>
+</div>
+<script th:inline="javascript">
+    $("#update_lisn_num_btn").on('click',function(){
+        $(this).prev().removeAttr('disabled');
+        var value = $(this).prev().val();
+        $(this).prev().focus().val(value);
+        $(this).hide();
+    })
+    $("#to_update_lisn_num_btn").on('click',function(){
+        var that = $(this);
+        var supplier = {};
+        supplier.buslicensenum = $("#bussinessLicenceNumInput").val();
+        // $.ajax({
+        //     url:'/auth/update',
+        //     data:JSON.stringify(supplier),
+        //     type:'post',
+        //     headers: {
+        //       'Content-type':'application/json'
+        //     },
+        //     dateType:'json',
+        //     success:function(res){
+        //         alertMsg(res.message);
+        //         that.prev().show();
+        //         $("#bussinessLicenceNumInput").attr('disabled','disabled');
+        //     },
+        //     fail:function(res){
+        //         alertMsg(res.message);
+        //     }
+        // })
+
+        update_supplier_active(supplier).then(function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#bussinessLicenceNumInput").attr('disabled','disabled');
+        },function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#bussinessLicenceNumInput").attr('disabled','disabled');
+        })
+    })
+
+    function update_supplier_active(supplier){
+        return new Promise(function(resolve, reject){
+            $.ajax({
+                url:'/auth/update',
+                data:JSON.stringify(supplier),
+                type:'post',
+                headers: {
+                    'Content-type':'application/json'
+                },
+                dateType:'json',
+                success:function(res){
+                    resolve(res);
+                },
+                fail:function(res){
+                    reject(res);
+                }
+            })
+        })
+    }
+
+</script>
+<!--营业执照号开始 -->
+
+<!-- 上传营业执照图片开始 -->
+<div style="margin: 10px 10px 0 10px;position:relative">
+        <span class="layui-badge upbtn" style="position: absolute;right:5px;z-index: 9999;top:12px" id="update_lisn_img_btn">修改</span>
+        <span class="layui-badge layui-bg-blue toupbtn" style="position: absolute;right:5px;z-index: 9998;top:12px;display: none" id="to_update_lisn_img_btn">点击图片即可修改</span>
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">营业执照图像</a></li>
+    </ul>
+
+    <div class="control-group uploadimg-out-div" id="div-licenceimg" style="width:100%;text-align: center;">
+        <div id="preview-bussinessLicence" style="width:100%">
+            <img class="uploadimg-img input-group" id="bussiness_lisn_img_img">
+        </div>
+        <input type="file" id="bussinessLicence" class="uploadimg-input" onchange="preview(this)"  accept="image/gif,image/jpeg,image/jpg,image/png" disabled="disabled" />
+    </div>
+
+</div>
+<!--修改营业执照图片-->
+<script th:inline="javascript">
+    $("#update_lisn_img_btn").on('click',function(){
+        $("#bussinessLicence").removeAttr('disabled');
+        $("#to_update_lisn_img_btn").show();
+        $(this).hide();
+    })
+    $("#to_update_lisn_img_btn").on('click',function(){
+        alertMsg("点击图片后选择新的图片即可修改");
+    })
+</script>
+<!-- 上传营业执照图片结束 -->
+<!-- 所在地开始 -->
+<div class="input-group" style="margin:10px 6px 0 10px;position: relative">
+    <span class="input-group-addon">所在地：</span>
+    <span class="form-control" aria-describedby="basic-addon1" id="sel_city" style="pointer-events: none"><span>点击选取省市区县</span></span>
+    <span class="layui-badge" style="position: absolute;right:8px;z-index: 9999;top:24%" id="update_city_num_btn">修改</span>
+    <span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%" id="to_update_city_num_btn">保存</span>
+</div>
+<script>
+    $("#update_city_num_btn").on('click',function(){
+        $("#sel_city").css('pointer-events','auto');
+        $(this).hide();
+    })
+    $("#to_update_city_num_btn").on('click',function(){
+        var that = $(this);
+        //获取新设置的所在地：
+        var supplier = {};
+        supplier.locationProvinceJsIndex = selectedIndex[0];
+        supplier.locationCityJsIndex = selectedIndex[1];
+        supplier.locationAreaJsIndex = selectedIndex[2];
+        update_supplier_active(supplier).then(function(res){
+            alertMsg(res.message);
+            $("#sel_city").css('pointer-events','none');
+            that.prev().show();
+        },function(res){
+            alertMsg(res.message);
+            $("#sel_city").css('pointer-events','none');
+            that.prev().show();
+        })
+    })
+</script>
+<!-- 所在地结束 -->
+<!-- 注册地开始 -->
+<div class="input-group" style="margin:10px 6px 0 10px;clear: both;position: relative">
+    <span class="input-group-addon">注册地：</span>
+    <input type="text" class="form-control" placeholder="Place of registration" aria-describedby="basic-addon1" id="registAddressInput" th:value="${session.supplier.registeredAddress}" disabled="disabled">
+    <span class="layui-badge" style="position: absolute;right:8px;z-index: 9999;top:24%" id="update_registration_btn">修改</span>
+    <span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%" id="to_registration_btn">保存</span>
+</div>
+<script>
+    //注册地修改
+    $("#update_registration_btn").on('click',function(){
+        $("#registAddressInput").removeAttr("disabled");
+        $(this).hide();
+    })
+    $("#to_registration_btn").on('click',function(){
+        var registAddress = $("#registAddressInput").val();
+        if(registAddress == undefined || registAddress == ''){
+            alertMsg("请填写注册地址！");
+            $("#registAddressInput").focus();
+            location.href = "#registAddressInput";
+            return ;
+        }
+
+        var that = $(this);
+        //获取新设置的所在地：
+        var supplier = {};
+        supplier.registeredAddress = registAddress;
+        update_supplier_active(supplier).then(function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#registAddressInput").attr('disabled','disabled');
+        },function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#registAddressInput").attr('disabled','disabled');
+        })
+    })
+</script>
+<!-- 注册地结束 -->
+<!-- 所属行业开始 -->
+<div class="input-group" style="margin:10px 6px 0 10px ">
+    <span class="input-group-addon">所属行业：</span>
+    <!--<span class="form-control" aria-describedby="basic-addon1" id="sel_trade"><span style="color:#aaa">点击选取所属行业</span></span>-->
+    <span id="industry_span" style="pointer-events: none">
+        <select class="selectpicker form-control" id="itemtype_select_id" style="background-color: #1b6d85;color:#111" >
+            <div th:each="itemType,itemTypeStat : ${itemTypeList}">
+                <option th:if="${itemType.pkMarbasclass == session.supplier.industryFirst}" th:text="${itemType.name}" th:typeid="${itemType.pkMarbasclass}" class="itemType-option" selected></option>
+                <option th:if="${itemType.pkMarbasclass != session.supplier.industryFirst}" th:text="${itemType.name}" th:typeid="${itemType.pkMarbasclass}" class="itemType-option"></option>
+            </div>
+        </select>
+    </span>
+    <span class="layui-badge" style="position: absolute;right:8px;z-index: 9999;top:24%" id="update_itemType_btn">修改</span>
+    <span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%;display: none" id="to_update_itemType_btn">保存</span>
+</div>
+<!--修改所属行业-->
+<script>
+    $("#industry_span").on('change',function(){
+        $("#to_update_itemType_btn").show();
+    })
+    $("#update_itemType_btn").on('click',function(){
+        $("#industry_span").css('pointer-events','auto');
+        $(this).hide();
+    })
+    $("#to_update_itemType_btn").on('click',function(){
+        var tradeOn = $(".selectpicker").selectpicker('val');
+        var typeId = $(".selectpicker").find("option:selected").attr("typeid");
+        console.log("所属行业：");
+        console.log(tradeOn);
+        console.log("typeid："+typeId)
+        if(!typeId){
+            alertMsg("请选择所属行业！");
+            location.href = "#sel_trade";
+            $("#sel_trade").click();
+            return ;
+        }
+        var that = $(this);
+        //获取新设置的所属行业
+        var supplier = {};
+        supplier.industryFirst = typeId;
+        update_supplier_active(supplier).then(function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#industry_span").css('pointer-events','none');
+        },function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#industry_span").css('pointer-events','none');
+        })
+    })
+</script>
+<!-- 所属行业结束 -->
+<!-- 经营范围开始 -->
+<div style="clear: both;margin:10px 6px 0 10px;position:relative" id="bussiness-scope-out-div">
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#bussiness-scope-out-div">经营范围</a></li>
+    </ul>
+    <textarea style="width: 100%; " id="bussinessScopeTextarea" th:text="${session.supplier.businessScope}" disabled="disabled"></textarea>
+    <span class="layui-badge" style="position: absolute;right:8px;z-index: 9999;top:24%" id="update_bussinessScope_btn">修改</span>
+    <span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%" id="to_update_bussinessScope_btn">保存</span>
+</div>
+<!--修改经营范围-->
+<script>
+    $("#update_bussinessScope_btn").on('click',function(){
+        $("#bussinessScopeTextarea").removeAttr('disabled');
+        $(this).hide();
+    })
+    $("#to_update_bussinessScope_btn").on('click',function(){
+        var bussinessScope = $("#bussinessScopeTextarea").val();
+        console.log("经营范围");
+        console.log(bussinessScope);
+        if(!bussinessScope){
+            alertMsg("请填写经营范围！");
+            location.href = "#bussinessScopeTextarea";
+            $("#bussinessScopeTextarea").focus();
+            return ;
+        }
+        var that = $(this);
+        //获取新设置的经营范围
+        var supplier = {};
+        supplier.businessScope=bussinessScope;
+        update_supplier_active(supplier).then(function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#bussinessScopeTextarea").attr('disabled','disabled');
+        },function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#bussinessScopeTextarea").attr('disabled','disabled');
+        })
+    })
+</script>
+<!-- 经营范围结束 -->
+<!-- 上传法人身份证正反面开始 -->
+<!-- 上传法人身份证正面 -->
+<div style="margin: 6px 10px 0 10px;position:relative" >
+    <span class="layui-badge upbtn" style="position: absolute;right:5px;z-index: 9999;top:12px" id="update_legalBodyIdFront_img_btn">修改</span>
+    <span class="layui-badge layui-bg-blue toupbtn" style="position: absolute;right:5px;z-index: 9998;top:12px;display: none" id="to_update_legalBodyIdFront_img_btn">点击图片即可修改</span>
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">法人身份证图像</a></li>
+    </ul>
+    <div class="control-group uploadimg-out-div" id="div-legal-person-front" style="width:100%;text-align: center">
+        <div id="preview-legalBodyIdFront" style="width:100%">
+            <img th:src="@{/img/upimg.png}" class="uploadimg-img input-group" id="legalbody_front_img_img">
+        </div>
+        <input type="file" id="legalBodyIdFront" class="uploadimg-input" onchange="preview(this)"  accept="image/gif,image/jpeg,image/jpg,image/png" disabled="disabled" />
+        <p style="margin: 0 auto;width:100%;height:30px;text-align: center;padding-top:6px;" class="uploadimg-p">身份证正面</p>
+    </div>
+
+    <span class="layui-badge upbtn" style="left:87%;z-index: 9999;top:30px" id="update_legalBodyIdBack_img_btn">修改</span>
+    <span class="layui-badge layui-bg-blue toupbtn" style="left:66%;z-index: 9998;top:30px;display: none" id="to_update_legalBodyIdBack_img_btn">点击图片即可修改</span>
+    <!--上传法人身份证反面-->
+    <div class="control-group uploadimg-out-div" id="div-legal-person-back" style="margin-top:40px;width:100%">
+        <div id="preview-legalBodyIdBack"  style="width:100%">
+            <img th:src="@{/img/upimg.png}" class="uploadimg-img input-group" id="legalbody_back_img_img">
+        </div>
+        <input type="file" id="legalBodyIdBack" class="uploadimg-input" onchange="preview(this)"  accept="image/gif,image/jpeg,image/jpg,image/png" disabled="disabled" />
+        <p style="margin: 0 auto;width:100%;height:30px;text-align: center;padding-top:6px;" class="uploadimg-p">身份证反面</p>
+    </div>
+</div>
+<!--修改法人身份证图片-->
+<script>
+    $("#update_legalBodyIdFront_img_btn").on('click',function(){
+        $("#legalBodyIdFront").removeAttr('disabled');
+        $("#to_update_legalBodyIdFront_img_btn").show();
+        $(this).hide();
+    })
+    $("#to_update_lisn_img_btn").on('click',function(){
+        alertMsg("点击图片后选择新的图片即可修改");
+    })
+    $("#update_legalBodyIdBack_img_btn").on('click',function(){
+        $("#legalBodyIdBack").removeAttr('disabled');
+        $("#to_update_legalBodyIdBack_img_btn").show();
+        $(this).hide();
+    })
+    $("#to_update_legalBodyIdBack_img_btn").on('click',function(){
+        alertMsg("点击图片后选择新的图片即可修改");
+    })
+</script>
+<!-- 上传法人身份证正反面结束 -->
+<!-- 法人姓名开始 -->
+<div class="input-group" style="margin:40px 6px 0 10px ;clear: both;">
+    <span class="input-group-addon">法人姓名：</span>
+    <input type="text" class="form-control" placeholder="Name of legal person" aria-describedby="basic-addon1" id="legalBodyNameInput" th:value="${session.supplier.legalbodyName}" disabled="disabled">
+    <span class="layui-badge" style="position: absolute;right:8px;z-index: 9999;top:24%" id="update_legalBodyName_btn">修改</span>
+    <span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%" id="to_update_legalBodyName_btn">保存</span>
+</div>
+<!--法人姓名修改-->
+<script>
+    $("#update_legalBodyName_btn").on('click',function(){
+        $("#legalBodyNameInput").removeAttr("disabled");
+        $(this).hide();
+    })
+    $("#to_update_legalBodyName_btn").on('click',function(){
+        var legalBodyName = $("#legalBodyNameInput").val();
+        if(!legalBodyName){
+            alertMsg("请填写法人姓名！");
+            $("#subBtn").removeAttr('disabled');
+            location.href = "#legalBodyNameInput";
+            $("#legalBodyNameInput").focus();
+            return ;
+        }
+        var that = $(this);
+        //获取新设置的所在地：
+        var supplier = {};
+        supplier.legalbodyName = legalBodyName;
+        update_supplier_active(supplier).then(function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#legalBodyNameInput").attr('disabled','disabled');
+        },function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#legalBodyNameInput").attr('disabled','disabled');
+        })
+    })
+</script>
+<!-- 法人姓名结束 -->
+<!-- 身份证号开始 -->
+<div class="input-group" style="margin:10px 6px 0 10px">
+    <span class="input-group-addon">身份证号：</span>
+    <input type="text" class="form-control" placeholder="ID number" aria-describedby="basic-addon1"  id="legalBodyIdCardNumInput"  th:value="${session.supplier.legalbodyIdcardNumber}" disabled="disabled">
+    <span class="layui-badge" style="position: absolute;right:8px;z-index: 9999;top:24%" id="update_legalBodyIdCardNum_btn">修改</span>
+    <span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%" id="to_update_legalBodyIdCardNum_btn">保存</span>
+</div>
+<!--修改身份证号码-->
+<script>
+    $("#update_legalBodyIdCardNum_btn").on('click',function(){
+        $("#legalBodyIdCardNumInput").removeAttr("disabled");
+        $(this).hide();
+    })
+    $("#to_update_legalBodyIdCardNum_btn").on('click',function(){
+        var legalBodyIdCardNum = $("#legalBodyIdCardNumInput").val();
+        if((!legalBodyIdCardNum)){
+            alertMsg("请填写法人身份证号码！");
+            location.href = "#legalBodyIdCardNumInput";
+            $("#legalBodyIdCardNumInput").focus();
+            return ;
+        }
+        if(!checkIdNum(legalBodyIdCardNum)){
+            alertMsg("请填写正确的身份证号码！");
+            location.href = "#legalBodyIdCardNumInput";
+            $("#legalBodyIdCardNumInput").focus();
+            return ;
+        }
+        var that = $(this);
+        //获取新设置的所在地：
+        var supplier = {};
+        supplier.legalbodyIdcardNumber = legalBodyIdCardNum;
+        update_supplier_active(supplier).then(function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#legalBodyIdCardNumInput").attr('disabled','disabled');
+        },function(res){
+            alertMsg(res.message);
+            that.prev().show();
+            $("#legalBodyIdCardNumInput").attr('disabled','disabled');
+        })
+    })
+</script>
+<!-- 身份证号结束 -->
+<!--上传单一供应商协议开始-->
+<div style="margin:10px 6px 0 10px;position: relative">
+    <span class="layui-badge upbtn" style="position: absolute;right:5px;z-index: 9999;top:10px" id="update_legalBodyIdFront_img_btn">下载样本</span>
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="/auth/downZhanlve">上传单一供应商协议</a></li>
+    </ul>
+    <div style="width:100%;text-align: center">
+        <div style="width:100%">
+            <img th:src="@{/img/upimg.png}" width="70px" height="70px">
+        </div>
+        <label class="input-group-btn">
+            <input class="file" type="file" onchange="fileSelected(this,'protocolFile')" style="left: -9999px; position: absolute;" id="protocol_file_input"/>
+            <span class="btn btn-default">点击上传</span>
+        </label>
+    </div>
+</div>
+<!-- 上传单一供应商协议结束 -->
+<script>
+    function fileSelected(file,which) {
+        var theFile = file.files[0];
+        if (theFile) {
+            var fileSize = 0;
+            if (theFile.size > 1024 * 1024){
+                var fileSizeNum = Math.round(theFile.size * 100 / (1024 * 1024)) / 100;
+                if(fileSizeNum > 20){
+                    alertMsg("文件超过20M无法上传");
+                    return ;
+                }
+                fileSize = (Math.round(theFile.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
+            } else
+                fileSize = (Math.round(theFile.size * 100 / 1024) / 100).toString() + 'KB';
+
+            $(file).next().text(theFile.name);
+            uploadFile(theFile,which,file);
+        }
+    }
+
+    function uploadFile(file,whichFile,ele) {
+        var fd = new FormData();
+        fd.append("fileToUpload", file);
+        fd.append("whichFile",whichFile);
+        var xhr = new XMLHttpRequest();
+        xhr.upload.addEventListener("progress", uploadProgress, false);
+        xhr.addEventListener("load", function(){uploadComplete(event,ele)} , false);
+        xhr.addEventListener("error", uploadFailed, false);
+        xhr.addEventListener("abort", uploadCanceled, false);
+        xhr.open("POST", "/auth/upload/file"); //修改成自己的接口
+        xhr.send(fd);
+    }
+
+    <!--显示进度，已废弃-->
+    function uploadProgress(evt) {
+        if (evt.lengthComputable) {
+            //var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+            //console.log(percentComplete.toString());
+            //document.getElementById('uploadProgressNUm').innerHTML = percentComplete.toString() + '%';
+        } else {
+            //document.getElementById('uploadProgressNUm').innerHTML = 'unable to compute';
+        }
+    }
+
+    function uploadComplete(evt,t) {
+        /* 服务器端返回响应时候触发event事件*/
+        if(evt.target.responseText.indexOf('success')){
+            //console.log($(evt));
+            console.log($(t));
+            $(t).attr('upload',1);
+            alertMsg('上传成功');
+        }else{
+            alertMsg('上传失败');
+        }
+    }
+
+    function uploadFailed(evt) {
+        console.log("There was an error attempting to upload the file.");
+    }
+
+    function uploadCanceled(evt) {
+        console.log("The upload has been canceled by the user or the browser dropped the connection.");
+    }
+</script>
+<!-- 其他补充材料开始 -->
+<div style="margin:10px 6px 0 10px">
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">其他补充材料(专利、代理商资质等资料)</a></li>
+    </ul>
+    <div style="width:100%;text-align: center">
+        <div style="width:100%">
+            <img th:src="@{/img/upimg.png}" width="70px" height="70px">
+        </div>
+        <label class="input-group-btn">
+            <input class="file" type="file" onchange="fileSelected(this,'agentQualificationFile1')" style="left: -9999px; position: absolute;"/>
+            <span class="btn btn-default">点击上传</span>
+        </label>
+    </div>
+</div>
+<div style="margin:10px 6px 0 10px">
+    <!--<ul class="nav nav-tabs">-->
+    <!--<li role="presentation" class="active"><a href="#">上传单一供应商协议</a></li>-->
+    <!--</ul>-->
+    <div style="width:100%;text-align: center">
+        <div style="width:100%">
+            <img th:src="@{/img/upimg.png}" width="70px" height="70px">
+        </div>
+        <label class="input-group-btn">
+            <input class="file" type="file" onchange="fileSelected(this,'agentQualificationFile2')" style="left: -9999px; position: absolute;"/>
+            <span class="btn btn-default">点击上传</span>
+        </label>
+    </div>
+</div>
+<!-- 手机号开始 -->
+<div class="input-group" style="margin:10px 6px 0 10px;position: relative">
+    <span class="input-group-addon">手机号：</span>
+    <input type="text" class="form-control" placeholder="Phone number" aria-describedby="basic-addon1" id="phoneNumInput-jc" th:value="${session.supplier.authPhone}" th:oldphone="${session.supplier.authPhone}" disabled="disabled">
+    <span class="layui-badge" style="position: absolute;right:8px;z-index: 9999;top:24%" id="update_phone_btn">修改</span>
+    <span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%;display: none" id="to_update_phone_btn">保存</span>
+    <span class="layui-badge layui-bg-blue" style="position: absolute;right:8px;z-index: 9998;top:24%;display: none"  onclick="getPhoneCode();" id="getCodeBtn">获取验证码</span>
+</div>
+<!--修改手机号码-->
+<script>
+    //手机号失去焦点事件（验证手机号码格式、并与旧的手机号码做判断）
+    $("#phoneNumInput-jc").on('blur',function(){
+        var phoneNum = $(this).val();
+        if(!isPhoneNo(phoneNum)){
+            alertMsg("手机号码输入有误");
+            $("#phoneNumInput-jc").focus();
+        }
+
+        var oldPhone = $(this).attr('oldphone');
+        if(phoneNum != oldPhone){
+            $("#getCodeBtn").show();
+        }
+    })
+    //点击修改修改消失并取消input的锁定
+    $("#update_phone_btn").on('click',function(){
+        $("#phoneNumInput-jc").removeAttr("disabled");
+        $(this).hide();
+    })
+    //保存按钮点击事件，保存如数据库
+    $("#to_update_phone_btn").on('click',function(){
+        var phoneNum = $("#phoneNumInput-jc").val();
+        if(!phoneNum){
+            alertMsg("请填写手机号码！");
+            $("#subBtn").removeAttr('disabled');
+            location.href = "#phoneNumInput-jc";
+            $("#phoneNumInput-jc").focus();
+            return ;
+        }
+
+        if(!isPhoneNo(phoneNum)){
+            alertMsg("请填写正确的手机号码！");
+            $("#subBtn").removeAttr('disabled');
+            location.href = "#phoneNumInput-jc";
+            $("#phoneNumInput-jc").focus();
+            return ;
+        }
+
+    var that = $(this);
+    //获取新设置的手机号码
+      var supplier = {};
+        supplier.authPhone = phoneNum;
+    update_supplier_active(supplier).then(function(res){
+        alertMsg(res.message);
+        that.prev().show();
+        $("#phoneNumInput-jc").attr('disabled','disabled');
+    },function(res){
+        alertMsg(res.message);
+        that.prev().show();
+        $("#phoneNumInput-jc").attr('disabled','disabled');
+    })
+    })
+</script>
+<!-- 手机号结束 -->
+<!-- 验证码开始 -->
+<!--<div class="input-group" style="margin:10px 6px 0 10px;">-->
+    <!--<div class="input-group" style="float: left;">-->
+        <!--<input type="text" class="form-control" placeholder="请输入验证码" aria-describedby="basic-addon2" id="phoneCheckCodeInput">-->
+    <!--</div>-->
+    <!--<div class="input-group" style="float: left;">-->
+        <!--<input class="form-control" type="button" name="" value="获取验证码" onclick="getPhoneCode();" id="getCodeBtn"/>-->
+    <!--</div>-->
+<!--</div>-->
+<!-- 验证码结束 -->
+<script>
+
+    var layer ;
+    layui.use(["layer","form"], function(){
+        layer = layui.layer;
+    });
+
+    /*仿刷新：检测是否存在cookie*/
+    if($.cookie("captcha")){
+        var count = $.cookie("captcha");
+        var btn = $('#getCodeBtn');
+        btn.text("重新发送(" + (count--) + ")").attr('disabled','disabled').css('cursor','not-allowed');
+        var resend = setInterval(function(){
+            count--;
+            if (count > 0){
+                btn.text("重新发送(" + (count) + ")").attr('disabled','disabled').css('cursor','not-allowed');
+                $.cookie("captcha", count, {path: '/', expires: (1/86400)*count});
+            }else {
+                clearInterval(resend);
+                btn.text("获取验证码").removeAttr('disabled');
+            }
+        }, 1000);
+    }
+
+    /*点击改变按钮状态，已经简略掉ajax发送短信验证的代码*/
+    function getPhoneCode(){
+        var btn = $('#getCodeBtn');
+        btn.attr('disabled','disabled').css('cursor','not-allowed');
+        var phoneNum = $("#phoneNumInput-jc").val();
+        if(!isPhoneNo(phoneNum)){
+            alertMsg("请输入正确的手机号码");
+            that.removeAttr('disabled');
+            return ;
+        }
+
+        var count = 10;
+        var resend = setInterval(function(){
+            count--;
+            if (count > 0){
+                btn.text("重新发送( " + (count) + " )");
+                $.cookie("captcha", count, {path: '/', expires: (1/86400)*count});
+            }else {
+                clearInterval(resend);
+                btn.text("获取验证码").removeAttr('disabled');
+            }
+        }, 1000);
+
+        /*给后端指令发送短信：*/
+        $.ajax({
+            url:"/msg/send/",
+            data:{phone:phoneNum,msgType:'supplieUpdate'},
+            type: "post",
+            dataType: "json",
+            timeout:10000,
+            error: function(XMLHttpRequest, textStatus, errorThrown){
+                alertMsg("发送失败，请稍后再试");
+            },
+            success : function(res){
+                console.log(res);
+                if(res.success){
+                    //alertMsg('发送成功!');
+                    var phoneCode = res.result;
+
+                    //弹窗接受验证码
+                    layer.prompt({
+                        formType: 0,
+                        value: '',
+                        title: '请输入验证码'
+
+                    }, function(value, index, elem){
+
+                        //带着验证码和手机号码去验证，如果验证成功，则直接修改，不过验证不通过则提示验证码不正确
+                        if(value == phoneCode){
+                            $("#getCodeBtn").hide();
+                            $("#to_update_phone_btn").show();
+                        }else{
+                            alertMsg("验证码不正确，修改失败！")
+                            $("#phoneNumInput-jc").val($("#phoneNumInput-jc").attr('oldphone'));
+                            $("#getCodeBtn").hide();
+                            $("#update_phone_btn").show();
+                        }
+                        layer.close(index);
+
+                    });
+
+                }else{
+                    alertMsg(res.message);
+                }
+            },
+            fail : function(res){
+                console.log(res);
+                alertMsg("发送失败，请稍后再试");
+            }
+        })
+
+
+    };
+
+
+
+
+</script>
+<!-- 提交开始 -->
+<button type="button" class="btn btn-danger" style="margin-top: 20px;width: 100%;" id="subBtn">提交</button>
+<!-- 提交结束 -->
+</body>
+<script th:inline="javascript">
+
+
+
+    $(function() {
+
+        var a = changeInputFileSize;
+        a();
+
+
+
+
+        $("#legalBodyIdCardNumInput").on('blur',function(){
+            var legalBodyIdCardNum = $(this).val();
+            if(!checkIdNum(legalBodyIdCardNum)){
+                alertMsg("身份证号码输入有误");
+                $("#legalBodyIdCardNumInput").focus();
+            }
+        })
+
+        //转换图片二进制位base64
+        //营业执照图片：
+        var bussiness_img_blob = [[${session.supplier.businessLicenceImg}]];
+        if(bussiness_img_blob){
+            // blobToBase64(bussiness_img_blob).then(res => {
+            //     // 转化后的base64
+            //     console.log('base64', res)
+            // })
+            $("#bussiness_lisn_img_img").attr('src','data:image/png;base64,'+bussiness_img_blob);
+            $("#bussiness_lisn_img_img").css("width",'92%');
+            $("#bussiness_lisn_img_img").css("left",'4%');
+            $("#bussiness_lisn_img_img").css("margin-top",'20px');
+            $("#bussiness_lisn_img_img").css("margin-bottom",'20px');
+            var pervDivId = $("#bussiness_lisn_img_img").parent('div').attr('id');
+            console.log("pervDivId:"+pervDivId);
+            $("#"+pervDivId).css('background-color','#2c94ff');
+            $("#"+pervDivId).css('padding-top','1px');
+            $("#"+pervDivId).css('padding-bottom','1px');
+            $("#"+pervDivId).css('border-radius','5px');
+            setTimeout("changeInputFileSize($('#"+pervDivId+"'))",500);
+
+        }
+
+        //身份证正面：
+        var legalbody_front_img_blob = [[${session.supplier.legalbodyCardFrontImg}]];
+        if(legalbody_front_img_blob){
+            // blobToBase64(bussiness_img_blob).then(res => {
+            //     // 转化后的base64
+            //     console.log('base64', res)
+            // })
+            $("#legalbody_front_img_img").attr('src','data:image/png;base64,'+legalbody_front_img_blob);
+            $("#legalbody_front_img_img").css("width",'92%');
+            $("#legalbody_front_img_img").css("left",'4%');
+            var pervDivId = $("#legalbody_front_img_img").parent('div').attr('id');
+            console.log("pervDivId:"+pervDivId);
+            $("#"+pervDivId).css('background-color','#2c94ff');
+            $("#"+pervDivId).css('padding-top','15px');
+            $("#"+pervDivId).css('padding-bottom','15px');
+            $("#"+pervDivId).css('border-radius','5px');
+            setTimeout("changeInputFileSize($('#"+pervDivId+"'))",500);
+        }
+
+        //身份证反面：
+        var legalbody_back_img_blob = [[${session.supplier.legalbodyCardBackImg}]];
+        if(legalbody_back_img_blob){
+            // blobToBase64(bussiness_img_blob).then(res => {
+            //     // 转化后的base64
+            //     console.log('base64', res)
+            // })
+            $("#legalbody_back_img_img").attr('src','data:image/png;base64,'+legalbody_back_img_blob);
+            $("#legalbody_back_img_img").css("width",'92%');
+            $("#legalbody_back_img_img").css("left",'4%');
+            var pervDivId = $("#legalbody_back_img_img").parent('div').attr('id');
+            console.log("pervDivId:"+pervDivId);
+            $("#"+pervDivId).css('background-color','#2c94ff');
+            $("#"+pervDivId).css('padding-top','15px');
+            $("#"+pervDivId).css('padding-bottom','15px');
+            $("#"+pervDivId).css('border-radius','5px');
+            setTimeout("changeInputFileSize($('#"+pervDivId+"'))",500);
+        }
+
+
+
+
+    })
+
+
+
+
+
+    $("#subBtn").on("click",function(){
+
+        $("#subBtn").attr('disabled','disabled');
+
+        var supplier = {};
+        // var companyName = $("#companyNameInput").val();
+        // if(companyName != '' && companyName != 'Company name'){
+        //     supplier.name = companyName;
+        // }
+        // var businessLicenceNum = $("#bussinessLicenceNumInput").val();
+        // if(businessLicenceNum != '' && businessLicenceNum != 'Business license number'){
+        //     supplier.buslicensenum = businessLicenceNum;
+        // }else{
+        //     alertMsg("请填写营业执照号码！");
+        //     location.href = "#bussinessLicenceNumInput";
+        //     $("#subBtn").removeAttr('disabled');
+        //     $("#bussinessLicenceNumInput").click();
+        //     return ;
+        // }
+        // /*验证*/
+        // /*所在地*/
+        // var placeOnName =  $("#sel_city").text();
+        //
+        // if(placeOnName == undefined || placeOnName == "" || placeOnName == '点击选取省市区县'){
+        //     alertMsg("请选择所在地！");
+        //     location.href = "#localplace";
+        //     $("#subBtn").removeAttr('disabled');
+        //     $("#sel_city").click();
+        //     return ;
+        // }
+        // supplier.locationProvinceJsIndex = selectedIndex[0];
+        // supplier.locationCityJsIndex = selectedIndex[1];
+        // supplier.locationAreaJsIndex = selectedIndex[2];
+        //
+        // /*注册地*/
+        // var registAddress = $("#registAddressInput").val();
+        // console.log("注册地");
+        // console.log(registAddress);
+        // if(registAddress == undefined || registAddress == ''){
+        //     alertMsg("请填写注册地址！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     $("#registAddressInput").focus();
+        //     location.href = "#registAddressInput";
+        //     return ;
+        // }
+        // supplier.registeredAddress = registAddress;
+        //
+        // /*所属行业*/
+        //
+        // var tradeOn = $(".selectpicker").selectpicker('val');
+        // var typeId = $(".selectpicker").find("option:selected").attr("typeid");
+        // console.log("所属行业：");
+        // console.log(tradeOn);
+        // console.log("typeid："+typeId)
+        // if(!typeId){
+        //     alertMsg("请选择所属行业！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     location.href = "#sel_trade";
+        //     $("#sel_trade").click();
+        //     return ;
+        // }
+        // supplier.industryFirst = typeId;
+        //
+        // // var tradeOn = $("#sel_trade").text();
+        // // if(tradeOn == undefined || tradeOn == '' || tradeOn == '点击选取所属行业'){
+        // //     alertMsg("请选择所属行业！");
+        // //     $("#subBtn").removeAttr('disabled');
+        // //     location.href = "#sel_trade";
+        // //     $("#sel_trade").click();
+        // //     return ;
+        // // }
+        // // supplier.industryFirst = checkedTradeValue[0];
+        // // supplier.industrySecond = checkedTradeValue[1];
+        // // supplier.industryThird = checkedTradeValue[2];
+        //
+        // /*经营范围*/
+        // var bussinessScope = $("#bussinessScopeTextarea").val();
+        // console.log("经营范围");
+        // console.log(bussinessScope);
+        // if(!bussinessScope){
+        //     alertMsg("请填写经营范围！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     location.href = "#bussinessScopeTextarea";
+        //     $("#bussinessScopeTextarea").focus();
+        //     return ;
+        // }
+        // supplier.businessScope=bussinessScope;
+        //
+        // /*法人身份证照片*/
+        // var ifUped = $("#legalBodyIdFront").attr("uped");
+        // console.log(ifUped);
+        // if(!ifUped){
+        //     alertMsg("请上传法人身份证正面照片！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     location.href = "#legalBodyIdFront";
+        //     $("#legalBodyIdFront").click();
+        //     return ;
+        // }
+        //
+        // var ifUped2 = $("#legalBodyIdBack").attr("uped");
+        // if(!ifUped2){
+        //     alertMsg("请上传法人身份证反面照片！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     location.href = "#legalBodyIdBack";
+        //     $("#legalBodyIdBack").click();
+        //     return ;
+        // }
+        //
+        // /*法人姓名*/
+        // var legalBodyName = $("#legalBodyNameInput").val();
+        // if(!legalBodyName){
+        //     alertMsg("请填写法人姓名！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     location.href = "#legalBodyNameInput";
+        //     $("#legalBodyNameInput").focus();
+        //     return ;
+        // }
+        //
+        // supplier.legalbodyName = legalBodyName;
+        //
+        //
+        // /*法人身份证号码*/
+        // var legalBodyIdCardNum = $("#legalBodyIdCardNumInput").val();
+        // if((!legalBodyIdCardNum)){
+        //     alertMsg("请填写法人身份证号码！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     location.href = "#legalBodyIdCardNumInput";
+        //     $("#legalBodyIdCardNumInput").focus();
+        //     return ;
+        // }
+        // if(!checkIdNum(legalBodyIdCardNum)){
+        //     alertMsg("请填写正确的身份证号码！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     location.href = "#legalBodyIdCardNumInput";
+        //     $("#legalBodyIdCardNumInput").focus();
+        //     return ;
+        // }
+        //
+        // supplier.legalbodyIdcardNumber = legalBodyIdCardNum;
+        //
+        // /*手机号码*/
+        // var phoneNum = $("#phoneNumInput-jc").val();
+        // if(!phoneNum){
+        //     alertMsg("请填写手机号码！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     location.href = "#phoneNumInput-jc";
+        //     $("#phoneNumInput-jc").focus();
+        //     return ;
+        // }
+        //
+        // if(!isPhoneNo(phoneNum)){
+        //     alertMsg("请填写正确的手机号码！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     location.href = "#phoneNumInput-jc";
+        //     $("#phoneNumInput-jc").focus();
+        //     return ;
+        // }
+        // supplier.authPhone = phoneNum;
+        //
+        // /*验证码*/
+        // var phoneCheckCode = $("#phoneCheckCodeInput").val();
+        // if(!phoneCheckCode){
+        //     alertMsg("请填写验证码！");
+        //     $("#subBtn").removeAttr('disabled');
+        //     location.href = "#phoneCheckCodeInput";
+        //     $("#phoneCheckCodeInput").focus();
+        //     return ;
+        // }
+        //
+        // /*供应商属性（基础供应商）*/
+        // supplier.ifAttrNormal = 1;
+        supplier.supstateStrategy = 2;
+
+
+        /*ajax 提交*/
+
+        update_supplier_active(supplier).then(function(res){
+            if('修改成功'==res.message){
+                alertMsg("已请求更改资料，请等待审核！");
+                setTimeout(function(){
+                    window.history.back();
+                },1000)
+
+            }
+            //alertMsg(res.message);
+        },function(res){
+            alertMsg(res.message);
+            $("#subBtn").removeAttr('disabled');
+        })
+
+
+        // $.ajax({
+        //     url:'/auth/subData/',
+        //     data :{supplier:JSON.stringify(supplier),phoneCheckCode:phoneCheckCode},
+        //     type :'post',
+        //     dataType :'json',
+        //     success :function(res){
+        //         console.log(res);
+        //         if(res.success){
+        //             alertMsg("提交成功,请等待审核");
+        //         }else{
+        //             alertMsg(res.message);
+        //         }
+        //     },
+        //     fail :function(res){
+        //         console.log(res);
+        //     }
+        // })
+
+
+    })
+
+
+
+
+    /**
+     * 上传相关js
+     */
+
+    /*上传图片：*/
+    /**
+     * 获取到图片后
+     * @type {string}      在input标签上面 onChange="preview(this)"即可
+     * 逻辑：
+     *      1.通过input   type="file"获取图片   file.files[0]
+     *      2.判断，如果图片大小大于1M则压缩   photoCompress(文件，图片质量参数，回调函数），在回调函数中获取返回值，返回值即是压缩后的图片的base64码
+     *      3.显示。如果图片经过压缩，那么把压缩后获取到的base64赋值给图片的src;
+     *              如果图片不超过1M,没有经过压缩，那么通过FileReader()获得图片的base64码赋值给src
+     *      4.把图片的base64码转换为blob
+     *
+     *
+     */
+    var bl="",theFile;
+    function preview(file) {
+        //首先检测浏览器对FileReader的兼容性
+
+        /*获取图片对应的父节点*/
+        var thisEveId = file.id;
+        var pervDivId = "preview-" + thisEveId;
+        var prevDiv = document.getElementById(pervDivId);
+        var orgId = [[${session.supplier.pkSupplier}]];
+
+
+
+        /*获取文件*/
+        theFile = file.files[0];
+        console.log("压缩前：" + theFile.size / 1024 + "k");
+        //var width = file.files[0].width;
+        if(undefined == theFile){
+            console.log("theFile == undefined");
+            return ;
+        }
+        if(theFile.size/1024 > 100) { //大于1M，进行压缩上传
+            console.log("theFile.size/1024 > 100");
+            photoCompress(theFile, {
+                quality: 0.7
+            }, function(base64Codes){
+                console.log("压缩后：" + base64Codes.length / 1024 + "k");
+                $("#"+pervDivId).children("img").attr("src", base64Codes);
+                $("#"+pervDivId).children("img").css("width", (window.innerWidth-40)+"px");
+                bl = convertBase64UrlToBlob(base64Codes);
+
+                uploadImg(bl,file.id);
+                console.log("bl:");
+                console.log(bl);
+            });
+        }else{
+            console.log("theFile.size/1024 <= 100");
+            var ready=new FileReader();
+            /*开始读取指定的Blob对象或File对象中的内容. 当读取操作完成时,readyState属性的值会成为DONE,如果设置了onloadend事件处理程序,则调用之.同时,result属性中将包含一个data: URL格式的字符串以表示所读取文件的内容.*/
+            ready.readAsDataURL(theFile);
+            ready.onload=function(){
+                var re=this.result;
+                console.log("ready.onload....this.result:");
+                console.log(this.result);
+                $("#"+pervDivId).children("img").attr("src", this.result);
+                $("#"+pervDivId).children("img").css("width", (window.innerWidth-40)+"px");
+                bl = convertBase64UrlToBlob(this.result);
+                uploadImg(bl,file.id);
+                console.log("bl:");
+                console.log(bl);
+            }
+        }
+        setTimeout("changeInputFileSize($('#"+pervDivId+"'))",500);
+        //设置为不可修改状态：
+        var updateBtn = $("#"+pervDivId).parent().parent().find('.upbtn');
+        console.log("updateBtn:");
+        console.log(updateBtn);
+        updateBtn.show();
+        var toupbtn = $("#"+pervDivId).parent().parent().find('.toupbtn');
+        console.log("toupbtn:");
+        console.log(toupbtn);
+        toupbtn.hide();
+        $("#"+thisEveId).attr('disabled','disabled');
+        console.log("$(\"#\"+thisEveId):");
+        console.log($("#"+thisEveId));
+
+
+    };
+
+
+
+
+    /**
+     *       用url方式表示的base64图片数据
+     */
+    function convertBase64UrlToBlob(urlData){
+        var arr = urlData.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], {type:mime});
+    };
+    function photoCompress(file,w,objDiv){
+        var ready=new FileReader();
+        /*开始读取指定的Blob对象或File对象中的内容. 当读取操作完成时,readyState属性的值会成为DONE,
+        如果设置了onloadend事件处理程序,则调用之.
+        同时,result属性中将包含一个data: URL格式的字符串以表示所读取文件的内容.*/
+        ready.readAsDataURL(file);
+        ready.onload=function(){
+            var re=this.result;
+            canvasDataURL(re,w,objDiv)
+        }
+    };
+
+
+    /**
+     * 按比例缩放图片，通过canvas新生成图片并把新生成的图片转换为base64码返回
+     * @param path
+     * @param obj
+     * @param callback
+     */
+    function canvasDataURL(path, obj, callback){
+        var img = new Image();
+        img.src = path;
+        img.onload = function(){
+            var that = this;
+            // 默认按比例压缩
+            var w = that.width,
+                h = that.height,
+                scale = w / h;
+            w = obj.width || w;
+            h = obj.height || (w / scale);
+            var quality = 0.7;  // 默认图片质量为0.7
+            //生成canvas
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            // 创建属性节点
+            var anw = document.createAttribute("width");
+            anw.nodeValue = w;
+            var anh = document.createAttribute("height");
+            anh.nodeValue = h;
+            canvas.setAttributeNode(anw);
+            canvas.setAttributeNode(anh);
+            ctx.drawImage(that, 0, 0, w, h);
+            // 图像质量
+            if(obj.quality && obj.quality <= 1 && obj.quality > 0){
+                quality = obj.quality;
+            }
+            // quality值越小，所绘制出的图像越模糊
+            var base64 = canvas.toDataURL('image/jpeg', quality);
+            // 回调函数返回base64的值
+            callback(base64);
+        }
+    };
+
+    /**
+     * 动态的设置input的宽、高及位置，以便覆盖图片，使点击图片等同于点击input,起到点击图片即可以选择图片的效果
+     * @param prevDiv       input父节点的jquery对象
+     */
+    function changeInputFileSize(prevDiv){
+        console.log("changeInputFileSize....prevDiv:");
+        console.log(prevDiv);
+        var windowWidth = window.innerWidth;
+        if(prevDiv){
+            console.log("prevDiv...");
+            console.log(prevDiv.children("img"));
+            //获取页面宽度
+            //获取图片的宽度
+            var imageWidth = prevDiv.children("img")['0'].width;
+            var imageHeight =  prevDiv.children("img")['0'].height;
+            console.log("prevDiv...windowWidth:"+windowWidth+",imageWidth:"+imageWidth+",imageHeight:"+imageHeight);
+            prevDiv.next().css("width",imageWidth);
+            prevDiv.next().css("height",imageHeight);
+            prevDiv.next().css("left",(((windowWidth-imageWidth)/2)-10)+"px");
+            prevDiv.next().attr("uped",true);
+            prevDiv.next().next().css("top",(imageHeight+3)+"px");
+            prevDiv.children("img").css("left",(((windowWidth-imageWidth)/2)-10)+"px");
+        }else{
+            $(".uploadimg-input").each(function(){
+                var imageWidth = $(this).parent().children("div").children("img")['0'].scrollWidth;
+                var imageHeight = $(this).parent().children("div").children("img")['0'].scrollHeight;
+                //设置input宽:
+                $(this).css("width",imageWidth);
+                $(this).next().css("top",(imageHeight+2)+"px")
+                $(this).css("height",imageHeight);
+                $(this).css("left",(((window.innerWidth-imageWidth)/2)-10)+"px");
+                $(this).parent().children("div").children("img").css("left",(((windowWidth-imageWidth)/2)-10)+"px");
+            })
+        }
+    };
+
+
+
+
+
+
+
+    /**
+     *
+     * 城市三级联动
+     * @type {number}
+     * 1.把省份放进去
+     * 2.省份更改事件，动态去获取该省的市
+     * 3.市更改事件，动态去获取该市的县
+     */
+
+
+    var nameEl = document.getElementById('sel_city');
+
+    var first = []; /* 省，直辖市 */
+    var second = []; /* 市 */
+    var third = []; /* 镇 */
+
+    var selectedIndex = [0, 0, 0]; /* 默认选中的地区 */
+
+    //所在地：
+    var supplierlocationProvinceJsIndex = [[${session.supplier.locationProvinceJsIndex}]];
+    if(supplierlocationProvinceJsIndex){
+        selectedIndex[0] = supplierlocationProvinceJsIndex;
+    }
+    var supplierlocationCityJsIndex = [[${session.supplier.locationCityJsIndex}]];
+    if(supplierlocationCityJsIndex){
+        selectedIndex[1] = supplierlocationCityJsIndex;
+    }
+
+    var supplierlocationAreaJsIndex = [[${session.supplier.locationAreaJsIndex}]];
+    if(supplierlocationAreaJsIndex){
+        selectedIndex[2] = supplierlocationAreaJsIndex;
+    }
+
+
+
+    var checked = [0, 0, 0]; /* 已选选项 */
+
+    function creatList(obj, list){
+        obj.forEach(function(item, index, arr){
+            var temp = new Object();
+            temp.text = item.name;
+            temp.value = index;
+            list.push(temp);
+        })
+    }
+
+    creatList(city, first);
+
+    if (city[selectedIndex[0]].hasOwnProperty('sub')) {
+        creatList(city[selectedIndex[0]].sub, second);
+    } else {
+        second = [{text: '', value: 0}];
+    }
+
+    if (city[selectedIndex[0]].sub[selectedIndex[1]].hasOwnProperty('sub')) {
+        creatList(city[selectedIndex[0]].sub[selectedIndex[1]].sub, third);
+    } else {
+        third = [{text: '', value: 0}];
+    }
+
+    var picker = new Picker({
+        data: [first, second, third],
+        selectedIndex: selectedIndex,
+        title: '地址选择',
+    });
+
+    var text1 = first[selectedIndex[0]].text;
+    var text2 = second[selectedIndex[1]].text;
+    var text3 = third[selectedIndex[2]] ? third[selectedIndex[2]].text : '';
+
+    nameEl.innerText = text1 + ' ' + text2 + ' ' + text3;
+
+    picker.on('picker.select', function (selectedVal, selectedIndex) {
+        var text1 = first[selectedIndex[0]].text;
+        var text2 = second[selectedIndex[1]].text;
+        var text3 = third[selectedIndex[2]] ? third[selectedIndex[2]].text : '';
+
+        nameEl.innerText = text1 + ' ' + text2 + ' ' + text3;
+    });
+
+    picker.on('picker.change', function (index, selectedIndex) {
+        if (index === 0){
+            firstChange();
+        } else if (index === 1) {
+            secondChange();
+        }
+
+        function firstChange() {
+            second = [];
+            third = [];
+            checked[0] = selectedIndex;
+            var firstCity = city[selectedIndex];
+            if (firstCity.hasOwnProperty('sub')) {
+                creatList(firstCity.sub, second);
+
+                var secondCity = city[selectedIndex].sub[0]
+                if (secondCity.hasOwnProperty('sub')) {
+                    creatList(secondCity.sub, third);
+                } else {
+                    third = [{text: '', value: 0}];
+                    checked[2] = 0;
+                }
+            } else {
+                second = [{text: '', value: 0}];
+                third = [{text: '', value: 0}];
+                checked[1] = 0;
+                checked[2] = 0;
+            }
+
+            picker.refillColumn(1, second);
+            picker.refillColumn(2, third);
+            picker.scrollColumn(1, 0)
+            picker.scrollColumn(2, 0)
+        }
+
+        function secondChange() {
+            third = [];
+            checked[1] = selectedIndex;
+            var first_index = checked[0];
+            if (city[first_index].sub[selectedIndex].hasOwnProperty('sub')) {
+                var secondCity = city[first_index].sub[selectedIndex];
+                creatList(secondCity.sub, third);
+                picker.refillColumn(2, third);
+                picker.scrollColumn(2, 0)
+            } else {
+                third = [{text: '', value: 0}];
+                checked[2] = 0;
+                picker.refillColumn(2, third);
+                picker.scrollColumn(2, 0)
+            }
+        }
+
+    });
+
+    picker.on('picker.valuechange', function (selectedVal, selectedIndex) {
+        console.log(selectedVal);
+        console.log(selectedIndex);
+    });
+
+    nameEl.addEventListener('click', function () {
+        picker.show();
+    });
+
+
+
+
+
+
+
+
+
+    /**
+     * 所属行业选择：
+     * 思路：
+     * 1.异步获取第一级分类的数据
+     * 2.判断第一级的第一个分类是否有子分类，如果有的话获取其下面的二级分类
+     * 3.判断第二级分类下面是否还有分类，如果有的话获取
+     */
+    var tradeName = document.getElementById('sel_trade');
+    var firstTrade = []; /* 第一级分类*/
+    var secondTrade = []; /* 第二级分类 */
+    var thirdTrade = []; /* 第三级分类 */
+    var selectedIndexTrade = [0, 0, 0]; /* 默认选中的地区 */
+    var checkedTrade = [0, 0, 0]; /* 已选选项 */
+    var checkedTradeValue = ['','',''];
+    var tradePicker = new Picker({
+        data: [firstTrade, secondTrade, thirdTrade],
+        selectedIndex: selectedIndexTrade,
+        title: '行业选择'
+    });;
+
+    /*获取分类数据方法，whichLeval可以为1，2,3, 如果是第2  、3级，需要给parentId*/
+    function getTrade(whichLeval,parentId){
+        hiddenConfirm();
+        var url = "";
+        switch (whichLeval) {
+            case  1 :
+                url = "/getTypeFirst";
+                break;
+            case 2 :
+                url = "/getTypeByParentId";
+                break;
+            case  3 :
+                url = "/getTypeByParentId";
+                break;
+            default:
+                console.log("获取分类信息参数不对：，，whichLeval?:"+whichLeval+",,,parentId:"+parentId);
+                break;
+        }
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url:"/item"+url,
+                data:{id:parentId},
+                type:"post",
+                dataType:"json",
+                success:function(res){
+                    showConfirm();
+                    console.log(res);
+                    resolve(res);
+                },
+                fail:function(res){
+                    showConfirm();
+                    alertMsg("获取数据异常，请重试",3000);
+                    console.log(res);
+                    reject(res);
+                }
+            })
+        })
+    }
+
+    /*获取第一级分类，然后根据返回的第一级分类的第一个分类的情况获取第二级分类，然后根据返回的第二级分类的第一个分类的情况获取第三级分类*/
+    getTrade(1).then(function(res){
+        /*获取到第一层分类信息后：
+        * 1：把第一层分类数据放入tradeFirst
+        * 2:如果tradeFirst的第一个元素含有子元素，那么获取该分类的子元素放入tradeSecond
+        * 3:如果tradeSecond的第一个元素含有子元素，那么获取该分类的子元素放入tradeSecond*/
+        creatTradeList(res.result,firstTrade);
+        if (firstTrade[selectedIndexTrade[0]].canOpen) {
+            /*如果firstTrade的第一个元素有子元素，那么根据id去获取他下面的子元素并放入secondTrade*/
+            getTrade(2,firstTrade[selectedIndexTrade[0]].value).then(function(res2){
+                creatTradeList(res2.result, secondTrade);
+                if (secondTrade[selectedIndexTrade[1]].canOpen) {
+                    getTrade(3,secondTrade[selectedIndexTrade[1]].value).then(function(res3){
+                        creatTradeList(res3.result,thirdTrade);
+                        tradePicker = new Picker({
+                            data: [firstTrade, secondTrade, thirdTrade],
+                            selectedIndex: selectedIndexTrade,
+                            title: '行业选择'
+                        });
+                        setPickerChange();
+                    },function(res3){
+                        console.log(res3);
+                    })
+                } else {
+                    thirdTrade = [{text: '', value: 0}];
+                    tradePicker = new Picker({
+                        data: [firstTrade, secondTrade, thirdTrade],
+                        selectedIndex: selectedIndexTrade,
+                        title: '行业选择'
+                    });
+                    setPickerChange();
+                }
+            },function(res2){
+                console.log("getTrade(2,firstTrade[selectedIndexTrade[0]].id......fail......res2:");
+                console.log(res2);
+            })
+        } else {
+            secondTrade = [{text: '', value: 0}];
+            tradePicker = new Picker({
+                data: [firstTrade, secondTrade, thirdTrade],
+                selectedIndex: selectedIndexTrade,
+                title: '行业选择'
+            });
+            setPickerChange();
+        }
+    },function(res){
+        alertMsg("网络异常，请稍后再试");
+        console.log(res.message);
+    })
+    function creatTradeList(obj, list){
+        obj.forEach(function(item, index, arr){
+            var temp = new Object();
+            temp.text = item.name;
+            temp.value = item.id;
+            temp.canOpen = item.canOpen;
+            list.push(temp);
+        })
+    }
+
+    function setPickerChange(){
+        tradePicker.on('picker.select', function (selectedVal, selectedIndex) {
+            var text1 = firstTrade[selectedIndex[0]].text;
+            var text2 = secondTrade[selectedIndex[1]].text;
+            var text3 = thirdTrade[selectedIndex[2]] ? thirdTrade[selectedIndex[2]].text : '';
+            tradeName.innerText = text1 + ' ' + text2 + ' ' + text3;
+            var val1 = firstTrade[selectedIndex[0]].value;
+            var val2 = secondTrade[selectedIndex[1]].value;
+            var val3 = thirdTrade[selectedIndex[2]] ? thirdTrade[selectedIndex[2]].value : '';
+            tradeName.innerText = text1 + ' ' + text2 + ' ' + text3;
+            checkedTradeValue[0] = val1;
+            checkedTradeValue[1] = val2;
+            checkedTradeValue[2] = val3;
+        });
+
+        tradePicker.on('picker.change', function (index, selectedIndex) {
+            console.log("picker...change...index:"+index+",,,selectedIndex:"+selectedIndex);
+            if (index === 0){
+                firstTradeChange();
+            } else if (index === 1) {
+                secondTradeChange();
+            }
+            function firstTradeChange() {
+                secondTrade = [];
+                thirdTrade = [];
+                checkedTrade[0] = selectedIndex;
+                var firstTradeObj = firstTrade[selectedIndex];
+                if (firstTradeObj.canOpen) {
+                    getTrade(2,firstTradeObj.value).then(function(res){
+                        creatTradeList(res.result, secondTrade);
+                        tradePicker.refillColumn(1, secondTrade);
+                        tradePicker.scrollColumn(1, 0)
+                        var secondTradeFirst = secondTrade[0];
+                        if(secondTradeFirst.canOpen){
+                            checkedTrade[1] = 0;
+                            getTrade(3,secondTradeFirst.value).then(function(res2){
+                                creatTradeList(res2.result,thirdTrade);
+                                tradePicker.refillColumn(2, thirdTrade);
+                                tradePicker.scrollColumn(2, 0)
+                            },function(res2){
+                                console.log("getTrade(3,"+secondTradeFirst.value+")...fail....res:");
+                                console.log(res2);
+                            })
+                        }else{
+                            thirdTrade = [{text: '', value: 0}];
+                            checkedTrade[2] = 0;
+                        }
+                    },function(res){
+                        console.log(res);
+                        console.log("firstTradeChange()....getTrade(2,"+firstTrade.value+")...fail...")
+                    })
+                } else {
+                    secondTrade = [{text: '', value: 0}];
+                    thirdTrade = [{text: '', value: 0}];
+                    checkedTrade[1] = 0;
+                    checkedTrade[2] = 0;
+                    tradePicker.refillColumn(1, secondTrade);
+                    tradePicker.scrollColumn(1, 0)
+                    tradePicker.refillColumn(2, thirdTrade);
+                    tradePicker.scrollColumn(2, 0)
+                }
+            }
+
+            function secondTradeChange() {
+                thirdTrade = [];
+                checkedTrade[1] = selectedIndex;
+                var first_index = checkedTrade[0];
+                if (secondTrade[checkedTrade[1]].canOpen) {
+                    getTrade(3,secondTrade[checkedTrade[1]].value).then(function(res){
+                        creatTradeList(res.result,thirdTrade);
+                        tradePicker.refillColumn(2, thirdTrade);
+                        tradePicker.scrollColumn(2, 0)
+                    },function(res){
+                        console.log("secondTradeChange()...fail...");
+                        console.log(res);
+                    })
+                } else {
+                    thirdTrade = [{text: '', value: 0}];
+                    checkedTrade[2] = 0;
+                    tradePicker.refillColumn(2, thirdTrade);
+                    tradePicker.scrollColumn(2, 0)
+                }
+            }
+
+        });
+        tradePicker.on('picker.valuechange', function (selectedVal, selectedIndex) {
+            console.log("picker.valuechange");
+            console.log(selectedVal);
+            console.log(selectedIndex);
+        });
+    }
+    function showConfirm(){
+        $(".confirm").css("display","flex");
+    }
+    function hiddenConfirm(){
+        $(".confirm").css("display","none");
+    }
+    // tradeName.addEventListener('click', function () {
+    //     tradePicker.show();
+    // });
+
+    function blobToBase64(blob) {
+        console.log(typeof (blob));
+        return new Promise((resolve, reject) => {
+            const fileReader = new FileReader();
+        fileReader.onload = (e) => {
+            resolve(e.target.result);
+        };
+        // readAsDataURL
+        fileReader.readAsDataURL(blob);
+        fileReader.onerror = () => {
+            reject(new Error('blobToBase64 error'));
+        };
+    });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+</html>

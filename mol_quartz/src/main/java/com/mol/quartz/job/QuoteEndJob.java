@@ -14,6 +14,8 @@ import org.quartz.JobExecutionException;
 import org.quartz.PersistJobDataAfterExecution;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import util.TimeUtil;
+
 import java.util.Iterator;
 import java.util.Set;
 
@@ -100,12 +102,14 @@ public class QuoteEndJob implements Job{
 			if("true".equals(expertReview)){
 				//调用另一个定时任务
 				updatePurchase.setStatus("5");
+				updatePurchase.setExpertTime(TimeUtil.getNowDateTime());
 				purchaseMapper.updateByPrimaryKeySelective(updatePurchase);
 				addJobHandler.addExpertReviewEndJob(orderId,AddJobHandler.EXPERTREVIEWDELAY);
 
 			}else{
 
 				updatePurchase.setStatus("4");
+				updatePurchase.setBargainingTime(TimeUtil.getNowDateTime());
 				purchaseMapper.updateByPrimaryKeySelective(updatePurchase);
 				return ;
 			}

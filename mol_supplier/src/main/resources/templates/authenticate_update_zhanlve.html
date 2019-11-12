@@ -995,14 +995,18 @@
         //
         // /*供应商属性（基础供应商）*/
         // supplier.ifAttrNormal = 1;
-        supplier.supstateNormal = 2;
+        supplier.supstateStrategy = 2;
 
 
         /*ajax 提交*/
 
         update_supplier_active(supplier).then(function(res){
             if('修改成功'==res.message){
-                window.location.reload();
+                alertMsg("已请求更改资料，请等待审核！");
+                setTimeout(function(){
+                    window.history.back();
+                },1000)
+
             }
             //alertMsg(res.message);
         },function(res){

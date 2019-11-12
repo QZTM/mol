@@ -4,5 +4,15 @@
 
     <select id="PurchaseGrogressList" resultType="com.mol.ddmanage.Ben.Office.Purchase_Grogress_list_ben">
        SELECT fy_purchase.*,(SELECT app_user.user_name FROM app_user WHERE app_user.dd_user_id=fy_purchase.staff_id)user_name FROM fy_purchase
+       <if test="status==100">
+           where 0=0
+       </if>
+
+       <if test="status!=100">
+           where status=#{status}
+       </if>
+       <if test="time1 !='' and time2 !=''">
+         and  fy_purchase.create_time>#{time1} and #{time2}>fy_purchase.create_time
+       </if>
     </select>
 </mapper>

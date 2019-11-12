@@ -13,7 +13,7 @@
         <div style="float: left;margin-left: 10px">
             <p th:text="${titl}">查看审批记录:计算机采购</p>
         </div>
-        <div id="close" style="float: right;" >
+        <div id="close" style="float: right;" onclick="return_top()" >
             <label style="cursor: pointer;">返回</label>
         </div>
         <div style="float: right;margin-right: 12px;" onclick="preview()">
@@ -23,7 +23,7 @@
     </div>
 
     <!--采购订单-->
-    <div  style="float: left;margin: initial;width: 49%;height: 500px;margin: 6px;border-radius: 6px; border: 1px solid #B2B2B2"><!--width:792px-->
+    <div  style="float: left;margin: initial;overflow-y:auto;width: 49%;height: 500px;margin: 6px;border-radius: 6px; border: 1px solid #B2B2B2"><!--width:792px-->
 
         <!--标题-->
         <div style="margin: 15px; width: 96%;height: 165px; background-color: #009F95;border-radius:12px;"><!--width: 760px-->
@@ -96,28 +96,16 @@
     </div>
 
     <!--报价的供应商-->
-    <div style="float: left;margin: initial;width: 49%;height: 500px;margin: 6px;border-radius: 6px; border: 1px solid #B2B2B2">
-       <div style=" float: left;margin: initial;margin: 12px;width: 750px;color: #fbfbfb;font-size: 14px ;">
-           <div style="float: left;margin: initial;">
-               <div style="background-color: #2D93CA;padding: 6px;border-radius: 4px">
-                   <font th:text="${supplier_name}"></font>
-               </div>
-           </div>
-           <div style="float: left;margin: initial;float: right;">
-               <div style="background-color: #2D93CA;padding: 6px;border-radius: 4px">
-                   <font>共计400元</font>
-               </div>
-           </div>
+    <div style="float: left;margin: initial;overflow-y:auto;width: 49%;height: 500px;margin: 6px;border-radius: 6px; border: 1px solid #B2B2B2">
 
-       </div>
-        <div style="float: left;margin: initial;margin-left: 10px;width: 96%">
-            <table  class="layui-hide" id="test2"></table>
+        <div id="SupplerQuoteTable" style="float: left;margin: initial;margin-left: 10px;width: 96%">
+            <!--<table  class="layui-hide" id="test2"></table>-->
         </div>
 
     </div>
 
     <!--审批日志-->
-    <div style="float: left;margin: initial;width: 47%;height: 500px;margin: 6px;border-radius: 6px; border: 1px solid #B2B2B2">
+    <div style="float: left;margin: initial;overflow-y:auto;width: 47%;height: 500px;margin: 6px;border-radius: 6px; border: 1px solid #B2B2B2">
 
         <div style="font-size: 14px ;float: left;margin: initial;margin: 12px;font-size: 14px;color: #fbfbfb">
             <div style="background-color: #2D93CA;padding: 6px;border-radius: 4px">
@@ -145,34 +133,52 @@
         var a=[{"itme1":"000001","itme2":"询价采购","itme3":"000001","itme4":"张XX","itme5":"机械零件","itme6":"正在询价","itme7":"2019年06月13日09:38"},
             {"itme1":"000001","itme2":"询价采购","itme3":"000001","itme4":"张XX","itme5":"机械零件","itme6":"正在询价","itme7":"2019年06月13日09:38"}];
 
-        for (var i = 0; i < a.length; i++) {
-            var divitem = document.createElement("div");
-            divitem.style.display="inline-block";
-            var div = document.getElementById("approval_view");
-            divitem.innerHTML =
-        '<div style="display: inline-block;vertical-align:top">'+
-                '<div>'+
-                ' <img src="/imge/timg.jpg" style="height: 80px;width: 80px;" class="layui-nav-img">'+
-                '</div>'+
-                ' <div style="width: 80px;text-align: center;font-size: 18px;margin-top: 8px">'+
-                ' <p>王XX</p>'+
-                '</div>'+
-                '</div>'
-            div.appendChild(divitem);
 
-            if (i+1<a.length)
-            {
-                var divitem_1 = document.createElement("div");//添加箭头
-                divitem_1.style.display="inline-block";
-                var div_1 = document.getElementById("approval_view");
-                divitem_1.innerHTML =
-           ' <div style="display: inline-block;vertical-align:top;margin-top: 20px">'+
-                ' <img style="width: 50px;height: 50px;" src="/imge/jiantou.jpg">'+
-                ' </div>'
-                div_1.appendChild(divitem_1);
+        //获取审批人基本信息
+        $.ajax({
+            type: 'POST',
+            url: '/Office/Title_Details_contorller/ReviewPeolpes',
+            dataType: 'json',
+            //data:{},
+            // headers:{  'eticket': app.globalData.eticket},
+            success: function (data) {
 
+                for (var i = 0; i < data.length; i++) {
+                    var divitem = document.createElement("div");
+                    divitem.style.display="inline-block";
+                    var div = document.getElementById("approval_view");
+                    divitem.innerHTML =
+                        '<div style="display: inline-block;vertical-align:top">'+
+                        '<div>'+
+                        ' <img src="/imge/timg.jpg" style="height: 80px;width: 80px;" class="layui-nav-img">'+
+                        '</div>'+
+                        ' <div style="width: 80px;text-align: center;font-size: 18px;margin-top: 8px">'+
+                        ' <p>'+data[i].name+'</p>'+
+                        '</div>'+
+                        '</div>'
+                    div.appendChild(divitem);
+
+                    if (i+1<data.length)
+                    {
+                        var divitem_1 = document.createElement("div");//添加箭头
+                        divitem_1.style.display="inline-block";
+                        var div_1 = document.getElementById("approval_view");
+                        divitem_1.innerHTML =
+                            ' <div style="display: inline-block;vertical-align:top;margin-top: 20px">'+
+                            ' <img style="width: 50px;height: 50px;" src="/imge/jiantou.jpg">'+
+                            ' </div>'
+                        div_1.appendChild(divitem_1);
+
+                    }
+                }
+
+            },
+            error: function (data) {
+                alert("获取审核人信息失败")
             }
-        }
+        });
+
+
     }
 
     function add_delivery_view()//添加抄送视图
@@ -180,30 +186,47 @@
         var a=[{"itme1":"000001","itme2":"询价采购","itme3":"000001","itme4":"张XX","itme5":"机械零件","itme6":"正在询价","itme7":"2019年06月13日09:38"},
             {"itme1":"000001","itme2":"询价采购","itme3":"000001","itme4":"张XX","itme5":"机械零件","itme6":"正在询价","itme7":"2019年06月13日09:38"}];
 
-        for (var i = 0; i < a.length; i++) {
+/*        //获取抄送人基本信息
+        $.ajax({
+            type: 'POST',
+            url: '/Office/Title_Details_contorller/ReviewPeolpes',
+            dataType: 'json',
+            //data:{},
+            // headers:{  'eticket': app.globalData.eticket},
+            success: function (data) {
+
+
+            },
+            error: function (data) {
+                alert("获取审核人信息失败")
+            }
+        });*/
+
+        for (var i = 0; i < data.length; i++) {
             var divitem = document.createElement("div");
             divitem.style.display="inline-block";
             var div = document.getElementById("delivery_view");
             divitem.innerHTML =
-       ' <div style="display: inline-block;vertical-align:top;margin-left: 10px">'+
-            '  <div>'+
-            '  <img src="/imge/timg.jpg" style="height: 80px;width: 80px;" class="layui-nav-img">'+
-            '  </div>'+
-            '  <div style="width: 80px;text-align: center;font-size: 18px;margin-top: 8px">'+
-            '  <p>王XX</p>'+
-            '   </div>'
+                ' <div style="display: inline-block;vertical-align:top;margin-left: 10px">'+
+                '  <div>'+
+                '  <img src="/imge/timg.jpg" style="height: 80px;width: 80px;" class="layui-nav-img">'+
+                '  </div>'+
+                '  <div style="width: 80px;text-align: center;font-size: 18px;margin-top: 8px">'+
+                '  <p>王xx</p>'+
+                '   </div>'
             div.appendChild(divitem);
         }
+
     }
 
-    $(document).ready(
+/*    $(document).ready(
              $("#close").click(
                  function () {
                     // document.getElementById("body").style.display="none";
                      parent.close_Details_page();
                  }
              )
-    )
+    )*/
     function getUrlParam(name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
         var r = window.location.search.substr(1).match(reg); //匹配目标参数
@@ -239,11 +262,12 @@
         */
 
 
+        //计划采购单
         $.ajax({
             type: 'POST',
-            url: '/Office/Title_Details_contorller/MaterialList',
+            url: '/PurchasOrderinfor/PlannedPurchaseben',
             dataType: 'json',
-            data:{purchase_id:document.getElementById("Order").innerText.substring(5)},
+            data:{PurchasId:document.getElementById("Order").innerText.substring(5)},
             // headers:{  'eticket': app.globalData.eticket},
             success: function (data)
             {
@@ -255,10 +279,10 @@
                     , data:Data
                     ,cols: [
                         [
-                            {field:'id', width:80, title: '序号', sort: true}
+                            {field:'number', width:80, title: '序号', sort: true}
                             ,{field:'name', width:150, title: '名称'}
                             ,{field:'materialspec', width:100, title: '规格'}
-                            ,{field:'measdoc', width:80, title: '单位'}
+                            ,{field:'pk_measdoc', width:80, title: '单位'}
                             ,{field:'goods_quantity', width:80,title: '数量', minWidth: 150}
                             ,{field:'all', width:120, title: '备注'}
                         ]
@@ -276,27 +300,7 @@
 
     });
 
-    layui.use('table', function(){
-/*        var table = layui.table;
-        var Data = [{"id":"BeJson","username":"http://www.bejson.com","sex":true,"city":"12","number":"12","experience":"12"}]
-        table.render({
-            elem: '#test2'
-            // ,url:'/demo/table/user/'
-            , data:Data
-            ,cols: [
-                [
-                    {field:'id', width:80, title: '序号', sort: true}
-                    ,{field:'username', width:150, title: '名称'}
-                    ,{field:'sex', width:100, title: '规格', sort: true}
-                    ,{field:'city', width:80, title: '数量'}
-                    ,{field:'number', width:80,title: '报价', minWidth: 150}
-                    ,{field:'experience', width:240, title: '合计', sort: true}
-                ]
-            ]
-            ,page: true
-        });*/
-
-
+/*    layui.use('table', function(){
 
         $.ajax({
             type: 'POST',
@@ -319,7 +323,7 @@
                             ,{field:'materialspec', width:100, title: '规格'}
                             ,{field:'quote', width:80, title: '报价'}
                             ,{field:'unit', width:80,title: '单位', minWidth: 150}
-                         /*   ,{field:'experience', width:240, title: '合计', sort: true}*/
+                         /!*   ,{field:'experience', width:240, title: '合计', sort: true}*!/
                         ]
                     ]
                     ,page: true
@@ -331,7 +335,94 @@
             }
         });
 
+    });*/
+
+
+    $.ajax({
+        type: 'POST',
+        url: '/PurchasOrderinfor/OrderDetailedinfor',
+        dataType: 'json',
+        data:{PurchasId:document.getElementById("Order").innerText.split(':')[1]},
+        // headers:{  'eticket': app.globalData.eticket},
+        success: function (data) {
+            Add_data_table("SupplerQuoteTable",data)
+            document.getElementById("Merchant_number").innerText="已报价公司:"+data.length+"家";
+        },
+        error: function (data) {
+            alert("获取审核议价信息失败")
+        }
     });
+
+
+    function Add_data_table(list_name,Data)//生成商家报价 专家审核等表单 参数 对应日期框的div的id 和多个公司数据
+    {
+
+        if (Data.length==0)
+        {
+            document.getElementById(list_name).style.display='none'
+        }
+        for (var n=0;n<Data.length;n++)//循环一次代表一个公司的表单被生成
+        {
+            if (n>0)//报价公司大于1家时加一个分界线
+            {
+                var line=document.createElement('div');
+                line.innerHTML=
+                    '<div style="margin: 12px;margin-top: 38px">'+
+                    '<hr class="layui-bg-green">'+
+                    '</div>';
+                document.getElementById(list_name.toString()).appendChild(line);
+            }
+
+            var div_table=document.createElement('div');//容纳公司名 报价表等
+            div_table.id='div_table'+list_name+n.toString();
+            document.getElementById(list_name).appendChild(div_table);
+
+            //报价的厂家名
+            var Company_quote=document.createElement('div');//创建一个表头
+            Company_quote.innerHTML=
+                '<div style="width:16%;margin-top: 12px;margin-left:6px;padding: 6px;background-color: #2D93CA;color: #fbfbfb;font-size: 16px;border-radius: 6px;display: inline-block;text-align: center">'+
+                ' <label >'+Data[n][0].corp_name+'</label>'+
+                '</div>'+
+
+                '<div style="width:auto;margin-right: 6px;margin-top: 12px;padding: 6px;background-color:#eb7350;color: #fbfbfb;font-size: 16px;border-radius: 6px;display: inline-block;float: right;text-align: center;cursor:pointer">'+
+                ' <label>总计:100000元</label>'+
+                '</div>'
+            document.getElementById('div_table'+list_name+n.toString()).appendChild(Company_quote);
+            var table=document.createElement('table');//创建一个表
+            table.id=list_name.toString()+'table'+n.toString();
+            table.class='layui-hide';
+            document.getElementById('div_table'+list_name+n.toString()).appendChild(table);
+
+
+            layui.use('table', function(){
+                var table = layui.table;
+                table.render({
+                    elem: '#'+list_name.toString()+'table'+n.toString()
+                    // ,url:'/demo/table/user/'
+                    , data:Data[n]
+                    ,cols: [
+                        [
+                            {field:'number', width:80, title: '序号', sort: true}
+                            ,{field:'material_name', width:150, title: '物料名称'}
+                            ,{field:'materialspec', width:200, title: '规格'}
+                            ,{field:'unit', width:150, title: '单位'}
+                            ,{field:'quote', width:150, title: '报价', sort: true}
+                        ]
+                    ]
+                    ,page: true
+                });
+            });
+
+        }
+    }
+
+
+
+
+
+
+
+
 
     layui.use('table', function(){
         var table = layui.table;
@@ -351,6 +442,10 @@
             ,page: true
         });
     });
+    function return_top()//返回上一层
+    {
+        parent.close_Details_page();
+    }
 
 </script>
 </body>

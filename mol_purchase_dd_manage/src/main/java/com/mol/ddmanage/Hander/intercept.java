@@ -14,12 +14,10 @@ public class intercept implements HandlerInterceptor{
     public intercept(){
 
     }
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,Object handler) throws Exception //接到请求首先执行此函数体，如果为true再执行contorler
     {
         try {
-
             HttpSession session=request.getSession();
             if (session.getAttribute("token")!=null)
             {

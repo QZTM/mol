@@ -6,6 +6,7 @@ import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseA
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
 import com.mol.supplier.entity.dingding.solr.fyPurchase;
 import com.mol.supplier.entity.thirdPlatform.FyQuote;
+import com.mol.supplier.service.microApp.MicroDdJsApiAuthService;
 import com.mol.supplier.service.microApp.MicroUserService;
 import com.mol.supplier.service.third.ScheService;
 import com.mol.supplier.service.third.ThirdPlatformService;
@@ -15,11 +16,10 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/sche")
@@ -34,6 +34,9 @@ public class ScheController {
 
     @Autowired
     private MicroUserService microUserService;
+
+    @Autowired
+    private MicroDdJsApiAuthService microDdJsApiAuthService;
 
 
     /**
@@ -76,7 +79,7 @@ public class ScheController {
      * @return
      */
     @RequestMapping(value = "/getScheduleOne",method = RequestMethod.GET)
-    public String getScheduleOne(String id,ModelMap modelMap,HttpSession session){
+    public String getScheduleOne(String id, ModelMap modelMap, HttpSession session, HttpServletRequest request){
         String supplierId = microUserService.getUserFromSession(session).getPkSupplier();
 
         fyPurchase purchase=scheService.selectOneById(id);
@@ -176,7 +179,7 @@ public class ScheController {
         //专家评审费
         String expertReward = pageArray.getExpertReward();
         modelMap.addAttribute("expertReward",expertReward);
-
+        modelMap.addAttribute("jsauthmap",microDdJsApiAuthService.getAuthMap(request));
 
         return "schedule_detail";
     }

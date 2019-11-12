@@ -6,14 +6,18 @@ import com.mol.ddmanage.Util.Token_hand;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.Map;
 @Service
 public class LoginService
 {
-    public boolean LoginService_dingding(Map map, HttpSession session)
+    public Map LoginService_dingding(Map map, HttpSession session)
     {
+
+        Map map1=new HashMap();
         try
         {
+
             String token= Dingding_Tools.getAccessToken();//获取扫码应用的登录token
             String persistentCode=Dingding_Tools.get_persistent_code(token,map.get("code").toString());//获取长期授权码
             JSONObject object = JSONObject.parseObject(persistentCode);//解析json
@@ -25,18 +29,25 @@ public class LoginService
 
             if (userid!=null && userid!="")
             {
+
                 session.setAttribute("token", Token_hand.CreateMyToken(userid));//这里存储的是本地服务器的token
+                session.setAttribute("userid",userid);
                 String user_infor=Dingding_Tools.Get_User_infor(userid);//获取登录人员详细信息
-                return true;
+
+                map1.put("name",JSONObject.parseObject(user_infor).get("name").toString());
+                map1.put("rest",true);
+
             }
             else
             {
-                return false;
+                map1.put("rest",false);
             }
+            return map1;
         }
         catch (Exception e)
         {
-            return false;
+            map1.put("rest",false);
+            return map1;
         }
     }
 }

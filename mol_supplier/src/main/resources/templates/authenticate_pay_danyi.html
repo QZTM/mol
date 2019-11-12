@@ -8,32 +8,224 @@
     <meta charset="UTF-8">
     <title>供应商认证</title>
     <!-- Bootstrap -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
     <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery) -->
-    <script src="js/jquery-3.2.1.min.js"></script>
+    <script th:src="@{/js/jquery-3.2.1.min.js}"></script>
     <!-- 加载 Bootstrap 的所有 JavaScript 插件。 -->
-    <script src="js/bootstrap.min.js"></script>
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet">
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <script src="https://g.alicdn.com/dingding/dingtalk-jsapi/2.7.13/dingtalk.open.js"></script>
     <style>
-       
+        .info_text{
+            padding: 35px 20px 10px 20px;
+            color: dimgrey;
+            font-size: 12px;
+        }
+        .pay_btn{
+            position: absolute;
+            bottom: 0px;
+            width: 100%;
+            height:46px;
+        }
     </style>
 </head>
 <body>
-	<div id="1" style="width: 100%;margin-top: 15px">
-		<div class="page-header">
-		  <h1  style="text-indent: 1em;"> <small>此次认证茉尔易购将产生保证金费用，当退出 茉尔易购平台时，该费用可申请退回。</small></h1>
-		</div>
+<div id="1" style="width: 100%;margin-top: 15px">
+    <div class="info_text" >
+        <h1  style="text-indent: 1em;"> <small>此次认证茉尔易购将产生保证金费用，当退出 茉尔易购平台时，该费用可申请退回。</small></h1>
+    </div>
 
-		<div style="text-align: center;font-size: 22px;font-weight: bold;">
-            <span th:text="${cost}"></span>
-			<span>元</span>
-		</div>
-	</div>
-	<button type="button" class="btn btn-danger" style="width: 100%;position: absolute;bottom: 5px;right: 5px;">立即支付</button>
-
+    <div style="text-align: center;font-size: 22px;font-weight: bold;margin-top: 30px">
+        <span th:text="${cost}"></span>
+        <span>元</span>
+    </div>
+</div>
+<button type="button" class="layui-btn layui-btn-normal pay_btn" id="pay-btn">立即支付</button>
+<div style="width:100%;height:100%;background-color:rgba(29, 26, 26, 0.1);position: fixed;left:0px;top:0px;z-index:13000" hidden="hidden" id="loading_div">
+    <span style="top: 275px;left: 37%;position: absolute;" id="loading_img_span">加载用户信息中</span>
+    <img src="/img/loading2.gif" style="height: 60px;position: relative;top: 212px;left: 43%;">
+</div>
 </body>
-<script>
+<script th:src="@{/js/common.js}"></script>
+<script th:inline="javascript">
+    //页面加载完成后执行
+    window.onload = function(){
+
+        //鉴权：
+        var jsauthmap = [[${jsauthmap}]];
+        console.log("jsauthmap");
+        console.log(jsauthmap);
+        dd.config({
+            'agentId': jsauthmap.agentId,
+            'corpId': jsauthmap.corpId,
+            'timeStamp': jsauthmap.timeStamp,
+            'nonceStr': jsauthmap.nonceStr,
+            'signature': jsauthmap.signature,
+            'jsApiList': [
+                'runtime.info',
+                'device.notification.prompt',
+                'biz.chat.pickConversation',
+                'device.notification.confirm',
+                'device.notification.alert',
+                'device.notification.prompt',
+                'biz.chat.open',
+                'biz.util.open',
+                'biz.user.get',
+                'biz.contact.choose',
+                'biz.telephone.call',
+                'biz.util.uploadImage',
+                'biz.ding.post',
+                'biz.alipay.pay']
+        });
+
+
+        $("#pay-btn").on('click',function(){
+            //支付1.去后端获取支付信息     2，带着支付信息调用钉钉微应用的支付接口
+            //禁用支付，防止多次支付
+            $("#pay-btn").attr('disabled','disable');
+            var paraData = {'payfor':'2'};
+            dd.ready(function(){
+                getPayInfo(paraData).then(function(res){
+                    console.log("getPayInfo...then:");
+                    console.log("res:");
+                    console.log(res);
+                    console.log("res.success:"+res.success);
+                    if(res.success){
+                        return toalipay(res.result,res.message);
+                    }
+                }).then(function(res){
+                    console.log("第二个then");
+                    console.log("异步结果：应该是自定义订单号");
+                    console.log(res);
+                    //带着自定义订单id去后端查询订单状态
+                    getOrderStatus(res,15);
+                }).then(function(res){
+                    console.log("第四个then")
+                    console.log(res.success);
+                    alert(JSON.stringify(res));
+                    hideLoading();
+                    if(res.success){
+                        alertMsg("支付成功");
+                    }else{
+                        alertMsg("支付未成功");
+                    }
+                    setTimeout(function(){
+                        location.href="/auth/attr/danyi";
+                    },1500);
+                }).catch(function (res) {
+                    hideLoading();
+                    console.log("异步支付出错了：");
+                    console.log(res);
+                });
+            })
+        })
+    }
+
+
+
+    // function getOrderStatus(orderid,count){
+    //     console.log("count is : ", count);
+    //     if (count == 0) {
+    //         console.log("All is Done!");
+    //         alertMsg("未获取到支付结果，如已支付请联系管理员");
+    //         window.location.reload();
+    //         return ;
+    //     }else{
+    //         count -= 1;
+    //         setTimeout(function() {
+    //             return new Promise((resolve, reject) => {
+    //                 $.ajax({
+    //                     url:"/pay/alipay/getOrderStatus",
+    //                     data:{'orderid':orderid},
+    //                     dataType:"json",
+    //                     success:function(res){
+    //                         showLoading("查询支付结果中");
+    //                         if(!res.success){
+    //                             getOrderStatus(orderid,count);
+    //                         }else{
+    //                             setTimeout(function(){
+    //                                 location.href="/attr/danyi"
+    //                             },2000);
+    //                         }
+    //                     },
+    //                     fail:function(res){
+    //                         console.log(res);
+    //                         reject(res);
+    //                     }
+    //                 })
+    //             })
+    //         }, 1000);
+    //     }
+    //
+    // }
+
+
+    function showTime(count) {
+        console.log("count is : ", count);
+        if (count == 0) {
+            console.log("All is Done!");
+        } else {
+            count -= 1;
+            setTimeout(function() {
+                showTime(count);
+            }, 1000);
+        }
+    }
+
+
+
+
+
+    // function getPayInfo(){
+    //     return new Promise((resolve, reject) => {
+    //         $.ajax({
+    //             url:"/pay/alipay/getCreateInfo",
+    //             data:{'payfor':"2"},
+    //             dataType:"json",
+    //             success:function(res){
+    //                 console.log(res);
+    //                 resolve(res);
+    //             },
+    //             fail:function(res){
+    //                 alertMsg("获取数据异常，请重试",3000);
+    //                 console.log(res);
+    //                 reject(res);
+    //             }
+    //         })
+    //     })
+    // }
+
+
+    /**
+     * 调起支付宝支付页面，然后每2秒访问一次，查询状态
+     * @param payinfo
+     * @param orderid
+     * @returns {boolean}
+     */
+    function toalipay(payinfo,orderid){
+        console.log("toalipay....payinfo:"+payinfo);
+        return new Promise((resolve, reject) => {
+            dd.biz.alipay.pay({
+                info:payinfo,
+                onSuccess: function (result) {
+                    // {
+                    //     memo: 'xxxx', // 保留参数，一般无内容
+                    //         result: 'xxxx', // 本次操作返回的结果数据
+                    //     resultStatus: '' // 本次操作的状态返回值，标识本次调用的结果
+                    // }
+
+                    console.log("支付结果：");
+                    console.log(result);
+                    showLoading("查询支付结果中");
+                    resolve(orderid);
+                },
+                onFail: function (err) {
+                    reject(err);
+                }
+            });
+    })
+    }
+
 
 </script>
 </html>

@@ -9,6 +9,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import util.TimeUtil;
 
 /**
  * 专家评审结束任务实际逻辑
@@ -35,6 +36,7 @@ public class ExpertReviewEndJob implements Job {
         }
         Purchase updatePurchase = new Purchase();
         updatePurchase.setId(orderId);
+        updatePurchase.setBargainingTime(TimeUtil.getNowDateTime());
         updatePurchase.setStatus("4");
         purchaseMapper.updateByPrimaryKeySelective(updatePurchase);
     }

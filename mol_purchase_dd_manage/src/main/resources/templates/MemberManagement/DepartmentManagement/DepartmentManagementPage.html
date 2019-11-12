@@ -7,100 +7,152 @@
 <link rel="stylesheet" href="/layui/css/layui.css">
 <script src="/echarts.min.js"></script>
 <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js" type="text/javascript"></script>
-<body>
+<body onload="Landing_start()">
+<div id="Organization" style="font-size: 25px ;margin-left: 24px">
+    <div style="height:auto;overflow:hidden;width: 100%;">
 
-<fieldset class="layui-elem-field layui-field-title" style="margin-top: 30px;">
-    <legend>常规用法</legend>
-</fieldset>
+<!--        <div style="height:auto;width: auto;overflow:hidden;" onclick="addDepartment(this)">
+            <img src="/imge/zuzhi.png" style="width: 30px;height: 30px; float: left">
+            <p style=" height: 30px;float: left ;margin-left: 12px;">
+                部门
+            </p>
+        </div>
 
-<div id="test1" class="demo-tree demo-tree-box"></div>
+
+        <div style="height:auto;width: auto;overflow:hidden;margin-left: 24px">
+            <div style="height:auto;width: auto;overflow:hidden;">
+                <img src="/imge/zuzhi.png" style="width: 30px;height: 30px; float: left">
+                <p style=" height: 30px;float: left ;margin-left: 12px;">
+                    部门
+                </p>
+            </div>
+            <div style="height: auto;overflow:hidden;width: 200px;">
+                <img src="/imge/peolpe.png" style="width: 30px;height: 30px; float: left">
+                <p style="float: left ;margin-left: 12px;">
+                    人员
+                </p>
+            </div>
+        </div>
+    </div>-->
+<!--    <div style="height: auto;overflow:hidden;width: 200px;">
+        <img src="/imge/peolpe.png" style="width: 30px;height: 30px; float: left">
+        <p style="float: left ;margin-left: 12px;">
+            人员
+        </p>
+    </div>-->
+</div>
+</div>
+
 
 <script src="/layui/layui.all.js"></script>
 <script>
-    // var  data1=[[${data}]];
-    //console.log(data1)
-    layui.use(['tree', 'util'], function(){
-        var tree = layui.tree
-            ,layer = layui.layer
-            ,util = layui.util
+    function Landing_start()
+    {
+        addDepartment(null);
+    }
+    function addDepartment(e)
+    {
+        var DeparmentId
+        if (e!=null)
+        {
+            if (e.parentElement.childNodes.length>2)//部门已经展开
+            {
+                var item=e.parentElement.childNodes[2];
+                //移除已经展开的部门下级
+                item.remove();
+                return
+            }
+            var p=e.parentElement.childNodes[1].childNodes[5];
+            DeparmentId=p.innerText
+        }
+        else
+        {
+            DeparmentId=1;
 
-            //模拟数据1
-            ,data1 = [
+        }
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/DepartmentManagementListController/GetOrganization',
+            dataType: 'json',
+            data:{DeparmentId:DeparmentId},
+            // headers:{  'eticket': app.globalData.eticket},
+            success: function (data) {
+
+
+                var DepartmentDIV=document.createElement("div");
+                for (var n=0;n<data.length;n++)
                 {
-                'title' : '江西'
-                ,id: 1
-                ,children: [{
-                    title: '南昌'
-                    ,id: 1000
-                    ,children: [{
-                                title: '青山湖区'
-                                ,id: 10001
-                            },{
-                                title: '高新区'
-                                ,id: 10002
-                    }]
-                },{
-                    title: '九江'
-                    ,id: 1001
-                },{
-                    title: '赣州'
-                    ,id: 1002
-                }]
-            },{
-                title: '广西'
-                ,id: 2
-                ,children: [{
-                    title: '南宁'
-                    ,id: 2000
-                },{
-                    title: '桂林'
-                    ,id: 2001
-                }]
-            },{
-                title: '陕西'
-                ,id: 3
-                ,children: [{
-                    title: '西安'
-                    ,id: 3000
-                },{
-                    title: '延安'
-                    ,id: 3001
-                }]
-            }
-            ]
+                    if (data[n].type==="1") //部门
+                    {
+                        DepartmentDIV.innerHTML=DepartmentDIV.innerHTML+
+                            '<div class="items" style="margin-top: 12px;height:auto;overflow:hidden;width: 100%;">'+//部门
+                            ' <div style="height:auto;width: auto;overflow:hidden;cursor:pointer;" onclick="addDepartment(this)" >'+
+                            ' <img src="/imge/zuzhi.png" style="width: 30px;height: 30px; float: left">'+
+                            ' <p style=" height: 30px;float: left ;margin-left: 12px;">'+
+                            data[n].name+
+                            ' </p>'+
+                            ' <p style="display: none">'+
+                               data[n].id
+                            ' </p>'+
+                            ' </div>'+
+                            '</div>';
+                    }
 
+                }
 
+                var PeolpeDiv=document.createElement("div");
+                for (var n=0;n<data.length;n++)
+                {
+                    if (data[n].type==="2")//人员
+                    {
+                        PeolpeDiv.innerHTML=PeolpeDiv.innerHTML+
+                            ' <div onclick="SelectPeolpo(this)" style="margin-top: 12px;height: auto;overflow:hidden;width: 100%;cursor:pointer;">'+
+                            ' <img src="/imge/peolpe.png" style="width: 30px;height: 30px; float: left">'+
+                            ' <p style="float: left ;margin-left: 12px;">'+
+                            data[n].name+
+                            ' </p>'+
+                            ' <p style="display: none">'+
+                            data[n].id
+                            ' </p>'+
+                            '</div>';
+                    }
+                }
 
-        //按钮事件
-        util.event('lay-demo', {
-            getChecked: function(othis){
-                var checkedData = tree.getChecked('demoId1'); //获取选中节点的数据
+                var div=document.createElement("div");//创建一个容纳部门和人员的div
+                div.class='itmes'
+                div.style.width='auto';
+                div.style.height='auto';
+                div.style.overflow='hidden';
+                div.style.marginLeft='24px';
 
-                layer.alert(JSON.stringify(checkedData), {shade:0});
-                console.log(checkedData);
-            }
-            ,setChecked: function(){
-                tree.setChecked('demoId1', [12, 16]); //勾选指定节点
-            }
-            ,reload: function(){
-                //重载实例
-                tree.reload('demoId1', {
-                });
+                div.innerHTML=
+                    DepartmentDIV.innerHTML+//部门
+                    PeolpeDiv.innerHTML;//人员
+
+                if (e!=null)//不是第一次加载
+                {
+                    var parentDIV =e.parentElement//获取上一层div
+                    parentDIV.appendChild(div)
+                }
+                else //加载时
+                {
+                    document.getElementById("Organization").appendChild(div);
+                }
+            },
+            error: function (data) {
+                alert("获取审核议价信息失败")
             }
         });
 
-        //常规用法
-        tree.render({
-            elem: '#test1' //默认是点击节点可进行收缩
-            ,data: data1
-            // ,click: function(obj){
-            //     var data = obj.data;  //获取当前点击的节点数据
-            //     layer.msg('状态：'+ obj.state + '<br>节点数据：' + JSON.stringify(data));
-            // }
-        });
 
-    });
+    }
 
+    function SelectPeolpo(e)
+    {
+       console.log(e.childNodes[5].innerText);//获取点击人员的id
+    }
 </script>
 </body>
 </html>

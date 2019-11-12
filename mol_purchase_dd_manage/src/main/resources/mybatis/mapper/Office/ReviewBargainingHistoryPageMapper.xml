@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.mol.ddmanage.mapper.Office.Title_Details_Mapper">
+<mapper namespace="com.mol.ddmanage.mapper.Office.ReviewBargainingHistoryPageMapper">
 
     <select id="Purchase" resultType="java.util.Map">
         select * from fy_purchase where id=#{purchase_id}
@@ -32,6 +32,12 @@
         AND fy_quote.id=fy_purchase_detail.quote_id
         and fy_quote.fy_purchase_id=#{purchase_id}
 
+    </select>
+    <select id="ReviewPeolpesMapper" resultType="java.lang.String">
+        select app_auth_org.purchase_approve_list from app_auth_org where dd_org_corp_id=#{CorpId}
+    </select>
+    <select id="GetUserName" resultType="java.util.Map">
+        select * from app_user where id=#{id}
     </select>
 
 

@@ -13,6 +13,60 @@ import java.io.Serializable;
 @Table(name = "bd_supplier")
 public class Supplier implements Serializable {
 
+
+    /**
+     * 营业执照
+     */
+    public static final String WHICHIMAGE_BUSSINESSLICENCEIMG = "bussinessLicence";
+    /**
+     * 身份证正面
+     */
+    public static final String WHICHIMAGE_LEGALBODYIDFRONTIMG = "legalBodyIdFront";
+    /**
+     * 身份证反面
+     */
+    public static final String WHICHIMAGE_LEGALBODYIDBACKIMG = "legalBodyIdBack";
+
+
+    /**
+     * 文件常量
+     */
+    /**
+     * 战略协议书
+     */
+    public static final String WHICHFILE_PROTOCOL = "protocolFile";
+
+    /**
+     * 单一协议书
+     */
+    public static final String WHICHFILE_PROTOCOL_DANYI = "danyiprotocolFile";
+
+    /**
+     * 专利文件
+     */
+    public static final String WHICHFILE_PATENT = "patentFile";
+
+    /**
+     * 代理商资质证明文件1
+     */
+    public static final String WHICHFILE_AGENTQUALIFICATION1 = "agentQualificationFile1";
+
+    /**
+     * 代理商资质证明文件2
+     */
+    public static final String WHICHFILE_AGENTQUALIFICATION2 = "agentQualificationFile2";
+
+    /**
+     * 代理商资质证明文件3
+     */
+    public static final String WHICHFILE_AGENTQUALIFICATION3 = "agentQualificationFile3";
+
+    /**
+     * 代理商资质证明文件3
+     */
+    public static final String WHICHFILE_AGENTQUALIFICATION4 = "agentQualificationFile4";
+
+
     @Id
     private String pkSupplier;
     //供应商编码
