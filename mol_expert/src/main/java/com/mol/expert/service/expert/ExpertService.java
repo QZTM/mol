@@ -100,6 +100,7 @@ public class ExpertService {
     public List<fyPurchase> findPurList(String pkMarbasclasss,String status, String exper) {
         Example o = new Example(fyPurchase.class);
         o.and().andEqualTo("pkMarbasclass",pkMarbasclasss).andEqualTo("status",status).andEqualTo("expertReview",exper);
+        o.setOrderByClause("create_time desc");
         return purchaseMapper.selectByExample(o);
     }
 
@@ -280,4 +281,11 @@ public class ExpertService {
     }
 
 
+    public List<fyPurchase> findJWPur(String buyCh, String status, String exper) {
+        fyPurchase t = new fyPurchase();
+        t.setBuyChannelId(Integer.parseInt(buyCh));
+        t.setStatus(status);
+        t.setExpertReview(exper);
+        return purchaseMapper.select(t);
+    }
 }

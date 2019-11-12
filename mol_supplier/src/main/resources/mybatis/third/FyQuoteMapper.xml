@@ -11,14 +11,17 @@
     </select>
     <select id="findFypurchaseIdListById" parameterType="java.lang.String" resultType="java.lang.String">
     SELECT DISTINCT
-        pk_supplier_id
+        pk_supplier_idfindQuoteBySupplierIdAndPurchaseId
     FROM
         fy_quote
     WHERE
         fy_purchase_id =#{id}
     </select>
     <select id="findQuoteBySupplierIdAndPurchaseId" parameterType="java.lang.String" resultType="com.mol.supplier.entity.thirdPlatform.FyQuote">
-        select * from fy_quote where fy_purchase_id=#{id} and pk_supplier_id=#{supplierId}
+        select * from fy_quote where fy_purchase_id=#{id}
+        <if test="supplierId!=null and supplierId!=''">
+            and pk_supplier_id=#{supplierId}
+        </if>
     </select>
     <select id="findIdByPurIdAndPkMatIdAndSupplierId" parameterType="java.lang.String" resultType="java.lang.String">
         SELECT id FROM `fy_quote` e where e.fy_purchase_id=#{purId} and e.pk_material_id=#{materId} and e.pk_supplier_id=#{supplierId}
@@ -28,5 +31,9 @@
     </select>
     <select id="findQuoteByid" parameterType="java.lang.String" resultType="com.mol.supplier.entity.thirdPlatform.FyQuote">
         select * from fy_quote where id=#{quoteId}
+    </select>
+    <select id="findPassQuoteByPurId" resultType="com.mol.supplier.entity.thirdPlatform.FyQuote" parameterType="java.lang.String">
+        select * from fy_quote where id in
+        (select quote_id from fy_purchase_detail where fy_purchase_id=#{id})
     </select>
 </mapper>

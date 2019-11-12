@@ -398,4 +398,23 @@ public class ThirdPlatformService {
         t.setPkSupplier(supplierId);
         return bdSupplierMapper.selectOne(t);
     }
+
+    public List<fyPurchase> findPassPurchByStatus(Integer pass, Integer pageNumber,Integer pageSize) {
+        PageHelper.startPage(pageNumber,pageSize);
+        return fyPurchaseMapper.findListByStatus(pass+"",null,null);
+    }
+
+    public int findPassCountByStatus(Integer pass) {
+        return fyPurchaseMapper.findCountByStatus(pass+"",null,null);
+    }
+
+    public List<fyPurchase> findPassSupplierCountOfPassPur(List<fyPurchase> list) {
+        if (list!=null && list.size()>0){
+            for (fyPurchase purchase : list) {
+                int i=fyPurchaseDetailMapper.findPassSupplierOfPassPurByPurId(purchase.getId());
+                purchase.setPassSuppCount(i);
+            }
+        }
+        return list;
+    }
 }

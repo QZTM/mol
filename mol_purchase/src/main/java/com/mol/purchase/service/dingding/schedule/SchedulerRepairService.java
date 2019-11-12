@@ -2,6 +2,7 @@ package com.mol.purchase.service.dingding.schedule;
 
 import com.github.pagehelper.PageHelper;
 import com.mol.purchase.entity.*;
+import com.mol.purchase.entity.activiti.ActHiActinst;
 import com.mol.purchase.entity.activiti.ActHiComment;
 import com.mol.purchase.entity.activiti.ActHiProcinst;
 import com.mol.purchase.entity.dingding.login.AppAuthOrg;
@@ -12,6 +13,7 @@ import com.mol.purchase.mapper.newMysql.BdSupplierSalesmanMapper;
 import com.mol.purchase.mapper.newMysql.ExpertRecommendMapper;
 import com.mol.purchase.mapper.newMysql.FyQuoteMapper;
 import com.mol.purchase.mapper.newMysql.QuotePayresultMapper;
+import com.mol.purchase.mapper.newMysql.dingding.activiti.ActHiActinstMapper;
 import com.mol.purchase.mapper.newMysql.dingding.activiti.ActHiCommentMapper;
 import com.mol.purchase.mapper.newMysql.dingding.activiti.ActHiProcinstMapper;
 import com.mol.purchase.mapper.newMysql.dingding.org.AppOrgMapper;
@@ -21,6 +23,7 @@ import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
 import com.mol.purchase.mapper.newMysql.dingding.user.AppUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +61,9 @@ public class SchedulerRepairService {
 
     @Autowired
     private AppUserMapper appUserMapper;
+
+    @Autowired
+    private ActHiActinstMapper actHiActinstMapper;
 
 
     @Autowired
@@ -162,5 +168,21 @@ public class SchedulerRepairService {
         t.setSupplierId(1+"");
         t.setPurchaseId(1+"");
         return quotePayresultMapper.selectOne(t);
+    }
+
+    public List<ActHiActinst> getActHiActinstByPurId(String purId) {
+        return actHiActinstMapper.getListByPurId(purId);
+    }
+
+    public List<AppUser> getAppUserByList(List<ActHiActinst> list) {
+        List<AppUser> userList=new ArrayList<>();
+        if (list!=null){
+            for (int i=0;i<list.size();i++){
+                AppUser t=new AppUser();
+                t.setId(list.get(i).getAssignee());
+                userList.add(appUserMapper.selectOne(t));
+            }
+        }
+        return userList;
     }
 }

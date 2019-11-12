@@ -63,6 +63,9 @@ public class SchuleService {
      * @return
      */
     public List<fyPurchase> changeOrgNameToZhongwen(List<fyPurchase> purList) {
+        if (purList==null ){
+            return purList;
+        }
         for (fyPurchase pur : purList) {
             //公司名称
             AppAuthOrg appAuthOrg = expertService.getOrg(pur.getOrgId());
