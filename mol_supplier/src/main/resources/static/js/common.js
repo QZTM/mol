@@ -1,4 +1,9 @@
 ﻿var loadingpointaddinter ;
+
+/**
+ * 显示加载图标
+ * @param msg
+ */
 function showLoading(msg){
     if(msg){
         $("#loading_img_span").text(msg);
@@ -15,6 +20,9 @@ function showLoading(msg){
     }
 }
 
+/**
+ * 隐藏加载图标
+ */
 function hideLoading(){
     if(loadingpointaddinter){
         clearInterval(loadingpointaddinter);
@@ -22,7 +30,11 @@ function hideLoading(){
     $("#loading_div").attr('hidden','hidden');
 }
 
-
+/**
+ * 弹窗提示
+ * @param msg       提示内容
+ * @param staytime  窗口维持的毫秒数
+ */
 function alertMsg(msg,staytime){
     if(!staytime){
         staytime = 1000;
@@ -30,18 +42,26 @@ function alertMsg(msg,staytime){
     layer.msg(msg,{time:staytime});
 }
 
-// 验证身份证号码
+/**
+ * 验证身份证号码
+ * @param card
+ * @returns {boolean}
+ */
 function checkIdNum(card) {
     var pattern = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
     return pattern.test(card);
 }
 
-// 验证手机号
+
+/**
+ * 验证手机号
+ * @param phone
+ * @returns {boolean}
+ */
 function isPhoneNo(phone) {
     var pattern = /^1[34578]\d{9}$/;
     return pattern.test(phone);
 }
-
 
 
 /**
@@ -82,7 +102,9 @@ function uploadImg(bl,whichImg){
 }
 
 
-//导航图标点击事件
+/**
+ * 导航图标点击事件
+ */
 $.each($(".bottom_icon_img"),function(){
     var that = $(this);
     $(this).on('click',function(){
@@ -112,10 +134,9 @@ function snyTimeOut(time,callback){
 /**
  * 去后端获取支付信息
  * @param payfor                1：申请成为战略供应商      2：申请成为单一供应商
- * @returns {boolean}
  */
 function getPayInfo(paramData){
-    return new Promise((resolve, reject) => {
+    return  new Promise((resolve, reject) => {
         $.ajax({
             url:"/pay/alipay/getCreateInfo",
             data:paramData,
@@ -131,16 +152,16 @@ function getPayInfo(paramData){
             }
         })
     })
+    return
 }
 
 /**
  * 调起支付宝支付页面
  * @param payinfo
  * @param orderid
- * @returns {boolean}
  */
 function toalipay(payinfo,orderid){
-    console.log("toalipay....payinfo:"+payinfo);
+    console.log("调用钉钉支付接口:，orderid:"+orderid);
     return new Promise((resolve, reject) => {
         dd.biz.alipay.pay({
             info:payinfo,
@@ -168,13 +189,14 @@ function toalipay(payinfo,orderid){
  * @param orderid
  * @param count
  */
-function getOrderStatus(orderid,count){
+function getOrderStatus(orderid,count,nextPageName){
     console.log("count is : ", count);
+
     if (count == 0) {
         console.log("All is Done!");
-        alertMsg("未获取到支付结果，如已支付请联系管理员");
-        window.location.reload();
-        return ;
+        hideLoading();
+        alertMsg("支付未成功！如确认已支付请刷新或联系管理员");
+        location.reload();
     }else{
         count -= 1;
         setTimeout(function() {
@@ -186,11 +208,16 @@ function getOrderStatus(orderid,count){
                     success:function(res){
                         showLoading("查询支付结果中");
                         if(!res.success){
-                            getOrderStatus(orderid,count);
+                            getOrderStatus(orderid,count,nextPageName);
                         }else{
+                            alertMsg("支付成功");
                             setTimeout(function(){
-                                location.href="/attr/zhanlve";
-                            },2000);
+                                if(nextPageName == '123'){
+                                    window.history.back();
+                                }else{
+                                    location.href="/pay/alipay/showSuccess?turnPageName="+nextPageName;
+                                }
+                            },1500);
                         }
                     },
                     fail:function(res){
@@ -202,4 +229,8 @@ function getOrderStatus(orderid,count){
         }, 1000);
     }
 }
+
+
+
+
 

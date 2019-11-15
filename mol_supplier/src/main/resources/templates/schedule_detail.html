@@ -298,23 +298,20 @@
                     console.log("异步结果：应该是自定义订单号");
                     console.log(res);
                     //带着自定义订单id去后端查询订单状态
-                    getOrderStatus(res,15);
+                    getOrderStatus(res,15,'/sche/getScheduleOne?id='+purchaseId);
                 }).then(function(res){
-                    console.log("第四个then")
-                    console.log(res.success);
-                    //alert(JSON.stringify(res));
-                    hideLoading();
-                    if(res.success){
-                        alertMsg("支付成功");
-                        setTimeout(function(){
-                            location.href="/pay/alipay/showSuccess";
-                        })
-                    }else{
-                        alertMsg("支付未成功");
-                    }
-                    setTimeout(function(){
-                        window.history.back();
-                    },1500);
+                    // console.log("第四个then")
+                    // console.log(res.success);
+                    // //alert(JSON.stringify(res));
+                    // hideLoading();
+                    // if(res.success){
+                    //     alertMsg("支付成功");
+                    //     setTimeout(function(){
+                    //         location.href='/sche/getScheduleOne?id='+purchaseId;
+                    //     },1000);
+                    // }else{
+                    //     alertMsg("支付未成功");
+                    // }
                 }).catch(function (res) {
                     hideLoading();
                     console.log("异步支付出错了：");

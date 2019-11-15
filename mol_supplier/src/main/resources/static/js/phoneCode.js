@@ -1,12 +1,17 @@
 /**
- * 验证手机号码格式             checkPhone(phone)                   返回值为true或者false
- * 获取验证码                    sendMes(phone,msgType)              msgType:短信类型，1为注册，2为登陆验证
+ * 验证手机号码格式               checkPhone(phone)                   返回值为true或者false
+ * 验证手机号码格式               isPhoneNo(phone)                    返回值为true或者false
+ * 发送验证码                    sendMes(phone,msgType)              msgType:短信类型，1为注册，2为登陆验证
  * 验证验证码                    checkPhoneCode(phone,code)          promise
  * 获取验证码倒计时
  */
 
 
-/*验证手机号码格式*/
+/**
+ * 验证手机号码格式
+ * @param phone
+ * @returns {boolean}
+ */
 function checkPhone(phone){
     if(!(/^1[3456789]\d{9}$/.test(phone))){
         dd.device.notification.toast({
@@ -22,7 +27,23 @@ function checkPhone(phone){
 
 };
 
-/*验证手机号与验证码*/
+
+/**
+ * 验证手机号
+ * @param phone
+ * @returns {boolean}
+ */
+function isPhoneNo(phone) {
+    var pattern = /^1[34578]\d{9}$/;
+    return pattern.test(phone);
+}
+
+/**
+ * 验证手机号与验证码
+ * @param phone
+ * @param code
+ * @returns {Promise<unknown>}
+ */
 function checkPhoneCode(phone,code){
     return new Promise(function(resolve, reject){
         var jsonObj = {"phone":phone,"code":code};
@@ -50,7 +71,13 @@ function checkPhoneCode(phone,code){
     })
 }
 
-/*发送短信：phone:手机号码；msgType:短信类型，1为注册，2为登陆验证*/
+
+/**
+ * 发送短信
+ * @param phone                         手机号码
+ * @param msgType                       短信类型    1为注册，2为登陆验证
+ * @returns {Promise<unknown>}
+ */
 function sendMes(phone,msgType) {
     console.log("sendMes....phone:" + phone + ",msgType...:" + msgType);
     return new Promise(function (resolve, reject) {

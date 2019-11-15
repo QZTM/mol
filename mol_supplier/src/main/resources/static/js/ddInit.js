@@ -162,66 +162,11 @@ function android_dd_init_action(){
             }else{
                 xunjia(4,1);
                 hideLoading();
-                //鉴权
-                console.log("鉴权");
-                console.log("b.result");
-                console.log(b.result);
-                console.log("agentId:"+b.result.agentId);
-                console.log("corpId:"+b.result.corpId);
-                console.log("timeStamp:"+b.result.timeStamp);
-                console.log("nonceStr:"+b.result.nonceStr);
-                console.log("signature:"+b.result.signature);
-                dd.config({
-                    'agentId': b.result.agentId,
-                    'corpId': b.result.corpId,
-                    'timeStamp': b.result.timeStamp,
-                    'nonceStr': b.result.nonceStr,
-                    'signature': b.result.signature,
-                    'jsApiList': [
-                        'runtime.info',
-                        'device.notification.prompt',
-                        'biz.chat.pickConversation',
-                        'device.notification.confirm',
-                        'device.notification.alert',
-                        'device.notification.prompt',
-                        'biz.chat.open',
-                        'biz.util.open',
-                        'biz.user.get',
-                        'biz.contact.choose',
-                        'biz.telephone.call',
-                        'biz.util.uploadImage',
-                        'biz.ding.post',
-                        'biz.alipay.pay',
-                        'biz.telephone.showCallMenu']
-                });
             }
         }
     }).then(function(){
         console.log("执行成功");
         hideLoading();
-
-
-
-        // return new Promise()
-        //去后端获取订单信息
-
-        // dd.ready(function() {
-        //     dd.biz.alipay.pay({
-        //         info:'alipay_sdk=alipay-sdk-java-3.7.110.ALL&app_id=2019072665956811&biz_content=%7B%22body%22%3A%22%E4%B8%93%E5%AE%B6%E8%AE%A4%E8%AF%81%E8%B4%B9%E7%94%A8%22%2C%22out_trade_no%22%3A%22orderId%22%2C%22product_code%22%3A%2212586%22%2C%22subject%22%3A%22%E8%AE%A4%E8%AF%81%22%2C%22timeout_express%22%3A%2230m%22%2C%22total_amount%22%3A%22200%22%7D&charset=utf-8&format=json&method=alipay.trade.app.pay&notify_url=http%3A%2F%2Ffyycg66.vaiwan.com%2FCheck_Alipay&sign=cMQNJkq7JavSVF%2BXmQx%2BPeCXK3jkhCkq%2FYSD3MA3jysBCk4O4nhB9jmej8w%2B7YyBk59%2FIB3AR%2BgAbS1i%2FDwcMbivezTnw8bOloPG68xo4mEC0xIaVnYmdxEvZLx%2BohMKnKRtQLSsipwhvgiNvf19W6vnLRcqhcgIyHwOBot5HHGLyPo29ixr9sP%2B2SU5BbvC3Q8jZNlHGsDmqyBue8df9KAHLKhICMhLZ%2BZfOIaYDvUJ%2BeiptnjB4TuBZHigqZUkRDMaSY71yFhkHZkfuIptQGjOqq9%2FyQIV2EKkEbHYGQCVN3wov27yiOIWYdIRhheQMKj1EfKCz43mD3VTcLCXSw%3D%3D&sign_type=RSA2&timestamp=2019-10-15+16%3A24%3A27&version=1.0\n',
-        //         onSuccess: function (result) {
-        //             // {
-        //             //     memo: 'xxxx', // 保留参数，一般无内容
-        //             //         result: 'xxxx', // 本次操作返回的结果数据
-        //             //     resultStatus: '' // 本次操作的状态返回值，标识本次调用的结果
-        //             // }
-        //             console.log(resule);
-        //         },
-        //         onFail: function (err) {
-        //
-        //         }
-        //     });
-        // });
-
     }).catch(function (reason) {
         console.log(reason);
         hideLoading();

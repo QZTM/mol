@@ -27,6 +27,16 @@ public class Supplier implements Serializable {
      */
     public static final String WHICHIMAGE_LEGALBODYIDBACKIMG = "legalBodyIdBack";
 
+    /**
+     * 战略供应商协议照片
+     */
+    public static final String WHICHIMAGE_STRATEGY_protocotl = "strategyProtocol";
+
+    /**
+     * 单一供应商协议照片
+     */
+    public static final String WHICHIMAGE_SINGLE_protocotl = "singleProtocol";
+
 
     /**
      * 文件常量

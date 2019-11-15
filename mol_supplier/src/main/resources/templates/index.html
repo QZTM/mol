@@ -98,7 +98,6 @@
 <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery) -->
 <script th:src="@{/js/jquery-3.2.1.min.js}"></script>
 <script th:src="@{/layui/layui.all.js}"></script>
-<!--<script src="https://g.alicdn.com/dingding/dingtalk-jsapi/2.7.13/dingtalk.open.js"></script>-->
 <!-- 加载 Bootstrap 的所有 JavaScript 插件。 -->
 <script th:src="@{/js/dingtalk.open.js}"></script>
 <script th:src="@{/js/bootstrap.min.js}"></script>
@@ -127,12 +126,12 @@
         console.log(supplier);
         console.log("user && supplier");
         console.log(user && supplier);
-        // if(user && supplier){
-        //     console.log("session中有user和supplier：。。。。supstateNormal:"+supplier.supstateNormal);
-        //     var supstate = supplier.supstateNormal;
-        //     //alertMsg(supstate);
-        //     xunjia(4,supstate);
-        // }else{
+        if(user && supplier){
+            console.log("session中有user和supplier：。。。。supstateNormal:"+supplier.supstateNormal);
+            var supstate = supplier.supstateNormal;
+            //alertMsg(supstate);
+            xunjia(4,supstate);
+        }else{
             console.log("session中没有user或supplier：");
             <!--获取缓存的变量-->
             localStorage.clear();
@@ -155,13 +154,14 @@
             }else if("android----wxwork" == localRunEnv){
                 localRunEnvExl = "这是安卓企业微信运行环境";
                 getUserAndOrgByEnvWithwxwork();
-            }else if(localRunEnv.indexOf("pc") >1){
+            }else if(localRunEnv.indexOf("pc") != -1){
                 localRunEnvExl = "电脑运行环境";
-                getUserAndOrgByEnvWithPc();
+                // getUserAndOrgByEnvWithPc();
+                location.href = "/microApp/login/show1";
             }
             console.log("判断当前运行的环境为：");
             console.log(localRunEnvExl);
-        // }
+         }
     })
 
 
@@ -235,16 +235,16 @@
     <span style="top: 275px;left: 37%;position: absolute;" id="loading_img_span">加载用户信息中</span>
     <img src="/img/loading2.gif" style="height: 60px;position: relative;top: 212px;left: 43%;">
 </div>
-<!--<input type="button" value="点我" onclick="showloadinga()">-->
+<input type="button" value="点我" onclick="showloadinga()">
 <div style="height:50px"></div>
 </body>
 <script>
     function showloadinga(){
-        showLoading("获取用户信息中");
-            setTimeout(function(){
-                hideLoading();
-            },1000);
-
+        // showLoading("获取用户信息中");
+        //     setTimeout(function(){
+        //         hideLoading();
+        //     },1000);
+        location.href="/pay/alipay/showSuccess?turnPageName='/a/b/c'";
     }
 </script>
 </html>
