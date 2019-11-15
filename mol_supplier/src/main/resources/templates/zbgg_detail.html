@@ -39,9 +39,9 @@
     <p th:text="${pur.applyCause}" style="text-align: center;font-size: 16px;font-weight: bold;height: 36px;padding-top: 14px"></p>
     <!--    <p style="text-align: center;font-size: 22px;font-weight: bold;">采购信息</p>-->
     <!-- 评审费  -->
-    <!--<div th:if="${expertReview=='true'}" style="float: right;margin-right: 10px">-->
-        <!--需支付专家评审费：<text th:text="${expertReward}" style="color: red">200</text>元-->
-    <!--</div>-->
+    <div style="float: right;margin-right: 10px">
+        如有疑问请拨打：<text  style="color: red">111111111111</text>
+    </div>
     <!--产品名称开始-->
     <div style="text-align: center;border: 1px solid #eeeeee;font-size: 14px;padding-top: 6px;clear: both;">
 
@@ -146,7 +146,14 @@
         </div>
     </div>
 
-
+    <!-- 备注开始 -->
+    <div id="1" style="clear: both;margin: 12px 15px 0px 15px;">
+        <p >
+            备注说明:
+        </p>
+        <textarea style="height: 160px;width: 100%;" readonly="readonly" th:text="${remakes}"></textarea>
+    </div>
+    <!-- 备注结束 -->
 
     <!-- 中标结果开始-->
     <!--<div th:if="${not #lists.isEmpty(quote)}">-->
