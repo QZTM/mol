@@ -124,6 +124,7 @@ public class ScheController {
         //查询中标情况
         List<PurchaseArray> okList = new ArrayList<>();
         if (purchase.getStatus().equals("通过")){
+            //自己公司的报价
             List<FyQuote> fyQuoteList=scheService.findQuoteBySupplierIdAndPurId(supplierId,id);
             List<PurchaseDetail> detailList=new ArrayList<>();
             if (fyQuoteList!=null&&fyQuoteList.size()>0){

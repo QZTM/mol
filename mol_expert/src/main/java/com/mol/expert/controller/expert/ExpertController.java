@@ -1,6 +1,7 @@
 package com.mol.expert.controller.expert;
 
 import com.alibaba.fastjson.JSON;
+import com.mol.expert.config.BuyChannelResource;
 import com.mol.expert.config.OrderStatus;
 import com.mol.expert.entity.dingding.login.AppAuthOrg;
 import com.mol.expert.entity.dingding.purchase.enquiryPurchaseEntity.PageArray;
@@ -82,26 +83,32 @@ public class ExpertController {
         if (pageName.equals("酒店")){
             pageName="东方怡源";
         }
-        //查询最高级分类，获取id
-        List<BdMarbasclass> marclassList=es.findMarbasclassTopLevel();
-        String pkMarbasclasss="";
-        //同pageName 匹配，分配 code ,模糊查询 code like "code%"
-        for (BdMarbasclass bdMarbasclass : marclassList) {
-            if (pageName.equals(bdMarbasclass.getName())){
-                pkMarbasclasss=bdMarbasclass.getPkMarbasclass();
-                break;
-            }
-        }
-        //查询下属所有物料
-        //List<BdMarbasclass> byCodeLike=es.findMarbasclassByCodeLike(code+"%");
 
-        //查询订单，状态为4 专家评审为true
-        //根据订单中第一个物料，那个物料id，查询出 对应的pkmaterclass
+        List<fyPurchase> purList=new ArrayList<>();
         String status = OrderStatus.EXPERTREVIEW+"";
         String  exper="true";
-        List<fyPurchase> purList=es.findPurList(pkMarbasclasss,status,exper);
-//        //相同，则属于
-//        List<fyPurchase> seleList=es.findSelectionList(byCodeLike,purList);
+        if(pageName.equals("加工维修")){
+            purList= es.findJWPur(BuyChannelResource.MACHINING,status,exper);
+        }else{
+            //查询最高级分类，获取id
+            List<BdMarbasclass> marclassList=es.findMarbasclassTopLevel();
+            String pkMarbasclasss="";
+            //同pageName 匹配，分配 code ,模糊查询 code like "code%"
+            for (BdMarbasclass bdMarbasclass : marclassList) {
+                if (pageName.equals(bdMarbasclass.getName())){
+                    pkMarbasclasss=bdMarbasclass.getPkMarbasclass();
+                    break;
+                }
+            }
+
+            //查询订单，状态为4 专家评审为true
+            //根据订单中第一个物料，那个物料id，查询出 对应的pkmaterclass
+
+            purList=es.findPurList(pkMarbasclasss,status,exper);
+        }
+
+
+        
         purList=schuleService.changeOrgNameToZhongwen(purList);
         purList=es.findSelectionList(purList);
         map.addAttribute("pList",purList);

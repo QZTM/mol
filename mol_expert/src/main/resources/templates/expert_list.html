@@ -69,7 +69,7 @@
     <!--第一个-->
     <div class="list"  th:each="er:${pList}">
         <a th:href="@{'/expert/findOne?purId='+${er.id}}" style="text-decoration: none;color: black;">
-            <span style="font-size: 16px;font-weight: bold;" th:text="${er.title}">斯凯孚skf6轴承询价采购</span>
+            <span style="font-size: 16px;font-weight: bold;" th:text="${er.applyCause}">斯凯孚skf6轴承询价采购</span>
             <span style="float: right;margin-right: 22px;color: red;">进行中</span>
             <p></p>
             <span>订单编号：</span>

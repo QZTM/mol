@@ -19,4 +19,6 @@ public interface fyPurchaseDetailMapper {
     List<PurchaseDetail> findPurchaseDetailList(String id);
 
     PurchaseDetail findPurchaseDetailByPurIdAndQuoteId(String id, String quoteId);
+
+    int findPassSupplierOfPassPurByPurId(String purId);
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.purchase.mapper.newMysql.dingding.activiti.ActHiActinstMapper">
+    <select id="getListByPurId" parameterType="java.lang.String" resultType="com.mol.purchase.entity.activiti.ActHiActinst">
+        SELECT ASSIGNEE_ FROM `act_hi_actinst` where PROC_INST_ID_ =(select PROC_INST_ID_ from act_hi_procinst where BUSINESS_KEY_=#{purId}) and ACT_TYPE_="userTask" ORDER BY START_TIME_
+    </select>
+</mapper>

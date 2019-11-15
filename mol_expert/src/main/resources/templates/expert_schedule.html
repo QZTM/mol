@@ -56,7 +56,7 @@
 	 <div style="clear: both;">
 		 <div class="list"  th:each="er:${list}">
 			 <a href="#" style="text-decoration: none;color: black;">
-				 <span style="font-size: 16px;font-weight: bold;" th:text="${er.title}">斯凯孚skf6轴承询价采购</span>
+				 <span style="font-size: 16px;font-weight: bold;" th:text="${er.applyCause}">斯凯孚skf6轴承询价采购</span>
 				 <span style="float: right;margin-right: 22px;color: red;" th:switch="${er.adopt}">
 					 <text th:case="0" style="color: red;">未采纳</text>
 					 <text th:case="1" style="color: green;">采纳</text>

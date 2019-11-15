@@ -6,6 +6,7 @@ import com.mol.purchase.config.OrderStatus;
 import com.mol.purchase.entity.FyQuote;
 import com.mol.purchase.entity.QuotePayresult;
 import com.mol.purchase.entity.SupplierSalesman;
+import com.mol.purchase.entity.activiti.ActHiActinst;
 import com.mol.purchase.entity.activiti.ActHiComment;
 import com.mol.purchase.entity.activiti.ActHiProcinst;
 import com.mol.purchase.entity.dingding.login.AppAuthOrg;
@@ -96,20 +97,26 @@ public class SchedulerRepairController {
     }
 
     @GetMapping("/getApproveList")
-    public ServiceResult getApproveList(String orgId){
-        AppAuthOrg org=schedulerRepairService.getOrg(orgId);
-        String approve = org.getPurchaseApproveList();
-
-        if (approve == null){
-            return ServiceResult.failure("查询审核人异常！");
+    public ServiceResult getApproveList(String purId){
+//        AppAuthOrg org=schedulerRepairService.getOrg(orgId);
+//        String approve = org.getPurchaseApproveList();
+//
+//        if (approve == null){
+//            return ServiceResult.failure("查询审核人异常！");
+//        }
+//        String[] split = approve.split(",");
+//        List<String> list= new ArrayList<>();
+//        for (String s : split) {
+//            list.add(s);
+//        }
+//
+//        List<AppUser> userList=schedulerRepairService.getAppUserByIdList(list);
+//        return ServiceResult.success(userList);
+        if (purId==null){
+            return ServiceResult.failureMsg("订单id传递失败！");
         }
-        String[] split = approve.split(",");
-        List<String> list= new ArrayList<>();
-        for (String s : split) {
-            list.add(s);
-        }
-
-        List<AppUser> userList=schedulerRepairService.getAppUserByIdList(list);
+        List<ActHiActinst> list=schedulerRepairService.getActHiActinstByPurId(purId);
+        List<AppUser> userList=schedulerRepairService.getAppUserByList(list);
         return ServiceResult.success(userList);
     }
 
