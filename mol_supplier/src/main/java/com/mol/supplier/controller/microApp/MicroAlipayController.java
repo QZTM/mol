@@ -18,9 +18,9 @@ import entity.ServiceResult;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import tk.mybatis.mapper.entity.Example;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
@@ -238,7 +238,7 @@ public class MicroAlipayController {
                     quotePayresult.setPayResult("1");
                     Example example1 = new Example(QuotePayresult.class);
                     example1.and().andEqualTo("purchaseId",(String)paraMap.get("purchaseId")).andEqualTo("supplierId",supplierId);
-                    int updateResult = quotePayresultMapper.updateByExample(quotePayresult,example1);
+                    int updateResult = quotePayresultMapper.updateByExampleSelective(quotePayresult,example1);
                     log.info("支付专家审核和合同费用的回调事件，，，，，supplierId:"+supplierId+",,,purchaseId:"+(String)paraMap.get("purchaseId")+",,sql执行结果："+updateResult);
             }
         }
@@ -248,7 +248,8 @@ public class MicroAlipayController {
 
 
     @RequestMapping("/showSuccess")
-    public String showPaySuccess(){
+    public String showPaySuccess(@RequestParam String turnPageName, Model model){
+        model.addAttribute("pageName",turnPageName);
         return "pay_success";
     }
 

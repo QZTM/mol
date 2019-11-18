@@ -13,6 +13,7 @@ import com.mol.supplier.mapper.third.BdMarbasclassMapper;
 import com.mol.supplier.service.microApp.MicroAuthService;
 import com.mol.supplier.service.microApp.MicroDdJsApiAuthService;
 import com.mol.supplier.service.microApp.MicroUserService;
+import com.mol.supplier.service.uploadAndDownload.UploadService;
 import entity.ServiceResult;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
@@ -60,6 +61,9 @@ public class MicroAuthController {
 
     @Autowired
     private PayMapper payMapper;
+
+    @Autowired
+    private UploadService uploadService;
 
     @RequestMapping("/attr")
     public String showAuthChoosePage(HttpSession session) {
@@ -110,13 +114,16 @@ public class MicroAuthController {
      */
     @RequestMapping("/attr/{authType}")
     public String showAuthPage(@PathVariable String authType, HttpSession session, Model model) {
+        //todo 获取最新的供应商状态
         String pageName = "";
         System.out.println("authType:");
         System.out.println(authType);
-        Supplier supplier = microUserService.getSupplierFromSession(session);
-        if (supplier == null) {
+        Supplier supplierOld = microUserService.getSupplierFromSession(session);
+        if (supplierOld == null) {
             throw new RuntimeException("请先注册后再试");
         }
+        Supplier supplier = microSupplierMapper.selectByPrimaryKey(supplierOld);
+        session.setAttribute("supplier",supplier);
         //获取行业类别（物料分类的第一级）
         List<BdMarbasclass> bdMarbasclassList = bdMarbasclassMapper.findMarbasFirstList();
         model.addAttribute("itemTypeList",bdMarbasclassList);
@@ -282,7 +289,18 @@ public class MicroAuthController {
                     e.printStackTrace();
                 }
                 break;
-            case Supplier.WHICHIMAGE_LEGALBODYIDBACKIMG:
+            case Supplier.WHICHIMAGE_STRATEGY_protocotl:
+                log.info("上传战略供应商协议图片：");
+                //先本地保存图片，然后把图片路径保存入数据库
+                String upload = uploadService.upload(file);
+
+                try {
+                    supplier.setLegalbodyCardBackImg(file.getBytes());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case Supplier.WHICHIMAGE_SINGLE_protocotl:
                 try {
                     supplier.setLegalbodyCardBackImg(file.getBytes());
                 } catch (IOException e) {
