@@ -680,6 +680,7 @@
                     location.href='/auth/pay/zhanlve';
 
                 }else{
+                    $("#subBtn").removeAttr('disabled');
                     alertMsg(res.message);
                 }
             },

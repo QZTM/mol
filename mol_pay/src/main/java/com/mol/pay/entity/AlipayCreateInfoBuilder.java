@@ -3,6 +3,7 @@ package com.mol.pay.entity;
 import com.alipay.api.domain.*;
 import lombok.Data;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * 支付宝形成支付订单需要的实体类
@@ -39,7 +40,7 @@ public class AlipayCreateInfoBuilder implements Serializable {
      * @param totalAmount       支付金额
      * @return
      */
-    public AlipayCreateInfo builder(String body,String subject,String outTradeNo,String timeoutExpress,String productCode,String totalAmount){
+    public AlipayCreateInfo builder(String body, String subject, String outTradeNo, String timeoutExpress, String productCode, String totalAmount, Map callbackParamMap){
         AlipayCreateInfo alipayCreateInfo = new AlipayCreateInfo();
         alipayCreateInfo.setBody(body);
         alipayCreateInfo.setSubject(subject);
@@ -47,6 +48,7 @@ public class AlipayCreateInfoBuilder implements Serializable {
         alipayCreateInfo.setTimeoutExpress(timeoutExpress);
         alipayCreateInfo.setProductCode(productCode);
         alipayCreateInfo.setTotalAmount(totalAmount);
+        alipayCreateInfo.setCallbackParamMap(callbackParamMap);
         return alipayCreateInfo;
     }
 

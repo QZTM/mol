@@ -124,6 +124,7 @@ public class ActController {
     @ResponseBody
     public ServiceResult taskQuery(@RequestParam String assignee,int pageNum,int pageSize){
         //获取当前用户，
+        logger.info("查询个人任务的id："+assignee);
         return ServiceResult.success(actService.getTask(assignee,pageNum,pageSize));
     }
 
@@ -136,19 +137,20 @@ public class ActController {
 
         DDUser user = JWTUtil.getUserByRequest(request);
         String name = user.getName();
-        System.out.println("jwt获取用户："+user);
+        logger.info("登录人："+user);
         actService.completeTask(taskId,processInsId,variables,comment,name);
 
 
 
         if (result.equals("pass")){
+            logger.info("当前任务通过");
             //去获取下一个审批人的id
             String sendUserId=actService.getNextSendUserId(user);
 
 
 
             if (sendUserId!="" || sendUserId==null){
-                logger.info("当前任务完成，向下一审批人发通知。");
+                logger.info("当前任务完成，向下一审批人发通知:"+sendUserId);
                 //给下个任务处理人发通知和短信
                 AppUser appUserById = actService.findAppUserById(sendUserId);
                 //发送钉钉通知
@@ -190,7 +192,7 @@ public class ActController {
             }
         }else{
             //审批拒绝
-
+            logger.info("审批拒绝");
             //查询订单相关信息
             //1.订单ID
             ActHiProcinst hiProcinst=actService.getActHiprocinstByProcInstId(processInsId);

@@ -24,4 +24,6 @@ public class PurchaseArray {
     //周期
     private String supplyCycle;
 
+    private String supplier;
+
 }

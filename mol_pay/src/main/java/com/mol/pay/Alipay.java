@@ -61,6 +61,7 @@ public class Alipay {
         model.setTimeoutExpress(info.getTimeoutExpress());
         model.setTotalAmount(info.getTotalAmount());//支付金额
         model.setProductCode(info.getProductCode());
+        model.setPassbackParams(JSONObject.toJSONString(info.getCallbackParamMap()));
         request.setBizModel(model);
         //  request.setNotifyUrl("商户外网可以访问的异步地址");
         AlipayTradeAppPayResponse response = alipayClient.sdkExecute(request); //这里和普通的接口调用不同，使用的是sdkExecute

@@ -28,6 +28,10 @@ public class StatusScheUtils {
                 pur.setStatus("等待审核结果");
                 return pur;
             }
+            if (pur.getStatus().equals("5")){
+                pur.setStatus("专家进行推荐");
+                return pur;
+            }
 
             if (pur.getStatus().equals("6")){
                 pur.setStatus("等待审核结果");

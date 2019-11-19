@@ -41,6 +41,10 @@
 		</div>
 	</div>
     <button type="button" class="layui-btn layui-btn-normal pay_btn" id="pay-btn">立即支付</button>
+    <div style="width:100%;height:100%;background-color:rgba(29, 26, 26, 0.1);position: fixed;left:0px;top:0px;z-index:13000" hidden="hidden" id="loading_div">
+        <span style="top: 275px;left: 37%;position: absolute;" id="loading_img_span">加载用户信息中</span>
+        <img src="/img/loading2.gif" style="height: 60px;position: relative;top: 212px;left: 43%;">
+    </div>
 </body>
 <script th:src="@{/js/common.js}"></script>
 <script th:inline="javascript">
@@ -79,8 +83,9 @@
             //支付1.去后端获取支付信息     2，带着支付信息调用钉钉微应用的支付接口
             //禁用支付，防止多次支付
             $("#pay-btn").attr('disabled','disable');
+            var paraData = {'payfor':'1'};
             dd.ready(function(){
-                getPayInfo().then(function(res){
+                getPayInfo(paraData).then(function(res){
                     console.log("getPayInfo...then:");
                     console.log("res:");
                     console.log(res);
@@ -93,19 +98,23 @@
                     console.log("异步结果：应该是自定义订单号");
                     console.log(res);
                     //带着自定义订单id去后端查询订单状态
-                    getOrderStatus(res,30);
-
-
+                    getOrderStatus(res,15,'/auth/attr/zhanlve');
                 }).then(function(res){
-                    console.log("第四个then")
-                    console.log(res.success);
-                    console.log(res);
-                    if(res.success){
-                        alert("支付成功");
-                        hideLoading();
-                        location.reload();
-                    }
+                    // console.log("第四个then")
+                    // console.log(res.success);
+                    // //alert(JSON.stringify(res));
+                    // hideLoading();
+                    // if(res.success){
+                    //     alertMsg("支付成功");
+                    //     setTimeout(function(){
+                    //         location.href="/pay/alipay/showSuccess?turnPageName='/auth/attr/zhanlve'";
+                    //     },1500);
+                    // }else{
+                    //     alertMsg("支付未成功");
+                    // }
+
                 }).catch(function (res) {
+                    hideLoading();
                     console.log("异步支付出错了：");
                     console.log(res);
                 });
@@ -115,103 +124,29 @@
 
 
 
-    function getOrderStatus(orderid,count){
-        console.log("count is : ", count);
-        alert(count);
-        if (count == 0) {
-            console.log("All is Done!");
-            return ;
-        }else{
-            count -= 1;
-            setTimeout(function() {
-                return new Promise((resolve, reject) => {
-                    $.ajax({
-                        url:"/pay/alipay/getOrderStatus",
-                        data:{'orderid':orderid},
-                        dataType:"json",
-                        success:function(res){
-                            console.log(res);
-                            resolve(res);
-                        },
-                        fail:function(res){
-                            alertMsg("获取数据异常，请重试",3000);
-                            console.log(res);
-                            reject(res);
-                        }
-                    })
-                })
-            }, 1000);
-        }
-
-    }
 
 
-    function showTime(count) {
-        console.log("count is : ", count);
-        if (count == 0) {
-            console.log("All is Done!");
-        } else {
-            count -= 1;
-            setTimeout(function() {
-                showTime(count);
-            }, 1000);
-        }
-    }
+
+    // function showTime(count) {
+    //     console.log("count is : ", count);
+    //     if (count == 0) {
+    //         console.log("All is Done!");
+    //     } else {
+    //         count -= 1;
+    //         setTimeout(function() {
+    //             showTime(count);
+    //         }, 1000);
+    //     }
+    // }
 
 
 
 
 
-    function getPayInfo(){
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                url:"/pay/alipay/getCreateInfo",
-                data:{'payfor':"regsupplier",'suppliertype':"zhanlve"},
-                dataType:"json",
-                success:function(res){
-                    console.log(res);
-                    resolve(res);
-                },
-                fail:function(res){
-                    alertMsg("获取数据异常，请重试",3000);
-                    console.log(res);
-                    reject(res);
-                }
-            })
-        })
-    }
 
 
-    /**
-     * 调起支付宝支付页面，然后每2秒访问一次，查询状态
-     * @param payinfo
-     * @param orderid
-     * @returns {boolean}
-     */
-    function toalipay(payinfo,orderid){
-        console.log("toalipay....payinfo:"+payinfo);
-        return new Promise((resolve, reject) => {
-                dd.biz.alipay.pay({
-                    info:payinfo,
-                    onSuccess: function (result) {
-                        // {
-                        //     memo: 'xxxx', // 保留参数，一般无内容
-                        //         result: 'xxxx', // 本次操作返回的结果数据
-                        //     resultStatus: '' // 本次操作的状态返回值，标识本次调用的结果
-                        // }
 
-                        console.log("支付结果：");
-                        console.log(result);
-                        alert(JOSN.stringify(result));
-                        resolve(orderid);
-                        showLoading("查询支付结果中");
-                    },
-                    onFail: function (err) {
-                        reject(err);
-                    }
-                });
-        })
-    }
+
 
 
 </script>

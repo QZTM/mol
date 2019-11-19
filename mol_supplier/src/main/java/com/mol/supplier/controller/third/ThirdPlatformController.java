@@ -7,10 +7,12 @@ import com.mol.supplier.entity.MicroApp.Salesman;
 import com.mol.supplier.entity.MicroApp.Supplier;
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PageArray;
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseArray;
+import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
 import com.mol.supplier.entity.dingding.solr.fyPurchase;
 import com.mol.supplier.entity.thirdPlatform.*;
 import com.mol.supplier.service.dingding.purchase.EsService;
 import com.mol.supplier.service.microApp.MicroUserService;
+import com.mol.supplier.service.third.ScheService;
 import com.mol.supplier.service.third.ThirdPlatformService;
 import com.taobao.api.internal.toplink.netcat.NetCatOuputWriter;
 import entity.PageBean;
@@ -19,10 +21,7 @@ import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import util.TimeUtil;
 
@@ -49,6 +48,9 @@ public class ThirdPlatformController {
     @Autowired
     private MicroUserService microUserService;
 
+    @Autowired
+    private ScheService scheService;
+
 
     private String htmlName = null;
 
@@ -57,7 +59,7 @@ public class ThirdPlatformController {
         log.info(".../index/findAll");
         Object salesmanObj = session.getAttribute("user");
         if(salesmanObj == null){
-            System.out.println("session中么有用户信息");
+            System.out.println("session中没有用户信息");
         }else{
             System.out.println("session中有用户信息");
         }
@@ -145,54 +147,85 @@ public class ThirdPlatformController {
                 buyId = 6 + "";
                 htmlName = "index_jgwx";
                 break;
+            case "中标公告":
+                htmlName="index_zbgg";
+                break;
+            case "茉尔资讯":
+                htmlName="index_mezx";
+                break;
             default:
                 htmlName="error_enter";
                 break;
         }
+        //判断页面
         if (htmlName=="error_enter"){
             return htmlName;
         }
-        if (keyword == null || keyword == "") {
-            keyword = "";
-        }
-        if (status == null || status == "") {
-            status = "";
-        }
-        if (goodsType == null || goodsType == "") {
-            goodsType = "";
-        }
-
-        PageBean pb = new PageBean();
         List<fyPurchase> list = null;
         int count = 0;
-        if (keyword != null && keyword != "") {
-            pb = esService.list(pageNumber, pageSize, keyword);
-            list = pb.getList();
-            count = pb.getTotalCount();
-        } else {
-            //获取采购内容的list
-            list = platformService.findLIstByStatusAndGoodsTypeAndBuyChannelId(buyId, status, goodsType, pageNumber, pageSize);
-            count = platformService.findCount(buyId, status, goodsType);
-        }
-        //单一页面  将公司id切换为中文显示
-        if (buyId==5+""){
-            list=platformService.getPkSupplierToCHinese(list);
-        }
-        map.addAttribute("list", list);
-        map.addAttribute("count", count);
-        pb.setTotalCount(count);
-        pb.setPageSize(pageSize);
-        pb.setTotalPage(pb.getTotalCount() % pb.getPageSize() == 0 ? pb.getTotalCount() / pb.getPageSize() : pb.getTotalCount() / pb.getPageSize() + 1);
-        pb.setCurrentPage(pageNumber);
 
+        //进入茉尔资讯
+        if (htmlName == "index_mezx") {
+            log.info("查询茉尔资讯");
+            List<SuppNews> newsList=platformService.getNewsList(pageNumber,pageSize);
+            map.addAttribute("newsList",newsList);
+            log.info("查询茉尔资讯的list："+newsList);
+            return htmlName;
+        }
+        //进入中标公告
+        if (htmlName == "index_zbgg") {
+            log.info("查询中标公告");
+            list =platformService.findPassPurchByStatus(OrderStatus.pass,pageNumber,pageSize);
+            list =platformService.findPassSupplierCountOfPassPur(list);
+            count=platformService.findPassCountByStatus(OrderStatus.pass);
+            log.info("中标公告的list"+list);
+            log.info("中标公告的数量"+count);
+        } else {
+            //单一，询价，战略，维修加工，
+            if (keyword == null || keyword == "") {
+                keyword = "";
+            }
+            if (status == null || status == "") {
+                status = "";
+            }
+            if (goodsType == null || goodsType == "") {
+                goodsType = "";
+            }
+
+            PageBean pb = new PageBean();
+
+
+            if (keyword != null && keyword != "") {
+                pb = esService.list(pageNumber, pageSize, keyword);
+                list = pb.getList();
+                count = pb.getTotalCount();
+            } else {
+                //获取采购内容的list
+                list = platformService.findLIstByStatusAndGoodsTypeAndBuyChannelId(buyId, status, goodsType, pageNumber, pageSize);
+                count = platformService.findCount(buyId, status, goodsType);
+            }
+            //单一页面  将公司id切换为中文显示
+            if (buyId==5+""){
+                list=platformService.getPkSupplierToCHinese(list);
+            }
+
+            pb.setTotalCount(count);
+            pb.setPageSize(pageSize);
+            pb.setTotalPage(pb.getTotalCount() % pb.getPageSize() == 0 ? pb.getTotalCount() / pb.getPageSize() : pb.getTotalCount() / pb.getPageSize() + 1);
+            pb.setCurrentPage(pageNumber);
+
+
+
+            map.addAttribute("searchVal", "");
+            map.addAttribute("keyword", keyword);
+            map.addAttribute("status", status);
+        }
         //获取物料第一级分类
         List<BdMarbasclass> marbasFirstList = platformService.findMarbasClassFirstList();
         map.addAttribute("marList", marbasFirstList);
 
-        map.addAttribute("searchVal", "");
-        map.addAttribute("keyword", keyword);
-        map.addAttribute("status", status);
-
+        map.addAttribute("list", list);
+        map.addAttribute("count", count);
         return htmlName;
     }
 
@@ -208,12 +241,14 @@ public class ThirdPlatformController {
     @RequestMapping("/getMarbasClassNameList")
     @ResponseBody
     public List<fyPurchase> getMarbasClassNameList(String buyChannelId, String status, String goodsType, Integer pageNumber, Integer pageSize) {
-
-
         //获取行业类别
         //行业类别
+        log.info("按照物料分类查询，当前状态："+status);
         List<fyPurchase> list = platformService.findLIstByStatusAndGoodsTypeAndBuyChannelId(buyChannelId, status, goodsType, pageNumber, pageSize);
-
+        if(Integer.parseInt(status)==OrderStatus.pass){
+            log.info("按照物料分类查询，需要查询中标公司数量，当前状态："+status);
+            list =platformService.findPassSupplierCountOfPassPur(list);
+        }
         return list;
     }
 
@@ -324,6 +359,136 @@ public class ThirdPlatformController {
         }
         return htmlName;
     }
+
+    /**
+     * 前往中标详情页面
+     * @param id
+     * @return
+     */
+    @GetMapping("/selecOnePassPur")
+    public String selectOnePassPur(String id,ModelMap modelMap ,HttpSession session){
+
+        //String supplierId = microUserService.getUserFromSession(session).getPkSupplier();
+
+        fyPurchase purchase=scheService.selectOneById(id);
+
+        //查询订单相关报价
+       // List<FyQuote> quoteList=scheService.findQuoteById(id,null);
+
+        //--------------------------------
+        //查询报价商家的数量
+        String quoteCounts = purchase.getQuoteCounts();
+        modelMap.addAttribute("quoteCount",quoteCounts);
+
+        //定义最后要传递到页面的list
+        List<PurchaseArray> purList =new ArrayList<>();
+        //解析json字段
+        PageArray pageArray = JSON.parseObject(purchase.getGoodsDetail(), PageArray.class);
+        System.out.println("pagearrayObj:"+pageArray);
+        //json字段中的详情集合
+        List<PurchaseArray> purchaseArrayList = pageArray.getPurchaseArray();
+        System.out.println("purchaseArray:"+purchaseArrayList);
+
+
+        //获取最终选中的报价
+        List<FyQuote> quoteList=null;
+
+        //公司的list
+        List<Supplier> supplierList=new ArrayList<>();
+        quoteList=scheService.findPassQuoteByPurId(purchase.getId());
+
+
+        for (int i=0;i<quoteList.size();i++){
+            for (int j =0;j<purchaseArrayList.size();j++){
+                if (quoteList.get(i).getPkMaterialId().equals(purchaseArrayList.get(j).getMaterialId())){
+                    PurchaseArray pur=new PurchaseArray();
+                    pur.setMaterialId(purchaseArrayList.get(j).getMaterialId());
+                    pur.setCount(purchaseArrayList.get(j).getCount());
+                    pur.setItemName(purchaseArrayList.get(j).getItemName());
+                    pur.setTypeName(purchaseArrayList.get(j).getTypeName());
+                    pur.setUnit(purchaseArrayList.get(j).getUnit());
+                    pur.setNorms(purchaseArrayList.get(j).getNorms());
+                    pur.setQuote(quoteList.get(i).getQuote());
+                    pur.setSum(Double.parseDouble(quoteList.get(i).getQuote())*purchaseArrayList.get(j).getCount()+"");
+                    pur.setSupplyCycle(quoteList.get(i).getSupplyCycle());
+                    pur.setSupplier(quoteList.get(i).getPkSupplierId());
+                    modelMap.addAttribute("supplyCycle",quoteList.get(0).getSupplyCycle());
+                    purList.add(pur);
+
+                }
+            }
+        }
+
+
+        for (int i =0;i<quoteList.size();i++){
+            if (supplierList.size()>0){
+                for (int j=0;j<supplierList.size();j++){
+                    if (supplierList.get(j).getPkSupplier().equals(quoteList.get(i).getPkSupplierId())){
+                        break;
+                    }
+                    if (j==supplierList.size()-1){
+                        Supplier supplier=scheService.findSupplierById(quoteList.get(i).getPkSupplierId());
+                        supplierList.add(supplier);
+                    }
+                }
+            }else {
+                Supplier supplier=scheService.findSupplierById(quoteList.get(i).getPkSupplierId());
+//                Supplier supplier=scheService.getSupplierById(detailList.get(i).getPkSupplierId());
+                supplierList.add(supplier);
+            }
+
+
+        }
+        modelMap.put("supplier",supplierList);
+        //中标的list
+        //modelMap.addAttribute("okList",okList);
+        modelMap.addAttribute("pur",purchase);
+        //json字符串
+        modelMap.addAttribute("purList",purList);//所有报价
+        //规定申请人的个数
+        System.out.println("人数"+pageArray.getQuoteSellerNum());
+        modelMap.addAttribute("quoNum",pageArray.getQuoteSellerNum());
+        //备注说明
+        String remarks = pageArray.getRemarks();
+        modelMap.addAttribute("remakes",remarks);
+        //截止时间
+        String deadLine = pageArray.getDeadLine();
+        modelMap.addAttribute("dealLine",deadLine);
+        //供货周期
+        String supplyCycle = pageArray.getSupplyCycle();
+        modelMap.addAttribute("supplyCycle",supplyCycle);
+        //支付方式
+        String payMent = pageArray.getPayMent();
+        modelMap.addAttribute("payMent",payMent);
+        //技术支持电话
+        String technicalSupportTelephone = pageArray.getTechnicalSupportTelephone();
+        modelMap.addAttribute("tst",technicalSupportTelephone);
+        //专家评审
+        String expertReview = pageArray.getExpertReview();
+        modelMap.addAttribute("expertReview",expertReview);
+        //专家评审费
+        String expertReward = pageArray.getExpertReward();
+        modelMap.addAttribute("expertReward",expertReward);
+        return "zbgg_detail";
+    }
+
+    /**
+     * 前往新闻详情页面
+     * @param id 新闻表主键ID
+     * @return
+     */
+    @GetMapping("/findnewsDetail")
+    public String findNewsDetail(String id ,ModelMap map){
+        log.info("前往新闻详情页面："+id);
+        SuppNews news=platformService.findNewsDetail(id);
+        log.info("查询资讯详情完成："+news);
+        //将id的新闻，阅读人数加一
+        int i=platformService.addNewsNumOfReaders(news);
+        log.info("查询资讯详情修改阅读人数完成："+i);
+        map.addAttribute("news",news);
+        return "mezx_detail";
+    }
+
 
     /**
      * 前往我要报价页面，获取当前页面的物品id
@@ -469,7 +634,7 @@ public class ThirdPlatformController {
             fList = platformService.findLIstByStatusAndGoodsTypeAndBuyChannelId(buyId, status, goodsType, pageNum, pageSize);
 
         }
-
+        log.info("刷新加载的页面list容量："+fList.size());
         return fList;
     }
 

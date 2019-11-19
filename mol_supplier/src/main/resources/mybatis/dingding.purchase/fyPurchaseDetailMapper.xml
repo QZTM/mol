@@ -29,4 +29,8 @@
     <select id="findPurchaseDetailByPurIdAndQuoteId" resultType="com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail" parameterType="java.lang.String">
         SELECT * FROM `fy_purchase_detail` where fy_purchase_id = #{id} and quote_id = #{quoteId}
     </select>
+    <select id="findPassSupplierOfPassPurByPurId" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select  count(a.pk_supplier_id) from (select DISTINCT pk_supplier_id from fy_quote where id in(select quote_id from fy_purchase_detail where fy_purchase_id =#{purId}
+        )  )as a
+    </select>
 </mapper>

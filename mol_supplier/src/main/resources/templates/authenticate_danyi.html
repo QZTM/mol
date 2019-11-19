@@ -70,7 +70,7 @@
     </ul>
     <div class="control-group uploadimg-out-div" id="div-licenceimg" style="width:100%;text-align: center;">
         <div id="preview-bussinessLicence" style="width:100%">
-            <img th:src="@{/img/upimg.png}" class="uploadimg-img input-group">
+            <img th:src="@{/img/upimg.png}" class="uploadimg-img input-group" id="bussiness_lisn_img_img">
         </div>
         <input type="file" id="bussinessLicence" class="uploadimg-input" onchange="preview(this)"  accept="image/gif,image/jpeg,image/jpg,image/png"/>
     </div>
@@ -118,7 +118,7 @@
     </ul>
     <div class="control-group uploadimg-out-div" id="div-legal-person-front" style="width:100%;text-align: center">
         <div id="preview-legalBodyIdFront" style="width:100%">
-            <img th:src="@{/img/upimg.png}" class="uploadimg-img input-group">
+            <img th:src="@{/img/upimg.png}" class="uploadimg-img input-group" id="legalbody_front_img_img">
         </div>
         <input type="file" id="legalBodyIdFront" class="uploadimg-input" onchange="preview(this)"  accept="image/gif,image/jpeg,image/jpg,image/png"/>
         <p style="position: absolute;margin: 0 auto;width:100%;height:30px;text-align: center;padding-top:6px;" class="uploadimg-p">身份证正面</p>
@@ -146,6 +146,114 @@
     <input type="text" class="form-control" placeholder="ID number" aria-describedby="basic-addon1"  id="legalBodyIdCardNumInput">
 </div>
 <!-- 身份证号结束 -->
+<!--上传单一供应商协议开始-->
+<div style="margin:10px 6px 0 10px;position: relative;">
+    <a class="layui-badge upbtn" style="position: absolute;right:5px;z-index: 9999;top:10px" id="down_protocol_doc_btn" href="/pdf/单一供应商协议.doc">下载样本</a>
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="/auth/downZhanlve">上传单一供应商协议</a></li>
+    </ul>
+    <div style="width:100%;text-align: center">
+        <div style="width:100%">
+            <img th:src="@{/img/upimg.png}" width="70px" height="70px">
+        </div>
+        <label class="input-group-btn">
+            <input class="file" type="file" onchange="fileSelected(this,'danyiprotocolFile')" style="left: -9999px; position: absolute;" id="protocol_file_input"/>
+            <span class="btn btn-default">点击上传</span>
+        </label>
+    </div>
+</div>
+<!-- 上传单一供应商协议结束 -->
+<script>
+    function fileSelected(file,which) {
+        var theFile = file.files[0];
+        if (theFile) {
+            var fileSize = 0;
+            if (theFile.size > 1024 * 1024){
+                var fileSizeNum = Math.round(theFile.size * 100 / (1024 * 1024)) / 100;
+                if(fileSizeNum > 20){
+                    alertMsg("文件超过20M无法上传");
+                    return ;
+                }
+                fileSize = (Math.round(theFile.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
+            } else
+                fileSize = (Math.round(theFile.size * 100 / 1024) / 100).toString() + 'KB';
+
+            $(file).next().text(theFile.name);
+            uploadFile(theFile,which,file);
+        }
+    }
+
+    function uploadFile(file,whichFile,ele) {
+        var fd = new FormData();
+        fd.append("fileToUpload", file);
+        fd.append("whichFile",whichFile);
+        var xhr = new XMLHttpRequest();
+        xhr.upload.addEventListener("progress", uploadProgress, false);
+        xhr.addEventListener("load", function(){uploadComplete(event,ele)} , false);
+        xhr.addEventListener("error", uploadFailed, false);
+        xhr.addEventListener("abort", uploadCanceled, false);
+        xhr.open("POST", "/auth/upload/file"); //修改成自己的接口
+        xhr.send(fd);
+    }
+
+    <!--显示进度，已废弃-->
+    function uploadProgress(evt) {
+        if (evt.lengthComputable) {
+            //var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+            //console.log(percentComplete.toString());
+            //document.getElementById('uploadProgressNUm').innerHTML = percentComplete.toString() + '%';
+        } else {
+            //document.getElementById('uploadProgressNUm').innerHTML = 'unable to compute';
+        }
+    }
+
+    function uploadComplete(evt,t) {
+        /* 服务器端返回响应时候触发event事件*/
+        if(evt.target.responseText.indexOf('success')){
+            //console.log($(evt));
+            console.log($(t));
+            $(t).attr('upload',1);
+            alertMsg('上传成功');
+        }else{
+            alertMsg('上传失败');
+        }
+    }
+
+    function uploadFailed(evt) {
+        console.log("There was an error attempting to upload the file.");
+    }
+
+    function uploadCanceled(evt) {
+        console.log("The upload has been canceled by the user or the browser dropped the connection.");
+    }
+</script>
+<!-- 其他补充材料开始 -->
+<div style="margin:10px 6px 0 10px">
+    <ul class="nav nav-tabs">
+        <li role="presentation" class="active"><a href="#">其他补充材料(专利、代理商资质等资料)</a></li>
+    </ul>
+    <div style="width:100%;text-align: center">
+        <div style="width:100%">
+            <img th:src="@{/img/upimg.png}" width="70px" height="70px">
+        </div>
+        <label class="input-group-btn">
+            <input class="file" type="file" onchange="fileSelected(this,'agentQualificationFile3')" style="left: -9999px; position: absolute;"/>
+            <span class="btn btn-default">点击上传</span>
+        </label>
+    </div>
+</div>
+<div style="margin:10px 6px 0 10px">
+    <div style="width:100%;text-align: center">
+        <div style="width:100%">
+            <img th:src="@{/img/upimg.png}" width="70px" height="70px">
+        </div>
+        <label class="input-group-btn">
+            <input class="file" type="file" onchange="fileSelected(this,'agentQualificationFile4')" style="left: -9999px; position: absolute;"/>
+            <span class="btn btn-default">点击上传</span>
+        </label>
+    </div>
+</div>
+<!-- 其他补充材料结束 -->
 <!-- 手机号开始 -->
 <div class="input-group" style="margin:10px 6px 0 10px ">
     <span class="input-group-addon">手机号：</span>
@@ -258,10 +366,24 @@
         if(businessLicenceNum != '' && businessLicenceNum != 'Business license number'){
             supplier.buslicensenum = businessLicenceNum;
         }else{
+            setTimeout(function(){
+                $("#bussinessLicenceNumInput").focus();
+            },1000);
             alertMsg("请填写营业执照号码！");
-            location.href = "#bussinessLicenceNumInput";
             $("#subBtn").removeAttr('disabled');
-            $("#bussinessLicenceNumInput").click();
+            return ;
+        }
+
+        //验证是否上传了营业执照
+        var ifUpedbl = $("#bussinessLicence").attr("uped");
+        console.log(ifUpedbl);
+        if(!ifUpedbl){
+            setTimeout(function(){
+                $("#bussinessLicence").focus();
+                $("#bussinessLicence").click();
+            },1000);
+            layer.msg("请上传营业执照图片！");
+            $("#subBtn").removeAttr('disabled');
             return ;
         }
         /*验证*/
@@ -269,10 +391,13 @@
         var placeOnName =  $("#sel_city").text();
 
         if(placeOnName == undefined || placeOnName == "" || placeOnName == '点击选取省市区县'){
+            setTimeout(function(){
+                $("#sel_city").focus();
+                $("#sel_city").click();
+            },1000);
             alertMsg("请选择所在地！");
-            location.href = "#localplace";
             $("#subBtn").removeAttr('disabled');
-            $("#sel_city").click();
+
             return ;
         }
         supplier.locationProvinceJsIndex = selectedIndex[0];
@@ -284,10 +409,11 @@
         console.log("注册地");
         console.log(registAddress);
         if(registAddress == undefined || registAddress == ''){
+            setTimeout(function(){
+                $("#registAddressInput").focus();
+            },1000);
             alertMsg("请填写注册地址！");
             $("#subBtn").removeAttr('disabled');
-            $("#registAddressInput").focus();
-            location.href = "#registAddressInput";
             return ;
         }
         supplier.registeredAddress = registAddress;
@@ -300,10 +426,11 @@
         console.log(tradeOn);
         console.log("typeid："+typeId)
         if(!typeId){
+            setTimeout(function(){
+                $("#sel_trade").click();
+            },1000);
             alertMsg("请选择所属行业！");
             $("#subBtn").removeAttr('disabled');
-            location.href = "#sel_trade";
-            $("#sel_trade").click();
             return ;
         }
         supplier.industryFirst = typeId;
@@ -325,10 +452,11 @@
         console.log("经营范围");
         console.log(bussinessScope);
         if(!bussinessScope){
+            setTimeout(function(){
+                $("#bussinessScopeTextarea").focus();
+            },1000);
             alertMsg("请填写经营范围！");
             $("#subBtn").removeAttr('disabled');
-            location.href = "#bussinessScopeTextarea";
-            $("#bussinessScopeTextarea").focus();
             return ;
         }
         supplier.businessScope=bussinessScope;
@@ -337,29 +465,34 @@
         var ifUped = $("#legalBodyIdFront").attr("uped");
         console.log(ifUped);
         if(!ifUped){
-            alertMsg("请上传法人身份证正面照片！");
+            setTimeout(function(){
+                $("#legalBodyIdFront").focus();
+                $("#legalBodyIdFront").click();
+            },1000);
+            layer.msg("请上传法人身份证正面照片！");
             $("#subBtn").removeAttr('disabled');
-            location.href = "#legalBodyIdFront";
-            $("#legalBodyIdFront").click();
             return ;
         }
 
         var ifUped2 = $("#legalBodyIdBack").attr("uped");
         if(!ifUped2){
-            alertMsg("请上传法人身份证反面照片！");
+            setTimeout(function(){
+                $("#legalBodyIdBack").focus();
+                $("#legalBodyIdBack").click();
+            },1000);
+            layer.msg("请上传法人身份证反面照片！");
             $("#subBtn").removeAttr('disabled');
-            location.href = "#legalBodyIdBack";
-            $("#legalBodyIdBack").click();
             return ;
         }
 
         /*法人姓名*/
         var legalBodyName = $("#legalBodyNameInput").val();
         if(!legalBodyName){
+            setTimeout(function(){
+                $("#legalBodyNameInput").focus();
+            },1000);
             alertMsg("请填写法人姓名！");
             $("#subBtn").removeAttr('disabled');
-            location.href = "#legalBodyNameInput";
-            $("#legalBodyNameInput").focus();
             return ;
         }
 
@@ -369,37 +502,55 @@
         /*法人身份证号码*/
         var legalBodyIdCardNum = $("#legalBodyIdCardNumInput").val();
         if((!legalBodyIdCardNum)){
+            setTimeout(function(){
+                $("#legalBodyIdCardNumInput").focus();
+            },1000);
             alertMsg("请填写法人身份证号码！");
             $("#subBtn").removeAttr('disabled');
-            location.href = "#legalBodyIdCardNumInput";
-            $("#legalBodyIdCardNumInput").focus();
             return ;
         }
         if(!checkIdNum(legalBodyIdCardNum)){
+            setTimeout(function(){
+                $("#legalBodyIdCardNumInput").focus();
+            },1000);
             alertMsg("请填写正确的身份证号码！");
             $("#subBtn").removeAttr('disabled');
-            location.href = "#legalBodyIdCardNumInput";
-            $("#legalBodyIdCardNumInput").focus();
             return ;
         }
 
         supplier.legalbodyIdcardNumber = legalBodyIdCardNum;
 
+
+        /*验证是否上传了供应商协议*/
+        var protocolUploaded = $("#protocol_file_input").attr('upload');
+        console.log(protocolUploaded);
+        if(protocolUploaded != 1){
+            setTimeout(function(){
+                $("#protocol_file_input").click();
+            },1000)
+            alertMsg("请上传单一供应商协议！");
+            $("#subBtn").removeAttr('disabled');
+            return ;
+        }
+
+
         /*手机号码*/
         var phoneNum = $("#phoneNumInput-jc").val();
         if(!phoneNum){
+            setTimeout(function(){
+                $("#phoneNumInput-jc").focus();
+            },1000);
             alertMsg("请填写手机号码！");
             $("#subBtn").removeAttr('disabled');
-            location.href = "#phoneNumInput-jc";
-            $("#phoneNumInput-jc").focus();
             return ;
         }
 
         if(!isPhoneNo(phoneNum)){
+            setTimeout(function(){
+                $("#phoneNumInput-jc").focus();
+            },1000);
             alertMsg("请填写正确的手机号码！");
             $("#subBtn").removeAttr('disabled');
-            location.href = "#phoneNumInput-jc";
-            $("#phoneNumInput-jc").focus();
             return ;
         }
         supplier.authPhone = phoneNum;
@@ -407,19 +558,23 @@
         /*验证码*/
         var phoneCheckCode = $("#phoneCheckCodeInput").val();
         if(!phoneCheckCode){
+            setTimeout(function(){
+                $("#phoneCheckCodeInput").focus();
+            },1000);
             alertMsg("请填写验证码！");
             $("#subBtn").removeAttr('disabled');
-            location.href = "#phoneCheckCodeInput";
-            $("#phoneCheckCodeInput").focus();
             return ;
         }
 
         /*供应商属性（基础供应商）*/
-        supplier.ifAttrNormal = 1;
-        supplier.supstateNormal = 2;
+        supplier.supstateSingle = 5;
 
 
         /*ajax 提交*/
+
+
+
+
         $.ajax({
             url:'/auth/subData/',
             data :{supplier:JSON.stringify(supplier),phoneCheckCode:phoneCheckCode},
@@ -428,8 +583,13 @@
             success :function(res){
                 console.log(res);
                 if(res.success){
-                    alertMsg("提交成功,请等待审核");
+                    //alertMsg("提交成功,请等待审核");
+
+                    //显示支付页面：
+                    location.href='/auth/pay/danyi';
+
                 }else{
+                    $("#subBtn").removeAttr('disabled');
                     alertMsg(res.message);
                 }
             },
@@ -443,8 +603,6 @@
 
     $(function() {
 
-
-
         var a = changeInputFileSize;
         a();
 
@@ -452,8 +610,10 @@
         $("#phoneNumInput-jc").on('blur',function(){
             var phoneNum = $(this).val();
             if(!isPhoneNo(phoneNum)){
+                setTimeout(function(){
+                    $("#phoneNumInput-jc").focus();
+                },1000);
                 alertMsg("手机号码输入有误");
-                $("#phoneNumInput-jc").focus();
             }
         })
 
@@ -538,12 +698,13 @@
                 console.log(bl);
             }
         }
-        setTimeout("changeInputFileSize($('#"+pervDivId+"'))",500);
+        setTimeout(function(){
+            changeInputFileSize($("#"+pervDivId));
+
+        },500);
+        //setTimeout("changeInputFileSize($('#"+pervDivId+"'))",500);
 
     };
-
-
-
 
     /**
      *       用url方式表示的base64图片数据
@@ -797,7 +958,7 @@
         data: [firstTrade, secondTrade, thirdTrade],
         selectedIndex: selectedIndexTrade,
         title: '行业选择'
-    });;
+    });
 
     /*获取分类数据方法，whichLeval可以为1，2,3, 如果是第2  、3级，需要给parentId*/
     function getTrade(whichLeval,parentId){

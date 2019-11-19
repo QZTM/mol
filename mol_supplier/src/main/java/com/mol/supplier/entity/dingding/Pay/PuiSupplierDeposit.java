@@ -25,6 +25,7 @@ public class PuiSupplierDeposit {
         public static final String ORDER_PAY_FOR_SINGON_SUPPLIER_SERVICE = "2";
         public static final String ORDER_PAY_FOR_EXPERT_REVIEW_FEE = "3";
         public static final String ORDER_PAY_FOR_CONTRACT_FEE = "4";
+        public static final String ORDER_PAY_FOR_EXPERT_REVIEW_AND_CONTRACT_FEE = "5";
 
         /**
          * 支付方式常量 支付宝1    微信2
@@ -37,6 +38,17 @@ public class PuiSupplierDeposit {
          */
         @Id
         private String orderId;   //订单id
+
+        /**
+         * 支付的商品名称：
+         */
+        private String itemName;
+
+        /**
+         * 商品描述
+         */
+        private String itemSubject;
+
         /**
          * 供应商id
          */
@@ -74,5 +86,8 @@ public class PuiSupplierDeposit {
          * 订单状态，1为未支付未过期，2为未支付已过期，4为被用户取消，5为支付正常完成
          */
         private String status;
+
+        private String buyerId;
+        private String buyerLoginId;
 
 }

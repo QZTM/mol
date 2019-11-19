@@ -3,6 +3,7 @@ package com.mol.pay.entity;
 import com.alipay.api.domain.*;
 import lombok.Data;
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * 支付信息载体
@@ -37,4 +38,9 @@ public class AlipayCreateInfo implements Serializable {
     private String totalAmount;
     //回调地址
     private String callbackUrl;
+
+    //一下为支付宝额外参数
+    //自定义的支付目的，1，战略供应商服务费，2.单一供应商服务费，3.供应商缴纳专家评审费用，4.供应商缴纳合同费用
+    //回调事件自定义参数，可以添加payfor,supplierid等
+    private Map callbackParamMap;
 }

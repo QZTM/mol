@@ -1,6 +1,8 @@
 package com.mol.supplier.service.third;
 
 import com.github.pagehelper.PageHelper;
+import com.mol.supplier.entity.MicroApp.Supplier;
+import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseArray;
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
 import com.mol.supplier.entity.dingding.solr.fyPurchase;
 import com.mol.supplier.entity.thirdPlatform.FyQuote;
@@ -14,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ClassName:ScheService
@@ -95,4 +99,58 @@ public class ScheService {
     public PurchaseDetail findPurchDetailByPurIdAndQuoteId(String id, String quoteId) {
         return fyPurchaseDetailMapper.findPurchaseDetailByPurIdAndQuoteId(id,quoteId);
     }
+
+    public List<PurchaseDetail> findPurchDetailByPurId(String id) {
+        return fyPurchaseDetailMapper.findPurchaseDetailList(id);
+    }
+
+    public List<FyQuote> findPassQuoteByPurId(String id) {
+        return  fyQuoteMapper.findPassQuoteByPurId(id);
+    }
+
+    public Supplier findSupplierById(String pkSupplierId) {
+        Supplier t=new Supplier();
+        t.setPkSupplier(pkSupplierId);
+        return bdSupplierMapper.selectOne(t);
+    }
+
+
+//    public Map<String,List<PurchaseArray>> getList(int count,List<FyQuote> passQuoteList, List<PurchaseArray> purchaseArrayList) {
+//        Map<String,List<PurchaseArray>>  map=new HashMap<String,List<PurchaseArray>>();
+//        List<PurchaseArray> list=new ArrayList<>();
+//        if (count==1){
+//            //只有一家
+//            Supplier t =new Supplier();
+//            t.setPkSupplier(passQuoteList.get(0).getPkSupplierId());
+//            Supplier supplier = bdSupplierMapper.selectOne(t);
+//            for (int i=0;i<purchaseArrayList.size();i++){
+//                for (int j=0;j<passQuoteList.size();j++){
+//                    if (purchaseArrayList.get(i).getMaterialId()==passQuoteList.get(j).getPkMaterialId()){
+//                        PurchaseArray pa =new PurchaseArray();
+//                        pa.setMaterialId(purchaseArrayList.get(i).getMaterialId());
+//                        pa.setTypeName(purchaseArrayList.get(i).getTypeName());
+//                        pa.setItemName(purchaseArrayList.get(i).getItemName());
+//                        pa.setNorms(purchaseArrayList.get(i).getNorms());
+//                        pa.setCount(purchaseArrayList.get(i).getCount());
+//                        pa.setUnit(purchaseArrayList.get(i).getUnit());
+//                        pa.setQuote(passQuoteList.get(j).getQuote());
+//                        list.add(pa);
+//                    }
+//                }
+//            }
+//            map.put(supplier.getName(),list);
+//            return map;
+//        }else {
+//            //多商家采购
+//            for (int i=0;i<passQuoteList.size();i++) {//先遍历报价
+//                Supplier t =new Supplier();
+//                t.setPkSupplier(passQuoteList.get(0).getPkSupplierId());
+//                Supplier supplier = bdSupplierMapper.selectOne(t);
+//                map.put(supplier.getName(),list);
+//                for (int j = 0; j < purchaseArrayList.size(); j++) {
+//
+//                }
+//            }
+//        }
+//    }
 }

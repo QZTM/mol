@@ -892,7 +892,10 @@
 
         update_supplier_active(supplier).then(function(res){
             if('修改成功'==res.message){
-                window.location.reload();
+                alertMsg("已请求更改资料，请等待审核！");
+                setTimeout(function(){
+                    window.history.back();
+                },1500);
             }
             //alertMsg(res.message);
         },function(res){

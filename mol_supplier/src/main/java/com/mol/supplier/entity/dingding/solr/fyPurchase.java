@@ -5,6 +5,7 @@ import lombok.Data;
 import org.apache.solr.client.solrj.beans.Field;
 import org.springframework.data.solr.core.mapping.Dynamic;
 
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -75,4 +76,8 @@ public class fyPurchase implements Serializable {
     private String approvalStartTime;
     //订单状态结束审批的时间（最终的订单状态）
     private String approvalEndTime;
+
+    //订单确定的供应商数量
+    @Transient
+    private Integer passSuppCount;
 }
