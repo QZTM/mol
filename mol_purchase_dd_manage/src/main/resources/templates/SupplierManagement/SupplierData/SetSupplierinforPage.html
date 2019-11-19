@@ -351,10 +351,9 @@
     }
     function return_top()//返回上一层
     {
-        if (confirm("退出后数据将不会保存！"))
-        {
+        layer.confirm('退出后数据不会保存', function(){
             parent.close_Details_page();
-        }
+        });
     }
 
 </script>

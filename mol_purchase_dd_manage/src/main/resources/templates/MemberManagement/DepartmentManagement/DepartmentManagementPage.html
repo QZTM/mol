@@ -79,8 +79,6 @@
             data:{DeparmentId:DeparmentId},
             // headers:{  'eticket': app.globalData.eticket},
             success: function (data) {
-
-
                 var DepartmentDIV=document.createElement("div");
                 for (var n=0;n<data.length;n++)
                 {
@@ -145,13 +143,12 @@
                 alert("获取审核议价信息失败")
             }
         });
-
-
     }
 
     function SelectPeolpo(e)
     {
        console.log(e.childNodes[5].innerText);//获取点击人员的id
+        //console.log(e.childNodes[3].innerText);//获取点击人员的id
     }
 </script>
 </body>

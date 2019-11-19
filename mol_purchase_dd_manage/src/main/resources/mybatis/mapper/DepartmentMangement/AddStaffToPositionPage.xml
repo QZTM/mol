@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.ddmanage.mapper.DepartmentMangement.AddStaffToPositionPageMapper">
+
+    <delete id="DeleteStaffToPosition" parameterType="java.lang.String">
+       delete from bac_user_position where jurisdictionId=#{jurisdictionId}
+    </delete>
+    <insert id="AddStaffToPosition" parameterType="java.lang.String">
+        insert into bac_user_position(id,ddUserId,jurisdictionId)
+        values(#{id},#{ddUserId},#{jurisdictionId})
+    </insert>
+
+    <select id="GetPositionPeolpeLogic" resultType="java.util.Map">
+SELECT (SELECT bac_user.userName FROM bac_user WHERE bac_user.ddUserId=bac_user_position.ddUserId)userName,
+bac_user_position.ddUserId
+FROM bac_user_position
+WHERE bac_user_position.jurisdictionId=#{jurisdictionId}
+    </select>
+</mapper>

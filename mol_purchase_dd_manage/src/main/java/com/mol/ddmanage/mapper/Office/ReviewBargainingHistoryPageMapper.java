@@ -1,5 +1,6 @@
 package com.mol.ddmanage.mapper.Office;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public interface ReviewBargainingHistoryPageMapper
@@ -9,4 +10,5 @@ public interface ReviewBargainingHistoryPageMapper
     Map Purchase(String purchase_id);
     String ReviewPeolpesMapper(String CorpId);
     Map GetUserName(String id);
+    ArrayList<Map> PurchaseReviewStatus(String purchase_id);
 }

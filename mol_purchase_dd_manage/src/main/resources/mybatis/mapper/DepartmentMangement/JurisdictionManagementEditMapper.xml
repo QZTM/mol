@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.ddmanage.mapper.DepartmentMangement.JurisdictionManagementEditMapper">
+
+    <select id="GetJurisdictionPosition" resultType="com.mol.ddmanage.Ben.DepartmentManagement.AddJurisdictionben" >
+        select * from bac_position where jurisdictionId=#{jurisdictionId}
+    </select>
+    <update id="UpdateJurisdiction" parameterType="com.mol.ddmanage.Ben.DepartmentManagement.AddJurisdictionben">
+     update `bac_position` set  notice=#{notice},
+       notice=#{notice},
+       history=#{history},
+       bargaining=#{bargaining},
+       telephoneRecording=#{telephoneRecording},
+       purchaseProgress=#{purchaseProgress},
+       contract=#{contract},
+       department=#{department},
+       `position`=#{position},
+       staff=#{staff},
+       expertInfor=#{expertInfor},
+       expertApproval=#{expertApproval},
+       purchase=#{purchase},
+       supplierManage=#{supplierManage},
+       supplierApproval=#{supplierApproval},
+       approvalSet=#{approvalSet},
+       approvalSet=#{bargainingSet},
+       approvalSet=#{logSee}
+     where  jurisdictionId=#{jurisdictionId};
+    </update>
+</mapper>
