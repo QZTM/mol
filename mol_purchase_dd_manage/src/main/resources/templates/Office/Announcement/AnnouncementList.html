@@ -8,7 +8,7 @@
 <script src="/echarts.min.js"></script>
 <body>
 <!--内部公告-->
-<div><!--1700px-->
+<div id="datagridview"><!--1700px-->
 	<div style="margin: 16px;">
 		<a style="font-size: 22px;"><font size="3">基础分类：</font></a>
 		<select style="font-size: 12px;width: 7%; height: 26px;"  onchange="select_change(this)">
@@ -19,7 +19,7 @@
 		</select>
 
 		<!--<button class="layui-btn layui-btn-radius" style="float: right;">添加新信息</button>-->
-		<button type="button" class="layui-btn" style="float: right;"><i class="layui-icon">&#xe608;</i>添加新信息</button>
+		<button onclick="AddAnnouncement()" type="button" class="layui-btn" style="float: right;"><i class="layui-icon">&#xe608;</i>添加新信息</button>
 	</div>
 	<div style="margin-left: 16px;">
 		<a style="font-size: 22px;"><font size="3">搜索内容：</font></a>
@@ -48,6 +48,13 @@
 	</script>
 </div>
 
+<!--详情页显示-->
+<div id="Details">
+	<iframe  id="subWin"  style="width: 98.2%;height: 750px;border: none;overflow-x:hidden ;overflow-y: hidden"><!--width: 1670px-->
+
+	</iframe>
+</div>
+
 
 <script src="/layui/layui.all.js"></script>
 
@@ -56,6 +63,21 @@
 	{
 		alert("111111")
 	}
+	function AddAnnouncement() //添加新的公告
+	{
+		document.getElementById("datagridview").style.display="none";
+		document.getElementById("subWin").src="/Home//AnnouncementEditPage";
+		document.getElementById("Details").style.display="block";
+
+		$("#Details").animate({width:"100%"}, 500);//展开
+	}
+	function close_Details_page()//关闭订单详情通话页
+	{
+		$("#Details").animate({width:"50%"}, 0);//收起
+		document.getElementById("datagridview").style.display="block";
+		document.getElementById("Details").style.display="none";
+	}
+
 	layui.use('table', function(){
 		var table = layui.table;
 		var Data=[{"id":"BeJson","fujian":"http://www.bejson.com","titl":true,"fenlei":"12","time":"12","founder":"12","right":"12111"},{"id":"BeJson","fujian":"http://www.bejson.com","titl":true,"fenlei":"12","time":"12","founder":"12","right":"12111"},{"id":"BeJson","fujian":"http://www.bejson.com","titl":true,"fenlei":"12","time":"12","founder":"12","right":"12111"}]

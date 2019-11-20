@@ -11,7 +11,7 @@
     <!--标题-->
     <div style="width: 95%;height: 50px;background-color: #2D93CA;color: #fbfbfb;border-radius: 6px;margin: 4px;padding: 16px;font-size: 20px;"><!--width: 1568px-->
         <div style="float: left;margin-left: 10px">
-            <p th:text="${titl}">查看审批记录:计算机采购</p>
+            <p >查看审批记录</p>
         </div>
         <div id="close" style="float: right;" onclick="return_top()" >
             <label style="cursor: pointer;">返回</label>
@@ -27,7 +27,7 @@
 
         <!--标题-->
         <div style="margin: 15px; width: 96%;height: 165px; background-color: #009F95;border-radius:12px;"><!--width: 760px-->
-             <div style="float: left;margin-top: 12px;margin-left: 12px; "><font size="5" color="#FBFBFB">斯凯孚SKF6021 轴承</font></div>
+             <div style="float: left;margin-top: 12px;margin-left: 12px; "><font size="5" color="#FBFBFB" th:text="${titl}">斯凯孚SKF6021 轴承</font></div>
              <div style="width: 96.1%; float: left;margin-top: 6px;font-size: 15px;"><!--width: 700px-->
             	<font id="Order" color="#FBFBFB" style="float: left;margin-left: 12px;" th:text="${Order}">订单编号:</font>
             	<font color="#FBFBFB" style="float:right;" th:text="${people}">采购申请人:李XX</font>
