@@ -1,4 +1,4 @@
-package com.mol.fadada;
+package com.mol.fadada.handler;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -10,16 +10,14 @@ import com.fadada.sdk.client.authForfadada.model.AgentInfoINO;
 import com.fadada.sdk.client.authForfadada.model.BankInfoINO;
 import com.fadada.sdk.client.authForfadada.model.CompanyInfoINO;
 import com.fadada.sdk.client.authForfadada.model.LegalInfoINO;
-import com.fadada.sdk.client.authForplatform.ApplyClientNumCert;
-import com.fadada.sdk.client.common.ReturnBaseT;
 import com.fadada.sdk.client.request.ExtsignReq;
-import com.fadada.sdk.test.util.ConfigUtil;
-import com.fadada.sdk.util.http.HttpsUtil;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import java.io.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
 public class auth4fadada {
@@ -40,44 +38,44 @@ public class auth4fadada {
     private String result_type = "1";
     private String cert_flag = "0";
     private StringBuffer response = new StringBuffer("==================Welcome ^_^ ==================");
-    @Before
-    public void before() {
-        String timeStamp = HttpsUtil.getTimeStamp();
-
-        customer_name = ConfigUtil.getPersonName();
-        contract_id = "CONT" + timeStamp;// 直接上传接口合同编号
-        template_id = "TEMP" + timeStamp;// 模板编号
-        transaction_id = "TRAN_" + timeStamp;// 手动签交易号
-        email = "ep" + timeStamp + "@fadada.com";// 个人邮箱
-        id_card = "";// 身份证号码;
-        mobile = "";// 手机号;
-        file = new File(ConfigUtil.getFilePath());
-
-        response.append("\n").append("名字:").append(customer_name);
-        response.append("\n").append("身份证号码:").append(id_card);
-        response.append("\n").append("证件类型:").append(ident_type);
-        response.append("\n").append("手机号:").append(mobile);
-        response.append("\n").append("邮箱:").append(email);
-        response.append("\n").append("上传合同编号:").append(contract_id);
-        response.append("\n").append("上传模板编号:").append(template_id);
-        response.append("\n").append("手动签交易号:").append(transaction_id);
-    }
+//    @Before
+//    public void before() {
+//        String timeStamp = HttpsUtil.getTimeStamp();
+//
+//        customer_name = ConfigUtil.getPersonName();
+//        contract_id = "CONT" + timeStamp;// 直接上传接口合同编号
+//        template_id = "TEMP" + timeStamp;// 模板编号
+//        transaction_id = "TRAN_" + timeStamp;// 手动签交易号
+//        email = "ep" + timeStamp + "@fadada.com";// 个人邮箱
+//        id_card = "";// 身份证号码;
+//        mobile = "";// 手机号;
+//        file = new File(ConfigUtil.getFilePath());
+//
+//        response.append("\n").append("名字:").append(customer_name);
+//        response.append("\n").append("身份证号码:").append(id_card);
+//        response.append("\n").append("证件类型:").append(ident_type);
+//        response.append("\n").append("手机号:").append(mobile);
+//        response.append("\n").append("邮箱:").append(email);
+//        response.append("\n").append("上传合同编号:").append(contract_id);
+//        response.append("\n").append("上传模板编号:").append(template_id);
+//        response.append("\n").append("手动签交易号:").append(transaction_id);
+//    }
 
 
     /*=============法大大实名测试=============*/
     @Test
     public void Test1(){
-        regAccount();//1注册账号
-        getAuthCompanyurl();//2获取企业实名认证地址
-        getAuthPersonurl();//3获取个人实名认证地址
-        findPersonCertInfo();//17 查询个人实名认证信息
-        findCompanyCertInfo();//18 查询企业实名认证信息
-        GetFileForUUID();//19 通过uuid下载文件
-        ApplyCert();//4实名证书申请
-        ApplyNumCert();//5编号证书申请
-        addSignature1();//6印章上传
-        addSignature2();//6印章上传
-        customSignature();//7自定义印章
+      regAccount();//1注册账号 "0BFA0775E0497B13D826976150E0CD1F"4EFECA0FEF28EB0958CBBFD022D58573
+       //getAuthCompanyurl();//2获取企业实名认证地址
+        //getAuthPersonurl();//3获取个人实名认证地址
+//        findPersonCertInfo();//17 查询个人实名认证信息
+//        findCompanyCertInfo();//18 查询企业实名认证信息
+//        GetFileForUUID();//19 通过uuid下载文件
+//        ApplyCert();//4实名证书申请
+//        ApplyNumCert();//5编号证书申请
+//        addSignature1();//6印章上传
+//        addSignature2();//6印章上传
+//        customSignature();//7自定义印章
 
     }
     @Test
@@ -98,11 +96,12 @@ public class auth4fadada {
     }
 
     /*=============注册账号=============*/
+    @Test
     public void regAccount(){
         response.append("\n").append("注册账号:");
         FddClientBase base = new FddClientBase(APP_ID,APP_SECRET,V,HOST);
-        String open_id = transaction_id;
-        String account_type = "3";
+        String open_id = "119226931359626444";
+        String account_type = "2";
         String result =base.invokeregisterAccount(open_id,account_type);
         response.append("\n").append(result);
     }
@@ -161,14 +160,14 @@ public class auth4fadada {
     public void getAuthPersonurl(){
         response.append("\n").append("获取个人实名认证地址:");
         GetPersonVerifyUrl personverify = new GetPersonVerifyUrl(APP_ID,APP_SECRET,V,HOST);
-        String customer_id = "";
+        String customer_id = "4EFECA0FEF28EB0958CBBFD022D58573";
         String verifyed_way = "0";
         String page_modify = "1";
-        String notify_url = "https://www.baidu.com";
-        String return_url= "https://www.baidu.com";
-        String customer_name = "";
+        String notify_url = "http://fyycg88.vaiwan.com/callback/fdd";
+        String return_url= "http://fyycg88.vaiwan.com/callback/fdd";
+        String customer_name = "刘洋";
         String customer_ident_type = "0";
-        String customer_ident_no ="";
+        String customer_ident_no ="1192269313596264448";
         String mobile ="";
         String ident_front_path ="";
         String result = personverify.invokePersonVerifyUrl(customer_id,verifyed_way,

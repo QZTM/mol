@@ -4,7 +4,6 @@ import redis.clients.jedis.BinaryClient;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,8 +19,8 @@ public class RedisUtil {
     private  RedisUtil() {
         // jedispool为null则初始化，
         if (pool == null) {
-            String ip = "192.168.1.187";
-            //String ip = "140.249.22.202";
+            //String ip = "192.168.1.187";
+            String ip = "140.249.22.202";
             String password = "ald377";
             int port = 6379;
             JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
@@ -41,10 +40,10 @@ public class RedisUtil {
             jedisPoolConfig.setNumTestsPerEvictionRun(200);
             jedisPoolConfig.setTimeBetweenEvictionRunsMillis(30000);
             //表示一个对象至少停留在idle状态的最短时间，然后才能被idle object evitor扫描并驱逐；这一项只有在timeBetweenEvictionRunsMillis大于0时才有意义
-            jedisPoolConfig.setMinEvictableIdleTimeMillis(30000);
+            jedisPoolConfig.setMinEvictableIdleTimeMillis(300);
             //pool = new JedisPool(jedisPoolConfig, ip, port, 10000, password);
             // redis 未设置密码
-            pool = new JedisPool(jedisPoolConfig, ip, port, 10000 ,password);
+            pool = new JedisPool(jedisPoolConfig, ip, port, 20000 ,password);
         }
     }
 
