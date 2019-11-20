@@ -40,6 +40,15 @@
         select * from app_user where id=#{id}
     </select>
 
+    <select id="PurchaseReviewStatus" resultType="java.util.Map">
+        SELECT (SELECT app_user.user_name FROM app_user WHERE act_hi_actinst.ASSIGNEE_=app_user.id)UserName,
+        (SELECT act_hi_comment.MESSAGE_ FROM act_hi_comment WHERE act_hi_comment.TASK_ID_=act_hi_actinst.TASK_ID_)Remarks,
+        act_hi_actinst.*,
+        act_hi_procinst.ID_
+        FROM act_hi_procinst,act_hi_actinst
+        WHERE  act_hi_actinst.PROC_INST_ID_=act_hi_procinst.PROC_INST_ID_ AND act_hi_procinst.BUSINESS_KEY_=#{purchase_id}
+    </select>
+
 
 
 </mapper>

@@ -150,6 +150,9 @@ public class ThirdPlatformController {
             case "中标公告":
                 htmlName="index_zbgg";
                 break;
+            case "茉尔资讯":
+                htmlName="index_mezx";
+                break;
             default:
                 htmlName="error_enter";
                 break;
@@ -160,12 +163,24 @@ public class ThirdPlatformController {
         }
         List<fyPurchase> list = null;
         int count = 0;
+
+        //进入茉尔资讯
+        if (htmlName == "index_mezx") {
+            log.info("查询茉尔资讯");
+            List<SuppNews> newsList=platformService.getNewsList(pageNumber,pageSize);
+            map.addAttribute("newsList",newsList);
+            log.info("查询茉尔资讯的list："+newsList);
+            return htmlName;
+        }
         //进入中标公告
         if (htmlName == "index_zbgg") {
+            log.info("查询中标公告");
             list =platformService.findPassPurchByStatus(OrderStatus.pass,pageNumber,pageSize);
             list =platformService.findPassSupplierCountOfPassPur(list);
             count=platformService.findPassCountByStatus(OrderStatus.pass);
-        }else {
+            log.info("中标公告的list"+list);
+            log.info("中标公告的数量"+count);
+        } else {
             //单一，询价，战略，维修加工，
             if (keyword == null || keyword == "") {
                 keyword = "";
@@ -424,13 +439,7 @@ public class ThirdPlatformController {
 
 
         }
-
-
-        //modelMap.put("quote",quoteList);//订单详情
         modelMap.put("supplier",supplierList);
-
-
-
         //中标的list
         //modelMap.addAttribute("okList",okList);
         modelMap.addAttribute("pur",purchase);
@@ -462,6 +471,24 @@ public class ThirdPlatformController {
         modelMap.addAttribute("expertReward",expertReward);
         return "zbgg_detail";
     }
+
+    /**
+     * 前往新闻详情页面
+     * @param id 新闻表主键ID
+     * @return
+     */
+    @GetMapping("/findnewsDetail")
+    public String findNewsDetail(String id ,ModelMap map){
+        log.info("前往新闻详情页面："+id);
+        SuppNews news=platformService.findNewsDetail(id);
+        log.info("查询资讯详情完成："+news);
+        //将id的新闻，阅读人数加一
+        int i=platformService.addNewsNumOfReaders(news);
+        log.info("查询资讯详情修改阅读人数完成："+i);
+        map.addAttribute("news",news);
+        return "mezx_detail";
+    }
+
 
     /**
      * 前往我要报价页面，获取当前页面的物品id

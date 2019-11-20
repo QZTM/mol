@@ -12,14 +12,14 @@ import java.util.Date;
 
 public class Token_hand
 {
-    public static String CreateMyToken(String user)//创建token
+    public static String CreateMyToken(String userid)//创建token
     {
         try
         {
             Algorithm algorithm= Algorithm.HMAC256("demo");
 
-            String Token= JWT.create().withIssuer("crm")
-                    .withSubject(user)
+            String Token= JWT.create().withIssuer("userid")//key名
+                    .withSubject(userid)//key值
                     .withExpiresAt(getTimeout())
                     .sign(algorithm);
             return Token;
@@ -35,10 +35,11 @@ public class Token_hand
         try {
             Algorithm algorithm=Algorithm.HMAC256("demo");
             JWTVerifier verifier=JWT.require(algorithm)
-                    .withIssuer("crm")
+                    .withIssuer("userid")//key值
                     .build();
             DecodedJWT jwt=verifier.verify(token);
-            return jwt.getSubject();//验证token
+            String ssss=jwt.getSubject();
+            return ssss;//验证token
         }
         catch
         (UnsupportedEncodingException e)

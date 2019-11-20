@@ -7,6 +7,7 @@ import com.mol.supplier.entity.dingding.login.AppAuthOrg;
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
 import com.mol.supplier.entity.dingding.solr.fyPurchase;
 import com.mol.supplier.entity.thirdPlatform.*;
+import com.mol.supplier.mapper.SuppNewsMapper;
 import com.mol.supplier.mapper.dingding.org.AppOrgMapper;
 import com.mol.supplier.mapper.dingding.purchase.BdSupplierMapper;
 import com.mol.supplier.mapper.dingding.purchase.fyPurchaseDetailMapper;
@@ -18,6 +19,7 @@ import com.mol.supplier.mapper.third.FyQuoteMapper;
 import com.mol.supplier.mapper.third.TpMapper;
 import com.mol.supplier.util.StatusUtils;
 import entity.PageBean;
+import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import util.IdWorker;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.Random;
 
 @Service
+@Log
 public class ThirdPlatformService {
 
 
@@ -60,6 +63,9 @@ public class ThirdPlatformService {
 
     @Autowired
     private MicroSalesmanMapper salesmanMapper;
+
+    @Autowired
+    private SuppNewsMapper suppNewsMapper;
 
 
     //enter排版
@@ -416,5 +422,28 @@ public class ThirdPlatformService {
             }
         }
         return list;
+    }
+
+    public List<SuppNews> getNewsList(int pageNumber, int pageSize) {
+        PageHelper.startPage(pageNumber,pageSize);
+        return suppNewsMapper.selectAll();
+    }
+
+    public SuppNews findNewsDetail(String id) {
+        if (id==null){
+            log.info("查询资讯详情时id传递为null");
+            return null;
+        }
+        SuppNews t =new SuppNews();
+        t.setId(id);
+
+        return suppNewsMapper.selectOne(t);
+    }
+
+    public int addNewsNumOfReaders(SuppNews news) {
+        SuppNews e=new SuppNews();
+        e.setId(news.getId());
+        e.setNumberOfReaders(news.getNumberOfReaders()+1);
+        return suppNewsMapper.updateByPrimaryKeySelective(e);
     }
 }

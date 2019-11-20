@@ -9,7 +9,6 @@ public class Push_history_list_ben
     private String supplier_name;//供应商
     private String create_time;//创建时间
 
-    private String staff_id;//申请人
     private String user_name;//申请人姓名
 
     private String status;//状态 4议价  6审批 7通过 8拒绝
@@ -48,13 +47,6 @@ public class Push_history_list_ben
         this.create_time = create_time;
     }
 
-    public String getStaff_id() {
-        return staff_id;
-    }
-
-    public void setStaff_id(String staff_id) {
-        this.staff_id = staff_id;
-    }
 
     public String getStatus() {
         return status;

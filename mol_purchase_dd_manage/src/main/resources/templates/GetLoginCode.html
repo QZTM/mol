@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script src="https://g.alicdn.com/dingding/dingtalk-jsapi/2.7.13/dingtalk.open.js"></script>
+<link rel="stylesheet" href="/layui/css/layui.css">
+<body >
+
+<script src="/layui/layui.all.js"></script>
+<script  type="text/javascript">
+
+    var LoginCode=''
+    dd.ready(function() //获取免登授权码
+    {
+        // dd.ready参数为回调函数，在环境准备就绪时触发，jsapi的调用需要保证在该回调函数触发后调用，否则无效。
+        dd.runtime.permission.requestAuthCode({
+            corpId: "ding6ef23b66fc0611a335c2f4657eb6378f",
+            onSuccess: function(result)
+            {
+                LoginCode=result.code;
+                alert(LoginCode)
+                //window.navigate("/Login/verification_login?code="+LoginCode);
+                window.location.href="/Login/verification_login?code="+LoginCode;
+            },
+            onFail : function(err)
+            {
+
+            }
+        });
+    });
+</script>
+</body>
+</html>

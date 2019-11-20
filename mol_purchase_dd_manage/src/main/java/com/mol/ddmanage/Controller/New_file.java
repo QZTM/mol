@@ -1,8 +1,10 @@
 package com.mol.ddmanage.Controller;
 
 import com.mol.ddmanage.Service.Office.ReviewBargainingHistoryPageService;
+import com.mol.ddmanage.Service.Permission.VerificationPermissionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -14,58 +16,97 @@ import java.util.Map;
 @Controller
 @RequestMapping("/Home")
 public class New_file {
-    @RequestMapping("/new_file")
+
+    @Resource
+    VerificationPermissionService verificationPermissionService;//验证访问人权限
+    @RequestMapping("/DingdingOaLogin")
+    public String GetLoginCode()
+    {
+        return "GetLoginCode";
+    }
+
+    @RequestMapping("/new_file")//测试首页框架
     public String new_file(@RequestParam Map map , HttpSession httpSession)
     {
-        httpSession.setAttribute("CorpId","ding6ef23b66fc0611a335c2f4657eb6378f");
-
+        httpSession.setAttribute("userid","083216482529129838");
         return "New_file";
     }
 
-    @RequestMapping("/Home")
-    public String Home()
+    @RequestMapping("/Home")//首页
+    public String Home(HttpServletRequest httpServletRequest)
     {
         return "Workbench/Home";
     }
 
-    @RequestMapping("/Statistics")
+    @RequestMapping("/Statistics")//主页的统计图
     public String Statistics()
     {
         return "Workbench/Statistics";
     }
 
-    @RequestMapping("/Announcement")
-    public String Announcement()
+    @RequestMapping("/Announcement")//公告#
+    public String Announcement(HttpServletRequest httpServletRequest)
     {
-        return "Office/Announcement/Announcement";
+        HttpSession httpSession=httpServletRequest.getSession();
+       if(verificationPermissionService.VerificationPermissionLogic(httpSession.getAttribute("userid").toString(),"notice"))//查询用户是否有进入这个页面的权限
+       {
+           return "Office/Announcement/Announcement";
+       }
+       else
+       {
+           return "Permission/NotVerificationPage";
+       }
     }
 
-    @RequestMapping("/Call_Records")
-    public String Call_Records()
+    @RequestMapping("/Call_Records")//通话记录#
+    public String Call_Records(HttpServletRequest httpServletRequest)
     {
-        return "Office/Call_Records/Call_Records";
+        HttpSession httpSession=httpServletRequest.getSession();
+        if(verificationPermissionService.VerificationPermissionLogic(httpSession.getAttribute("userid").toString(),"telephoneRecording"))//查询用户是否有进入这个页面的权限
+        {
+            return "Office/Call_Records/Call_Records";
+        }
+        else
+        {
+            return "Permission/NotVerificationPage";
+        }
     }
 
-    @RequestMapping("/Purchase_Contract")  //合同管理页
+    @RequestMapping("/Purchase_Contract")  //合同管理页#
     public String Purchase_Contract(HttpServletRequest httpServletRequest)
     {
-        HttpSession session=httpServletRequest.getSession();
-        return "Office/Purchase_Contract/Purchase_Contract";
+        HttpSession httpSession=httpServletRequest.getSession();
+        if(verificationPermissionService.VerificationPermissionLogic(httpSession.getAttribute("userid").toString(),"contract"))//查询用户是否有进入这个页面的权限
+        {
+            return "Office/Purchase_Contract/Purchase_Contract";
+        }
+        else
+        {
+            return "Permission/NotVerificationPage";
+        }
     }
 
-    @RequestMapping("/Contract")//合同管理的当个合同详情
-    public String Contract(@RequestParam Map map,Model model)
+    @RequestMapping("/Contract")//合同管理详情
+    public String Contract(@RequestParam Map map, Model model)
     {
         model.addAttribute("Oreder_number",map.get("Oreder_number").toString());//传一个订单编号
         return "Office/Purchase_Contract/Contract";
     }
 
-    @RequestMapping("/Purchase_Grogress")//采购进度
-    public String Purchase_Grogress()
+    @RequestMapping("/Purchase_Grogress")//采购进度#
+    public String Purchase_Grogress(HttpServletRequest httpServletRequest)
     {
-        return "Office/Purchase_Grogress/Purchase_Grogress";
+        HttpSession httpSession=httpServletRequest.getSession();
+        if(verificationPermissionService.VerificationPermissionLogic(httpSession.getAttribute("userid").toString(),"purchaseProgress"))//查询用户是否有进入这个页面的权限
+        {
+            return "Office/Purchase_Grogress/Purchase_Grogress";
+        }
+        else
+        {
+            return "Permission/NotVerificationPage";
+        }
     }
-    @RequestMapping("/Time_Process")  //采购审核历史流程详情
+    @RequestMapping("/Time_Process")  //采购进度时间轴流程详情
     public String Time_Process(@RequestParam Map map,Model model)
     {
         model.addAttribute("Oreder_number","订单编号:"+map.get("Oreder_number").toString());
@@ -75,18 +116,27 @@ public class New_file {
         return "Office/Purchase_Grogress/Time_Process";
     }
 
-    @RequestMapping("/ReviewBargainingHistoryList")//审核议价历史列表
-    public String ReviewBargainingHistoryList()
+    @RequestMapping("/ReviewBargainingHistoryList")//审核议价历史列表#
+    public String ReviewBargainingHistoryList(HttpServletRequest httpServletRequest)
     {
-        return "Office/ReviewBargainingHistory/ReviewBargainingHistoryList";
+        HttpSession httpSession=httpServletRequest.getSession();
+        if(verificationPermissionService.VerificationPermissionLogic(httpSession.getAttribute("userid").toString(),"bargaining"))//查询用户是否有进入这个页面的权限
+        {
+            return "Office/ReviewBargainingHistory/ReviewBargainingHistoryList";
+        }
+        else
+        {
+            return "Permission/NotVerificationPage";
+        }
     }
 
 
     @Resource
     ReviewBargainingHistoryPageService titleDetailsService;
     @RequestMapping("/ReviewBargainingHistoryPage")//审核议价历史详情页
-    public String Title_Details(@RequestParam Map map,Model model)
+    public String Title_Details(@RequestParam Map map, Model model)
     {
+
         model.addAttribute("titl","查看审批记录:"+map.get("titl").toString());//标题
         model.addAttribute("Order","订单编号:"+map.get("Order").toString());//订单编号
         model.addAttribute("people","采购申请人:"+map.get("people").toString());//申请人
@@ -109,30 +159,73 @@ public class New_file {
         return "Office/Call_Records/Company_Call";
     }
 
-    @RequestMapping("/DepartmentManagementPage")//人员组织架构
-    public String DepartmentManagementPage(/*@RequestParam Map map,*/ Model model)
+    @RequestMapping("/DepartmentManagementPage")//部门管理#
+    public String DepartmentManagementPage(HttpServletRequest httpServletRequest)
     {
-        return "MemberManagement/DepartmentManagement/DepartmentManagementPage";
+        HttpSession httpSession=httpServletRequest.getSession();
+        if(verificationPermissionService.VerificationPermissionLogic(httpSession.getAttribute("userid").toString(),"department"))//查询用户是否有进入这个页面的权限
+        {
+            return "MemberManagement/DepartmentManagement/DepartmentManagementPage";
+        }
+        else
+        {
+            return "Permission/NotVerificationPage";
+        }
     }
 
-    @RequestMapping("/JobManagement")//岗位管理
-    public String JobManagement(/*@RequestParam Map map, Model model*/)
+    @RequestMapping("/jurisdictionManagementList")//岗位设置#
+    public String JobManagement(HttpServletRequest httpServletRequest)
     {
-       // model.addAttribute("Company_name",map.get("Company_name").toString());
-        return "MemberManagement/DepartmentManagement/JobManagement";
+        HttpSession httpSession=httpServletRequest.getSession();
+        if(verificationPermissionService.VerificationPermissionLogic(httpSession.getAttribute("userid").toString(),"position"))//查询用户是否有进入这个页面的权限
+        {
+            return "MemberManagement/DepartmentManagement/jurisdictionManagementList";
+        }
+        else
+        {
+            return "Permission/NotVerificationPage";
+        }
+    }
+    @RequestMapping("/AddStaffToPositionPage")//岗位的添加员工
+    public String AddStaffToPositionPage(@RequestParam Map map,Model model)
+    {
+        model.addAttribute("jurisdictionId",map.get("jurisdictionId").toString());
+        return "MemberManagement/DepartmentManagement/AddStaffToPositionPage";
     }
 
-    @RequestMapping("/JobEditPage")//岗位编辑
-    public String JobEditPage(@RequestParam Map map, Model model)
+
+    /**
+     * 岗位权限编辑
+     * @param map
+     * @param model
+     * @return
+     */
+    @RequestMapping("/jurisdictionManagementEditPage")//修改角色权限的页面
+    public String JobEditPage(@RequestParam Map map, ModelMap model)
     {
-         model.addAttribute("JobName","岗位名称:"+map.get("JobName").toString());
-        return "MemberManagement/DepartmentManagement/JobEditPage";
+        model.addAttribute("JobName", map.get("JobName").toString());
+        model.addAttribute("jurisdictionId",map.get("jurisdictionId").toString());
+        return "MemberManagement/DepartmentManagement/jurisdictionManagementEditPage";
     }
 
-    @RequestMapping("/ExpertInforPageList")//专家信息管理
-    public String ExpertInforPageList()
+    @RequestMapping("/AddJurisdictionPage")//添加角色
+    public String AddJurisdictionPage()
     {
-        return "ExpertManagement/ExpertInfor/ExpertInforPageList";
+        return "MemberManagement/DepartmentManagement/AddJurisdictionPage";
+    }
+
+    @RequestMapping("/ExpertInforPageList")//专家信息管理#
+    public String ExpertInforPageList(HttpServletRequest httpServletRequest)
+    {
+        HttpSession httpSession=httpServletRequest.getSession();
+        if(verificationPermissionService.VerificationPermissionLogic(httpSession.getAttribute("userid").toString(),"expertInfor"))//查询用户是否有进入这个页面的权限
+        {
+            return "ExpertManagement/ExpertInfor/ExpertInforPageList";
+        }
+        else
+        {
+            return "Permission/NotVerificationPage";
+        }
     }
 
     @RequestMapping("/EditExperInforPage")//专家信息编辑
@@ -142,10 +235,18 @@ public class New_file {
         return "ExpertManagement/ExpertInfor/EditExperInforPage";
     }
 
-    @RequestMapping("/ExperApprovalListPage")//专家信息审核列表
-    public String ExperApprovalListPage()
+    @RequestMapping("/ExperApprovalListPage")//专家信息审核列表#
+    public String ExperApprovalListPage(HttpServletRequest httpServletRequest)
     {
-        return "ExpertManagement/ExperApproval/ExperApprovalListPage";
+        HttpSession httpSession=httpServletRequest.getSession();
+        if(verificationPermissionService.VerificationPermissionLogic(httpSession.getAttribute("userid").toString(),"expertApproval"))//查询用户是否有进入这个页面的权限
+        {
+            return "ExpertManagement/ExperApproval/ExperApprovalListPage";
+        }
+        else
+        {
+            return "Permission/NotVerificationPage";
+        }
     }
 
     @RequestMapping("/SetExperApprovalPage")//专家资料审核
@@ -161,10 +262,18 @@ public class New_file {
         return "ExpertManagement/ExpertInfor/AddExperTableInforPage";
     }
 
-    @RequestMapping("/PurchasOrderListPage")//采购订单
-    public String PurchasOrderListPage()
+    @RequestMapping("/PurchasOrderListPage")//采购订单#
+    public String PurchasOrderListPage(HttpServletRequest httpServletRequest)
     {
-        return "PurchasOrderManagement/PurchasOrder/PurchasOrderListPage";
+        HttpSession httpSession=httpServletRequest.getSession();
+        if(verificationPermissionService.VerificationPermissionLogic(httpSession.getAttribute("userid").toString(),"purchase"))//查询用户是否有进入这个页面的权限
+        {
+            return "PurchasOrderManagement/PurchasOrder/PurchasOrderListPage";
+        }
+        else
+        {
+            return "Permission/NotVerificationPage";
+        }
     }
 
     @RequestMapping("/PurchasOrderinforPage")//订单信息详情
@@ -177,10 +286,18 @@ public class New_file {
         return "PurchasOrderManagement/PurchasOrder/PurchasOrderinforPage";
     }
 
-    @RequestMapping("/SupplierListPage")//供应商管理
-    public String SuperplierListPage()
+    @RequestMapping("/SupplierListPage")//供应商管理#
+    public String SuperplierListPage(HttpServletRequest httpServletRequest)
     {
-        return "SupplierManagement/SupplierData/SupplierListPage";
+        HttpSession httpSession=httpServletRequest.getSession();
+        if(verificationPermissionService.VerificationPermissionLogic(httpSession.getAttribute("userid").toString(),"supplierManage"))//查询用户是否有进入这个页面的权限
+        {
+            return "SupplierManagement/SupplierData/SupplierListPage";
+        }
+        else
+        {
+            return "Permission/NotVerificationPage";
+        }
     }
 
     @RequestMapping("/SetSupplierinforPage")//查看供应商信息
@@ -190,10 +307,18 @@ public class New_file {
         return "SupplierManagement/SupplierData/SetSupplierinforPage";
     }
 
-    @RequestMapping("/SupplierToExamineListPage")//供应商审核列表
-    public String SupplierToExamineListPage()
+    @RequestMapping("/SupplierToExamineListPage")//供应商审核列表#
+    public String SupplierToExamineListPage(HttpServletRequest httpServletRequest)
     {
-        return "SupplierManagement/SupplierToExamine/SupplierToExamineListPage";
+        HttpSession httpSession=httpServletRequest.getSession();
+        if(verificationPermissionService.VerificationPermissionLogic(httpSession.getAttribute("userid").toString(),"supplierApproval"))//查询用户是否有进入这个页面的权限
+        {
+            return "SupplierManagement/SupplierToExamine/SupplierToExamineListPage";
+        }
+        else
+        {
+            return "Permission/NotVerificationPage";
+        }
     }
 
     @RequestMapping("/SupplierToExaminePage")//供应商审核内容
@@ -204,9 +329,17 @@ public class New_file {
     }
 
     @RequestMapping("/ApprovalProcessSettingListPage")//审批流程设置
-    public String ApprovalProcessSettingListPage()
+    public String ApprovalProcessSettingListPage(HttpServletRequest httpServletRequest)
     {
-        return "Toots/ApprovalProcessSetting/ApprovalProcessSettingListPage";
+        HttpSession httpSession=httpServletRequest.getSession();
+        if(verificationPermissionService.VerificationPermissionLogic(httpSession.getAttribute("userid").toString(),"approvalSet"))//查询用户是否有进入这个页面的权限
+        {
+            return "Toots/ApprovalProcessSetting/ApprovalProcessSettingListPage";
+        }
+        else
+        {
+            return "Permission/NotVerificationPage";
+        }
     }
 
     @RequestMapping("/ApprovalProcessinforPage")//审批流程信息编辑
@@ -216,9 +349,17 @@ public class New_file {
     }
 
     @RequestMapping("/BargainingProcessListPage")//议价流程设置
-    public String BargainingProcessListPage()
+    public String BargainingProcessListPage(HttpServletRequest httpServletRequest)
     {
-        return "Toots/BargainingProcessSetting/BargainingProcessListPage";
+        HttpSession httpSession=httpServletRequest.getSession();
+        if(verificationPermissionService.VerificationPermissionLogic(httpSession.getAttribute("userid").toString(),"bargainingSet"))//查询用户是否有进入这个页面的权限
+        {
+            return "Toots/BargainingProcessSetting/BargainingProcessListPage";
+        }
+        else
+        {
+            return "Permission/NotVerificationPage";
+        }
     }
 
 }

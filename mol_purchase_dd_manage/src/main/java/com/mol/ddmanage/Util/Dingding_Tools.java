@@ -8,6 +8,12 @@ import com.dingtalk.api.request.*;
 import com.dingtalk.api.response.*;
 import com.mol.ddmanage.config.Dingding_config;
 import com.taobao.api.ApiException;
+import org.apache.commons.codec.binary.Base64;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import static com.dingtalk.api.DingTalkSignatureUtil.urlEncode;
 
 public class Dingding_Tools
 {
@@ -72,7 +78,8 @@ public class Dingding_Tools
 
 
     //获取持久登录
-    public  static String get_persistent_code(String accessToken, String code){
+    public  static String get_persistent_code(String accessToken, String code)//手机扫描登录
+    {
         OapiSnsGetPersistentCodeResponse response = null;
         try {
             DingTalkClient client = new DefaultDingTalkClient(SDINGTALKSERVICE+"/sns/get_persistent_code");
@@ -84,6 +91,31 @@ public class Dingding_Tools
         }
 
        return response.getBody();
+    }
+
+    public  static String get_OApersistent_code( String code)//OA后台登录获取授权码
+    {
+        //OapiSnsGetPersistentCodeResponse response = null;
+        try {
+            String stringToSign = DataUtil.GetTimestamp();
+            Mac mac = Mac.getInstance("HmacSHA256");
+            String appSecret="-JIuLf10RziuY_bqIYuOac2CHnBKRdE9eLfEmLQ6GE38QNx0K9L6h7eWIam-MG_a";
+            mac.init(new SecretKeySpec(appSecret.getBytes("UTF-8"), "HmacSHA256"));
+            byte[] signatureBytes = mac.doFinal(stringToSign.getBytes("UTF-8"));
+            String signature = new String(Base64.encodeBase64(signatureBytes));
+            String urlEncodeSignature = urlEncode(signature,"utf-8");
+
+            DefaultDingTalkClient  client = new DefaultDingTalkClient("https://oapi.dingtalk.com/sns/getuserinfo_bycode");
+            OapiSnsGetuserinfoBycodeRequest req = new OapiSnsGetuserinfoBycodeRequest();
+            req.setTmpAuthCode(urlEncodeSignature);
+            OapiSnsGetuserinfoBycodeResponse response = client.execute(req, "dingoahnrus1n2u9i3duvx","-JIuLf10RziuY_bqIYuOac2CHnBKRdE9eLfEmLQ6GE38QNx0K9L6h7eWIam-MG_a");
+            return response.getBody();
+        }
+        catch (Exception e) {
+           return e.toString();
+        }
+
+
     }
 
 
@@ -154,6 +186,7 @@ public class Dingding_Tools
             return "";
         }
     }
+
 
     public static String GetDepartmentInfor(String DepartmentId)//获取当前部门的子部门
     {

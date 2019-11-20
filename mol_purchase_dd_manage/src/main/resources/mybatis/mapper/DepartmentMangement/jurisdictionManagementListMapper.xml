@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.ddmanage.mapper.DepartmentMangement.jurisdictionManagementListMapper">
+
+    <select id="GetPositionList" resultType="com.mol.ddmanage.Ben.DepartmentManagement.jurisdictionManagementben" >
+      SELECT bac_position.jurisdictionName,bac_position.jurisdictionId,bac_position.`status`,GROUP_CONCAT(bac_user.userName)Staffs
+      FROM bac_position
+      LEFT JOIN bac_user_position ON bac_position.jurisdictionId=bac_user_position.jurisdictionId
+      LEFT JOIN bac_user ON bac_user.ddUserId=bac_user_position.ddUserId
+      GROUP BY bac_position.jurisdictionId
+    </select>
+    <delete id="DeleteJurisdiction">
+        delete from bac_position where jurisdictionId=#{jurisdictionId}
+    </delete>
+    <delete id="Deleteuser_position">
+        delete from bac_user_position where jurisdictionId=#{jurisdictionId}
+    </delete>
+</mapper>

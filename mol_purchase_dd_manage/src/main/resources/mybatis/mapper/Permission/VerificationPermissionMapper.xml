@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.ddmanage.mapper.Permission.VerificationPermissionMapper">
+
+    <select id="VerificationPermission" resultType="java.util.Map">
+SELECT bac_position.*
+FROM bac_position,bac_user_position
+WHERE bac_position.jurisdictionId=bac_user_position.jurisdictionId and bac_user_position.ddUserId=#{userid}
+    </select>
+</mapper>
