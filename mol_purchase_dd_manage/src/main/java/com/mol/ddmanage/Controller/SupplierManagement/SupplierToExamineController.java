@@ -14,8 +14,8 @@ public class SupplierToExamineController
     @Resource
     SupplierToExamineService supplierToExamineService;
     @RequestMapping("/AgreeOrRefuse")//提交供应商审核
-    public String AgreeOrRefuse(@RequestParam String pk_supplier,@RequestParam String supstate_single)
+    public String AgreeOrRefuse(@RequestParam String pk_supplier,@RequestParam String process,@RequestParam String statu)// 供应商id 意见1 同意 4不同意，statu 1基础供应商 2战略供应商 3单一供应商
     {
-        return supplierToExamineService.AgreeOrRefuseLogic(pk_supplier,supstate_single);
+        return supplierToExamineService.AgreeOrRefuseLogic(pk_supplier,process,statu);
     }
 }

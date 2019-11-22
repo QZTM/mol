@@ -358,7 +358,7 @@
         {
             $.ajax({
                 type:'post',
-                data:{"pk_supplier":document.getElementById("pk_supplier").innerText,"supstate_single":1}, //传送指定的专家id
+                data:{"pk_supplier":document.getElementById("pk_supplier").innerText,"process":1}, //传送指定的专家id
                 dataType:'json',
                 url: "/SupplierToExamine/AgreeOrRefuse",
                 success: function(data)
@@ -378,7 +378,7 @@
         {
             $.ajax({
                 type:'post',
-                data:{"pk_supplier":document.getElementById("pk_supplier").innerText,"supstate_single":4}, //传送指定的专家id
+                data:{"pk_supplier":document.getElementById("pk_supplier").innerText,"process":4}, //传送指定的专家id
                 dataType:'json',
                 url: "/SupplierToExamine/AgreeOrRefuse",
                 success: function(data)

@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/Home")
-public class New_file {
+public class ControllerPages {
 
     @Resource
     VerificationPermissionService verificationPermissionService;//验证访问人权限
@@ -50,12 +50,23 @@ public class New_file {
         HttpSession httpSession=httpServletRequest.getSession();
        if(verificationPermissionService.VerificationPermissionLogic(httpSession.getAttribute("userid").toString(),"notice"))//查询用户是否有进入这个页面的权限
        {
-           return "Office/Announcement/Announcement";
+           return "Office/Announcement/AnnouncementList";
        }
        else
        {
            return "Permission/NotVerificationPage";
        }
+    }
+    @RequestMapping("/AnnouncementImag")//上传图片
+    public void Announcement(/*HttpServletRequest httpServletRequest*/)
+    {
+       String mmm="";
+    }
+
+    @RequestMapping("/AnnouncementEditPage")//新增公告
+    public String AnnouncementEditPage()
+    {
+            return "Office/Announcement/AnnouncementEditPage";
     }
 
     @RequestMapping("/Call_Records")//通话记录#
@@ -136,8 +147,7 @@ public class New_file {
     @RequestMapping("/ReviewBargainingHistoryPage")//审核议价历史详情页
     public String Title_Details(@RequestParam Map map, Model model)
     {
-
-        model.addAttribute("titl","查看审批记录:"+map.get("titl").toString());//标题
+        model.addAttribute("titl",map.get("titl").toString());//标题
         model.addAttribute("Order","订单编号:"+map.get("Order").toString());//订单编号
         model.addAttribute("people","采购申请人:"+map.get("people").toString());//申请人
         model.addAttribute("create_time","发布日期:"+map.get("create_time").toString());//
