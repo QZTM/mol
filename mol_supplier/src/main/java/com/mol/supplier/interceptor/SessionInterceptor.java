@@ -21,11 +21,11 @@ public class SessionInterceptor implements HandlerInterceptor {
         HttpSession session = request.getSession();
         Object supplierObj = session.getAttribute("supplier");
         System.out.println("session中是否有supplier信息：supplierObj:"+(supplierObj == null));
-        if(supplierObj == null){
-            System.out.println("session中没有supplier,重定向中：需要重定向的链接：：：：http://"+request.getServerName()+"/index/findAll");
-            response.sendRedirect("http://"+request.getServerName()+"/index/findAll");
-            return false;
-        }
+//        if(supplierObj == null){
+//            System.out.println("session中没有supplier,重定向中：需要重定向的链接：：：：http://"+request.getServerName()+"/index/findAll");
+//            response.sendRedirect("http://"+request.getServerName()+"/index/findAll");
+//            return false;
+//        }
 
         return true;
     }
