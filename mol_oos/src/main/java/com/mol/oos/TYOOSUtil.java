@@ -63,7 +63,7 @@ public class TYOOSUtil {
     public void uploadObjToBucket(String bucketName,String key,File file) throws IOException {
         /* 上传一个 object 到 bucket 中 */
         System.out.println("Uploading a new object to OOS from a file\n");
-            oos.putObject(new PutObjectRequest(bucketName, key, createSampleFile()));
+            oos.putObject(new PutObjectRequest(bucketName, key, file));
     }
 
     /**
