@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>wangEditor demo</title>
+</head>
+<script src="/echarts.min.js"></script>
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js" type="text/javascript"></script>
+<body onload="Landing_start()">
+<div style="width: 100%;height: 50px;">
+    <div style="float:left; width: 120px;height: 35px;background-color:#2D93CA;border-radius: 6px;font-size: 20px;text-align:center;color:#fbfbfb;">
+        <p style="margin-top: 3px">发布公告</p>
+    </div>
+    <div style="float:right; width: 150px;height: 35px;background-color:#eb7350;border-radius: 6px;font-size: 20px;text-align:center;color:#fbfbfb;cursor:pointer;" onclick="return_top()">
+        <p style="margin-top: 3px">返回页面</p>
+    </div>
+</div>
+<div style="margin-top: 24px;width: 100%;height: 110px;">
+    <div style="width: 100%;height: 50px;">
+        <div style="float:left;width: 100px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;">
+            <p style="margin: 4px">标 题</p>
+        </div>
+        <input id="titl" style="margin-left: 24px;float:left;width: 35%;height: 26px;font-size: 16px;" type="text;" placeholder="输入标题" >
+    </div>
+    <div style="width: 100%;height: 50px;">
+        <div style="float:left;width: 100px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;">
+            <p style="margin: 4px">分 类</p>
+        </div>
+        <select id="MessageType" style=" margin-left: 24px;font-size: 20px;width:35% ; height: 30px;border-radius: 3px" >
+            <option value =1>消息通知</option>
+            <option value=2>任务安排</option>
+            <option value=3>公司新闻</option>
+        </select>
+    </div>
+</div>
+
+<div id="editor">
+    <p>在此编辑内容  </p>
+</div>
+
+<!-- 注意， 只需要引用 JS，无需引用任何 CSS ！！！-->
+<script src="/layui/layui.all.js"></script>
+<script type="text/javascript" src="/wangEditor/release/wangEditor.min.js"></script>
+<script type="text/javascript">
+    var E = window.wangEditor
+    var editor = new E('#editor')
+    // 或者 var editor = new E( document.getElementById('editor') )
+    //editor.customConfig.uploadImgServer = '../imge/'
+    editor.customConfig.uploadImgShowBase64 = true   // 使用 base64 保存图片
+    editor.create()
+</script>
+
+<div style="margin-top: 24px;width: 100%;height: 60px;">
+
+    <div style="width: 100%;height: 60px;">
+        <div style="float:left;width: 100px; height: 30px;background-color:#2D93CA;border-radius: 6px;font-size: 16px;text-align:center;color:#fbfbfb;">
+            <p style="margin: 4px">是否全员接收</p>
+        </div>
+        <select id="alluser" style=" margin-left: 24px;font-size: 20px;width:35% ; height: 30px;border-radius: 3px" onchange="alluser(this)">
+            <option value =0>否</option>
+            <option value=1>是</option>
+        </select>
+    </div>
+</div>
+<div id="Employee" style="margin-top: 12px ;width: 100%;height: 350px">
+    <div style=" float: left;width: 45%;height: 300px"><!--已添加的员工区域-->
+        <div style="width: 140px;height: 30px;text-align: center;font-size: 16px;color: #fbfbfb;border-radius: 6px;background-color: #2D93CA">
+            已添加的员工
+        </div>
+        <div id="Peolpes" style="width: 95%;height: 300px;margin-top:12px;overflow-y: auto;border-radius: 8px;border: 1px solid #B2B2B2;">
+
+        </div>
+    </div>
+    <div style="margin-left: 24px; float: left;width: 45%;height: 300px"><!--公司的组织架构-->
+        <div style="width: 120px;height: 30px;text-align: center;font-size: 16px;color: #fbfbfb;border-radius: 6px;background-color: #2D93CA">
+            组织架构
+        </div>
+        <div id="Organization" style="margin-top: 12px;width: 95%;height: 300px;margin-top:12px;overflow-y:auto;border-radius: 8px;border: 1px solid #B2B2B2;">
+            <!--
+                            <div style="height:400px;overflow:hidden;width: 100%;">
+
+                            </div>-->
+        </div>
+    </div>
+</div>
+<div style="margin-top: 24px">
+    <div style="float:right; width: 150px;height: 35px;background-color:#009688;border-radius: 6px;font-size: 20px;text-align:center;color:#fbfbfb;cursor:pointer;" onclick="SubmitMessage()">
+        <p style="margin-top: 3px">发 布</p>
+    </div>
+</div>
+<script >
+
+    function Landing_start()
+    {
+        addDepartment(null);
+       // GetPositionPeolpe()
+    }
+    function alluser(e)
+    {
+        console.log(e.value)
+        if (e.value==='0')
+        {   console.log(2)
+            document.getElementById("Employee").style.display='block'
+        }
+        else if (e.value==='1')
+        {   console.log(3)
+            document.getElementById("Employee").style.display='none'
+        }
+    }
+
+
+    function addDepartment(e)
+    {
+        var DeparmentId
+        if (e!=null)
+        {
+            if (e.parentElement.childNodes.length>2)//部门已经展开
+            {
+                var item=e.parentElement.childNodes[2];
+                //移除已经展开的部门下级
+                item.remove();
+                return
+            }
+            var p=e.parentElement.childNodes[1].childNodes[5];
+            DeparmentId=p.innerText
+        }
+        else
+        {
+            DeparmentId=1;
+
+        }
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/DepartmentManagementListController/GetOrganization',
+            dataType: 'json',
+            data:{DeparmentId:DeparmentId},
+            // headers:{  'eticket': app.globalData.eticket},
+            success: function (data) {
+                var DepartmentDIV=document.createElement("div");
+                for (var n=0;n<data.length;n++)
+                {
+                    if (data[n].type==="1") //部门
+                    {
+                        DepartmentDIV.innerHTML=DepartmentDIV.innerHTML+
+                            '<div class="items" style="margin-top: 12px;height:auto;overflow:hidden;width: 100%;">'+//部门
+                            ' <div style="height:auto;width: auto;overflow:hidden;cursor:pointer;" onclick="addDepartment(this)" >'+
+                            ' <img src="/imge/zuzhi.png" style="width: 30px;height: 30px; float: left">'+
+                            ' <p style=" height: 30px;float: left ;margin-left: 12px;">'+
+                            data[n].name+
+                            ' </p>'+
+                            ' <p style="display: none">'+
+                            data[n].id
+                        ' </p>'+
+                        ' </div>'+
+                        '</div>';
+                    }
+                }
+
+                var PeolpeDiv=document.createElement("div");
+                for (var n=0;n<data.length;n++)
+                {
+                    if (data[n].type==="2")//人员
+                    {
+                        PeolpeDiv.innerHTML=PeolpeDiv.innerHTML+
+                            ' <div onclick="SelectPeolpo(this)" style="margin-top: 12px;height: auto;overflow:hidden;width: 100%;cursor:pointer;">'+
+                            ' <img src="/imge/peolpe.png" style="width: 30px;height: 30px; float: left">'+
+                            ' <p style="float: left ;margin-left: 12px;">'+
+                            data[n].name+
+                            ' </p>'+
+                            ' <p style="display: none">'+
+                            data[n].id
+                        ' </p>'+
+                        '</div>';
+                    }
+                }
+
+                var div=document.createElement("div");//创建一个容纳部门和人员的div
+                div.class='itmes'
+                div.style.width='auto';
+                div.style.height='auto';
+                div.style.overflow='hidden';
+                div.style.marginLeft='24px';
+
+                div.innerHTML=
+                    DepartmentDIV.innerHTML+//部门
+                    PeolpeDiv.innerHTML;//人员
+
+                if (e!=null)//不是第一次加载
+                {
+                    var parentDIV =e.parentElement//获取上一层div
+                    parentDIV.appendChild(div)
+                }
+                else //加载时
+                {
+                    document.getElementById("Organization").appendChild(div);
+                }
+            },
+            error: function (data) {
+                alert("获取审核议价信息失败")
+            }
+        });
+    }
+    function SelectPeolpo(e)//获取人员id和姓名
+    {
+        // console.log(e.childNodes[5].innerText);//获取点击人员的id
+        // console.log(e.childNodes[3].innerText);//获取点击人员的姓名
+
+        var PeolpeItems=document.getElementsByClassName("PeolpeItems");
+        for (var n=0;n<PeolpeItems.length;n++)
+        {
+            if (PeolpeItems[n].childNodes[3].innerText==e.childNodes[5].innerText)//检测到已经添加的该人员不能重复添加
+            {
+                console.log("此角色已添加员工")
+                alert('此角色已添加员工 '+PeolpeItems[n].childNodes[1].innerText)
+                return;
+            }
+        }
+
+        var PeolpeItem=document.createElement("div")
+        PeolpeItem.innerHTML=
+            ' <div class="PeolpeItems" style="margin: 12px;padding: 5px;float: left;width:auto;height: auto;background-color: #009688;border-radius: 5px;color: #fbfbfb;cursor:pointer"onclick="RemoveHTML(this)">'+
+            ' <p>'+
+            e.childNodes[3].innerText+//name
+            '</p>'+
+            ' <p style="display: none">'+
+            e.childNodes[5].innerText+//id
+            '</p>'+
+            ' </div>';
+
+        var PeolpeDIV=document.getElementById("Peolpes");
+        PeolpeDIV.appendChild(PeolpeItem)
+    }
+    function RemoveHTML(e) //移除岗位里的员工
+    {
+        layer.confirm('要移除此员工吗？', function(){
+            e.remove()
+        });
+    }
+
+    function SubmitMessage()//发送消息
+    {
+
+        layer.confirm('确认发布吗？', function(){
+            var PeolpeItems=document.getElementsByClassName("PeolpeItems");//获取已经选中的人员
+            var ids=''
+            for (var n=0;n<PeolpeItems.length;n++)
+            {
+                if (PeolpeItems.length!=1)
+                {
+                    ids=ids+','+PeolpeItems[n].childNodes[3].innerText
+                }
+                else
+                {
+                    ids=PeolpeItems[n].childNodes[3].innerText
+                }
+
+            }
+
+            jsons={};
+            jsons["titl"]=document.getElementById("titl").value;
+
+            jsons["messageType"]=document.getElementById("MessageType").value;
+            jsons["htmltext"]=editor.txt.html()
+            jsons["text"]=editor.txt.text()
+            jsons["userids"]=ids;
+            jsons["alluser"]=document.getElementById("alluser").value;
+            jsons["creaduserid"]=[[${session.userid}]]
+            var json=JSON.stringify(jsons);
+
+            $.ajax({
+                type: 'POST',
+                url: '/AnnouncementListController/AnnouncementList',
+                dataType: 'json',
+                data:json,//,characterName:document.getElementById("characterName").value
+                headers:{'Content-type':'application/json'},
+                success: function (data) {
+                    if (data.status==true)
+                    {
+                        alert("角色保存成功")
+                        return_top()
+                    }
+                    else
+                    {
+                        alert("提交失败！")
+                    }
+                },
+                error: function (data) {
+                    alert("获取审核议价信息失败")
+                }
+            });
+        });
+
+    }
+    function return_top()//返回上一层
+    {
+        layer.confirm('退出后数据不会保存', function(){
+            parent.close_Details_page();
+        });
+    }
+</script>
+</body>
+</html>

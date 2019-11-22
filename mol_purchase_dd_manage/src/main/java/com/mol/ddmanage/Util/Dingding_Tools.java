@@ -260,4 +260,29 @@ public class Dingding_Tools
             return "errer";
         }
     }
+
+    public static boolean PutMessageAnnouncement(String UseridList,String message,boolean ToAllUser)//推送公告
+    {
+        try {
+            DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/topapi/message/corpconversation/asyncsend_v2");
+
+            OapiMessageCorpconversationAsyncsendV2Request request = new OapiMessageCorpconversationAsyncsendV2Request();
+            request.setUseridList(UseridList);//人员id
+            request.setAgentId(284506171L);//小程序的AgentId
+            request.setToAllUser(ToAllUser);//是否全员接收
+
+            OapiMessageCorpconversationAsyncsendV2Request.Msg msg = new OapiMessageCorpconversationAsyncsendV2Request.Msg();
+            msg.setMsgtype("text");
+
+            msg.setText(new OapiMessageCorpconversationAsyncsendV2Request.Text());
+            msg.getText().setContent(message);
+            request.setMsg(msg);
+            OapiMessageCorpconversationAsyncsendV2Response response = client.execute(request,Dingding_config.DingdingAPP_Token);
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
 }

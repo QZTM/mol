@@ -24,6 +24,7 @@ public class Login
        if ((Boolean) map1.get("rest")!=false)
        {
            model.addAttribute("name",map1.get("name").toString());//登录人的名子
+
            return "New_file";
        }
        else
