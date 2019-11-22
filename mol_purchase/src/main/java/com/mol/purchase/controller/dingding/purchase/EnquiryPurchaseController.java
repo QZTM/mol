@@ -67,7 +67,6 @@ public class EnquiryPurchaseController {
         quartzClient.addquoteendjobwithendtime(stobj.getId(),stobj.getDeadLine());
         logger.info("定时任务设置成功");
         shoppingService.sendMessage(stobj,sendMsmHandler,sendNotification,XiaoNiuMsmTemplate.提醒供应商报价模板());
-        logger.info("短信模板发送成功");
         return ServiceResult.successMsg("提交成功");
     }
 

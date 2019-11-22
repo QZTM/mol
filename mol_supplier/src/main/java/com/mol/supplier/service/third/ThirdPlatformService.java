@@ -22,6 +22,7 @@ import entity.PageBean;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 import util.IdWorker;
 import util.TimeUtil;
 
@@ -445,5 +446,13 @@ public class ThirdPlatformService {
         e.setId(news.getId());
         e.setNumberOfReaders(news.getNumberOfReaders()+1);
         return suppNewsMapper.updateByPrimaryKeySelective(e);
+    }
+
+    public List<SuppNews> getNewListWithOutThisId(int pageNum, int pageSize, String id) {
+        PageHelper.startPage(pageNum,pageSize);
+        Example e = new Example(SuppNews.class);
+        e.and().andNotEqualTo("id",id);
+        e.setOrderByClause("creation_time desc");
+        return suppNewsMapper.selectByExample(e);
     }
 }

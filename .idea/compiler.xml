@@ -6,21 +6,23 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="mol_quartz" />
         <module name="mol_common" />
         <module name="mol_oos" />
         <module name="mol_purchase" />
         <module name="mol_eureka" />
         <module name="mol_purchase_dd_manage" />
         <module name="mol_supplier" />
-        <module name="mol_cache" />
+        <module name="mol_quartz" />
         <module name="mol_sms" />
         <module name="mol_pay" />
+        <module name="mol_cache" />
         <module name="mol_notification" />
+        <module name="mol-fadada" />
         <module name="mol_expert" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="mol-fadada" target="1.8" />
       <module name="mol_cache" target="1.8" />
       <module name="mol_common" target="1.8" />
       <module name="mol_eureka" target="1.8" />
@@ -38,6 +40,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="mol-fadada" options="-parameters" />
       <module name="mol_cache" options="-parameters" />
       <module name="mol_common" options="-parameters" />
       <module name="mol_eureka" options="-parameters" />

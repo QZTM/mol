@@ -42,7 +42,8 @@ import java.util.*;
 @RestController
 @RequestMapping("/ac")
 @Log
-public class ActController {
+public class
+ActController {
     private static final Logger logger=LoggerFactory.getLogger(ActController.class);
 
     @Autowired

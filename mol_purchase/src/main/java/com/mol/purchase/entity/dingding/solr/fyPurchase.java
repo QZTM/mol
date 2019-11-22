@@ -74,4 +74,6 @@ public class fyPurchase implements Serializable {
     private String approvalStartTime;
     //订单状态结束审批的时间（最终的订单状态）
     private String approvalEndTime;
+    //是否启用电子合同
+    private String electronicContract;
 }

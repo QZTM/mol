@@ -12,16 +12,16 @@ public class OOSConfig {
     /**
      * 供应商认证等资料
      */
-    private static final String 供应商文件夹 = "mol-supplier";
+    public static final String 供应商文件夹 = "mol-supplier";
 
     /**
      * 采购相关资料
      */
-    private static final String 采购文件夹 = "mol-purchase";
+    public static final String 采购文件夹 = "mol-purchase";
 
     /**
      * 专家资料
      */
-    private static final String 专家文件夹 = "mol-expert";
+    public static final String 专家文件夹 = "mol-expert";
 
 }

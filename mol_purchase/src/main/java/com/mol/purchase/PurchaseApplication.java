@@ -2,6 +2,7 @@ package com.mol.purchase;
 
 import com.mol.cache.CacheHandle;
 import com.mol.notification.SendNotification;
+import com.mol.oos.TYOOSUtil;
 import org.activiti.spring.boot.SecurityAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -42,6 +43,11 @@ public class PurchaseApplication {
     @Bean
     public SendNotification getSendNotification(){
         return SendNotification.getSendNotification();
+    }
+
+    @Bean
+    public TYOOSUtil getTyoosUtil(){
+        return TYOOSUtil.getUtil();
     }
 
 

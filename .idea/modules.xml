@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/mol-fadada/mol-fadada.iml" filepath="$PROJECT_DIR$/mol-fadada/mol-fadada.iml" />
       <module fileurl="file://$PROJECT_DIR$/mol_cache/mol_cache.iml" filepath="$PROJECT_DIR$/mol_cache/mol_cache.iml" />
       <module fileurl="file://$PROJECT_DIR$/mol_common/mol_common.iml" filepath="$PROJECT_DIR$/mol_common/mol_common.iml" />
       <module fileurl="file://$PROJECT_DIR$/mol_eureka/mol_eureka.iml" filepath="$PROJECT_DIR$/mol_eureka/mol_eureka.iml" />

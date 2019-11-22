@@ -62,8 +62,6 @@ public class StrategyPurController {
 
         System.out.println("pagecontent"+ obj);
         PageArray pageArray = obj.getPageArray();
-//        DDUser ddUser = JWTUtil.getUserByRequest(request);
-//        String userid = ddUser.getUserid();
         String orgId = obj.getOrgId();
         String staffId = obj.getStaffId();
         StraregyObj stobj=null;

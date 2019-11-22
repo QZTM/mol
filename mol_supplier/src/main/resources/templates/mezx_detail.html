@@ -12,7 +12,7 @@
 
     <!-- Bootstrap -->
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
-
+    <link th:href="@{/css/newpage.css}" rel="stylesheet">
 
     <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery) -->
     <script th:src="@{/js/jquery-3.2.1.min.js}"></script>
@@ -68,6 +68,41 @@
 			</span>
 </div>
 
+
+<!--推荐 -->
+<div class="list_hp" th:each="er:${list}">
+    <div class="t_news tou">
+        <div class="t_news_bg">
+            <!-- 图片 -->
+            <div class="img_t">
+                <a th:href="@{'/index/findnewsDetail?id='+${er.id}}"><img width="100%" th:src="${er.img}"
+                                                                          alt=""></a>
+            </div>
+            <!-- 图片右侧 -->
+            <div class="txt_t">
+                <!-- 标题 -->
+                <div class="news_tit02">
+                    <p>
+                        <a th:href="@{'/index/findnewsDetail?id='+${er.id}}" th:text="${er.title}">外交部召见美驻华使馆负责人就美方通过涉港法案提出严正交涉</a>
+                    </p>
+                </div>
+                <div class="news_tit03">
+                    <p>
+                        <a th:href="@{'/index/findnewsDetail?id='+${er.id}}" th:text="${er.introduction}">外交部召见美驻华使馆负责人就美方通过涉港法案提出严正交涉</a>
+                    </p>
+                </div>
+                <!-- 小细节 -->
+                <p class="news_info">
+                    <a href="https://m.thepaper.cn/list_25463">茉尔易购</a>
+                    <span class="news_time bgimg_time" th:text="${er.creationTime}">2小时前</span>
+                    <!--                <span class="news_time bgimg_comm">150</span>-->
+                </p>
+
+            </div>
+        </div>
+        <div class="t_news_bg">
+        </div>
+    </div>
 </body>
 
 </html>

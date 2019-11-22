@@ -182,7 +182,7 @@
             if(supstate != undefined && supstate == 1){
                 for (var i =0;i<re.length;i++){
                     h="<div class=\"list-group\" style=\"margin-bottom: 6px;font-size: 12px\">\n" +
-                        "    <a href=\"#javascript;\" class=\"list-group-item\" onclick=\"shownoauth()\">\n" +
+                        "    <a href=\"#javascript;\" class=\"list-group-item\">\n" +
                         "        <div>*&nbsp;"+re[i].orgId+"</div><span>*&nbsp;"+re[i].applyCause+"</span><span style=\"float: right;\">" +
                         "        <div>"+re[i].createTime+"</div>\n" +
                         "    </a>\n" +
@@ -191,12 +191,12 @@
                 };
             }else{
 
-                $.each($(".thumbnail"),function(){
-                    $(this).attr('href','#javascript;');
-                    $(this).on('click',function(){
-                        alertMsg('请先完成供应商认证！');
-                    })
-                })
+                // $.each($(".thumbnail"),function(){
+                //     $(this).attr('href','#javascript;');
+                //     $(this).on('click',function(){
+                //         alertMsg('请先完成供应商认证！');
+                //     })
+                // })
 
                 $("#processa").attr('href','#javascript;');
                 $("#processa").on('click',function(){

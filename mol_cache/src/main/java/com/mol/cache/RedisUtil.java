@@ -21,8 +21,8 @@ public class RedisUtil {
         // jedispool为null则初始化，
         if (pool == null) {
             //String ip = "192.168.1.187";
-            //String ip = "127.0.0.1";
-            String ip = "140.249.22.202";
+            String ip = "127.0.0.1";
+            //String ip = "140.249.22.202";
             String password = "ald377";
             int port = 6379;
             JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();

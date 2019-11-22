@@ -485,6 +485,9 @@ public class ThirdPlatformController {
         //将id的新闻，阅读人数加一
         int i=platformService.addNewsNumOfReaders(news);
         log.info("查询资讯详情修改阅读人数完成："+i);
+        //添加三条推荐（不包含次条）
+        List<SuppNews> list=platformService.getNewListWithOutThisId(1,3,id);
+        map.addAttribute("list",list);
         map.addAttribute("news",news);
         return "mezx_detail";
     }

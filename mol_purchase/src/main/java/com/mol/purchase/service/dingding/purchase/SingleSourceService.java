@@ -97,6 +97,8 @@ public class SingleSourceService {
         String expertReview = pageArray.getExpertReview();
         //评审奖励
         String expertReward = pageArray.getExpertReward();
+        //电子合同
+        String electronicContract=pageArray.getElectronicContract();
         if (expertReview==null ||expertReview==""){
             expertReview="false";
         }
@@ -130,6 +132,7 @@ public class SingleSourceService {
         stObj.setExpertReward(expertReward);
         stObj.setQuoteCounts(0+"");
         stObj.setQuoteSellerNum(1+"");
+        stObj.setElectronicContract(electronicContract);
         purchaseMapper.insertStrategyPur(stObj);
         String []page_text={"申请理由："+applyCause,"单一供应商："+singleSource,"电话："+telePhone,"备注："+remarks};
         new Cread_PDF().Cread_PDF_function("战略采购清单",purchaseList,page_text);//生成pdf

@@ -310,52 +310,81 @@ public class ActService {
         if (list.size()==0 || list==null){
             return null;
         }
-        for (int i=0 ;i<list.size();i++){
+        if (list.size()==1){
             //人物节点
-            UserTask userTask = genarateUserTask("usertask"+(i+1), "审核人"+(i+1));
-            userTask.setAssignee(list.get(i));
+            UserTask userTask = genarateUserTask("usertask1", "审核人1");
+            userTask.setAssignee(list.get(0));
             userTask.setFormKey("result");
             process.addFlowElement(userTask);
 
             //排他网管
-            ExclusiveGateway exclusiveGateway = genarateExclusiveGateway("exclusivegateway"+(i+1), "Exclusive Gateway"+(i+1));
+            ExclusiveGateway exclusiveGateway = genarateExclusiveGateway("exclusivegateway1", "Exclusive Gateway1");
             List<SequenceFlow> out=new ArrayList<>();
             SequenceFlow se =new SequenceFlow();
-            se.setId("sf"+i);
-            se.setName("sf"+i);
+            se.setId("sf1");
+            se.setName("sf1");
             out.add(se);
             exclusiveGateway.setOutgoingFlows(out);
             process.addFlowElement(exclusiveGateway);
 
             //线
-            if(i==0){
-                SequenceFlow sequenceFlow1 = genarateSequenceFlow("flow" + count++, "", startEvent.getId(), "usertask"+(i+1), "");
-                SequenceFlow sequenceFlow2 = genarateSequenceFlow("flow" + count++, "", "usertask"+(i+1), exclusiveGateway.getId(), "");
-                SequenceFlow sequenceFlow3 = genarateSequenceFlow("flow" + count++, "",  exclusiveGateway.getId(),serviceTask2.getId(), "${result=='refuse'}");
-                process.addFlowElement(sequenceFlow1);
-                process.addFlowElement(sequenceFlow2);
-                process.addFlowElement(sequenceFlow3);
-            }
-            if (i==list.size()-1){
-                SequenceFlow sequenceFlow1 = genarateSequenceFlow("flow" + count++, "", "exclusivegateway"+i, "usertask"+(i+1), "${result=='pass'}");
-                SequenceFlow sequenceFlow2 = genarateSequenceFlow("flow" + count++, "", "usertask"+(i+1),"exclusivegateway"+(i+1), "");
-                SequenceFlow sequenceFlow3 = genarateSequenceFlow("flow" + count++, "", "exclusivegateway"+(i+1),serviceTask1.getId(), "${result=='pass'}");
-                SequenceFlow sequenceFlow4 = genarateSequenceFlow("flow" + count++, "", "exclusivegateway"+(i+1),serviceTask2.getId(), "${result=='refuse'}");
-                process.addFlowElement(sequenceFlow1);
-                process.addFlowElement(sequenceFlow2);
-                process.addFlowElement(sequenceFlow3);
-                process.addFlowElement(sequenceFlow4);
-            }
-            if (i>0 && i<list.size()-1){
-                SequenceFlow sequenceFlow1 = genarateSequenceFlow("flow" + count++, "", "exclusivegateway" + i , "usertask"+(i+1), "${result=='pass'}");
-                SequenceFlow sequenceFlow2 = genarateSequenceFlow("flow" + count++, "", "usertask"+(i+1), "exclusivegateway" +(i+1), "");
-                SequenceFlow sequenceFlow3 = genarateSequenceFlow("flow" + count++, "",  "exclusivegateway" + (i+1),serviceTask2.getId(), "${result=='refuse'}");
-                process.addFlowElement(sequenceFlow1);
-                process.addFlowElement(sequenceFlow2);
-                process.addFlowElement(sequenceFlow3);
-            }
+            SequenceFlow sequenceFlow1 = genarateSequenceFlow("flow" + count++, "",  startEvent.getId(),"usertask1", "");
+            SequenceFlow sequenceFlow2 = genarateSequenceFlow("flow" + count++, "", "usertask1","exclusivegateway1", "");
+            SequenceFlow sequenceFlow3 = genarateSequenceFlow("flow" + count++, "", "exclusivegateway1",serviceTask1.getId(), "${result=='pass'}");
+            SequenceFlow sequenceFlow4 = genarateSequenceFlow("flow" + count++, "", "exclusivegateway1",serviceTask2.getId(), "${result=='refuse'}");
+            process.addFlowElement(sequenceFlow1);
+            process.addFlowElement(sequenceFlow2);
+            process.addFlowElement(sequenceFlow3);
+            process.addFlowElement(sequenceFlow4);
+        }else {
+            for (int i=0 ;i<list.size();i++){
+                //人物节点
+                UserTask userTask = genarateUserTask("usertask"+(i+1), "审核人"+(i+1));
+                userTask.setAssignee(list.get(i));
+                userTask.setFormKey("result");
+                process.addFlowElement(userTask);
 
+                //排他网管
+                ExclusiveGateway exclusiveGateway = genarateExclusiveGateway("exclusivegateway"+(i+1), "Exclusive Gateway"+(i+1));
+                List<SequenceFlow> out=new ArrayList<>();
+                SequenceFlow se =new SequenceFlow();
+                se.setId("sf"+i);
+                se.setName("sf"+i);
+                out.add(se);
+                exclusiveGateway.setOutgoingFlows(out);
+                process.addFlowElement(exclusiveGateway);
+
+                //线
+                if(i==0){
+                    SequenceFlow sequenceFlow1 = genarateSequenceFlow("flow" + count++, "", startEvent.getId(), "usertask"+(i+1), "");
+                    SequenceFlow sequenceFlow2 = genarateSequenceFlow("flow" + count++, "", "usertask"+(i+1), exclusiveGateway.getId(), "");
+                    SequenceFlow sequenceFlow3 = genarateSequenceFlow("flow" + count++, "",  exclusiveGateway.getId(),serviceTask2.getId(), "${result=='refuse'}");
+                    process.addFlowElement(sequenceFlow1);
+                    process.addFlowElement(sequenceFlow2);
+                    process.addFlowElement(sequenceFlow3);
+                }
+                if (i==list.size()-1){
+                    SequenceFlow sequenceFlow1 = genarateSequenceFlow("flow" + count++, "", "exclusivegateway"+i, "usertask"+(i+1), "${result=='pass'}");
+                    SequenceFlow sequenceFlow2 = genarateSequenceFlow("flow" + count++, "", "usertask"+(i+1),"exclusivegateway"+(i+1), "");
+                    SequenceFlow sequenceFlow3 = genarateSequenceFlow("flow" + count++, "", "exclusivegateway"+(i+1),serviceTask1.getId(), "${result=='pass'}");
+                    SequenceFlow sequenceFlow4 = genarateSequenceFlow("flow" + count++, "", "exclusivegateway"+(i+1),serviceTask2.getId(), "${result=='refuse'}");
+                    process.addFlowElement(sequenceFlow1);
+                    process.addFlowElement(sequenceFlow2);
+                    process.addFlowElement(sequenceFlow3);
+                    process.addFlowElement(sequenceFlow4);
+                }
+                if (i>0 && i<list.size()-1){
+                    SequenceFlow sequenceFlow1 = genarateSequenceFlow("flow" + count++, "", "exclusivegateway" + i , "usertask"+(i+1), "${result=='pass'}");
+                    SequenceFlow sequenceFlow2 = genarateSequenceFlow("flow" + count++, "", "usertask"+(i+1), "exclusivegateway" +(i+1), "");
+                    SequenceFlow sequenceFlow3 = genarateSequenceFlow("flow" + count++, "",  "exclusivegateway" + (i+1),serviceTask2.getId(), "${result=='refuse'}");
+                    process.addFlowElement(sequenceFlow1);
+                    process.addFlowElement(sequenceFlow2);
+                    process.addFlowElement(sequenceFlow3);
+                }
+
+            }
         }
+
 
         //线  审核结果-- 结束event
         SequenceFlow s1 = genarateSequenceFlow("flow" + count++, "", serviceTask1.getId(), endEvent.getId(), "");

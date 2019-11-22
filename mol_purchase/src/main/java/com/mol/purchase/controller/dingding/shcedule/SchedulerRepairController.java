@@ -2,6 +2,7 @@ package com.mol.purchase.controller.dingding.shcedule;
 
 import com.alipay.api.domain.Sale;
 import com.github.pagehelper.PageInfo;
+import com.mol.oos.OOSConfig;
 import com.mol.purchase.config.OrderStatus;
 import com.mol.purchase.entity.FyQuote;
 import com.mol.purchase.entity.QuotePayresult;
@@ -17,7 +18,10 @@ import entity.ServiceResult;
 import com.mol.purchase.entity.Supplier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpSession;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -149,5 +153,35 @@ public class SchedulerRepairController {
             return ServiceResult.failureMsg("查询失败！");
         }
         return ServiceResult.success(qp);
+    }
+
+    /**
+     * 保存 合同图片
+     * @param file 图片
+     * @param purId 订单Id
+     * @param orgId 公司id
+     * @return
+     */
+    @PostMapping("/upLoadContractPictures")
+    public ServiceResult upLoadContractPictures(@RequestParam("file") MultipartFile file, String purId,String orgId){
+
+        if (file==null){
+            return ServiceResult.failureMsg("文件接收失败");
+        }
+        schedulerRepairService.upload(file,orgId,purId);
+        return ServiceResult.successMsg("上传成功");
+    }
+
+    /**
+     * 下载合同
+     * @param bucket 桶名称
+     * @param key   文件名称
+     * @return
+     */
+    @GetMapping("/downLoadContractPictures")
+    public ServiceResult downLoadOOSConTractPictures(String bucket,String key){
+
+        schedulerRepairService.downFromOOSImg(bucket,key);
+        return null;
     }
 }

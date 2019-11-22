@@ -71,6 +71,8 @@ public class MachiningService {
         String expertReview = pageArray.getExpertReview();
         //评审奖励
         String expertReward = pageArray.getExpertReward();
+        //电子合同
+        String electronicContract=pageArray.getElectronicContract();
         ServiceResult result = null;
         if (expertReview==null ||expertReview==""){
             expertReview="false";
@@ -124,7 +126,7 @@ public class MachiningService {
         stObj.setExpertReview(expertReview);
         stObj.setExpertReward(expertReward);
         stObj.setQuoteCounts(0+"");
-
+        stObj.setElectronicContract(electronicContract);
 
 
 

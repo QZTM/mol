@@ -47,6 +47,8 @@ public class StraregyObj {
     private String expertReview;
     //评审奖励
     private String expertReward;
+    //电子合同
+    private String electronicContract;
     //参与议价人员列表
     private String negotiatePerson;
     //议价完成时添加说明
