@@ -144,50 +144,6 @@
 	function Start_landing()
 	{
 		$("#Details").animate({width:"50%"}, 0);//收起
-/*		layui.use('table', function(){
-			var table = layui.table;
-			var Data = [{"l1":"1","l2":"询价","l3":"计算机采购","l4":"2019080711","l5":"山东XXX有限公司","l6":"2019-08-06","l7":"王XX","l8":"查看","l9":"查看","l10":"查看"}]
-			table.render({
-				elem: '#test1'
-				, data:Data
-				,cols: [
-					[
-						{field:'l1', width:80, title: 'DI', sort: true}
-						,{field:'l2', width:150, title: '名称'}
-						,{field:'l3', width:200, title: '订单编号'}
-						,{field:'l5', width:280,title: '采购类型'}
-						,{field:'l6', width:150, title: '发布日期'}
-						,{field:'l7', width:120, title: '申请人'}
-						,{field:'l8', width:100, title: '类型'}
-						,{field:'l9', width:100, title: '状态'}
-						,{field:'l10', width:120,event: 'setl8', title: '详情',style:'cursor: pointer;color: #1E9FFF;'}
-					]
-				]
-				,page: true
-			});
-
-
-			//监听单元格事件
-			table.on('tool(test1)', function(obj){//显示详情页
-				var data = obj.data;
-				console.log(data);
-
-				if( obj.event === 'setEve4' )
-				{
-					document.getElementById("datagridview").style.display="none";
-					// document.getElementById("subWin").src="/Home/Contract?Contract_number="+obj.data.l4;//跳转到供应商的合同管理
-					document.getElementById("Details").style.display="block";
-					//document.getElementById("subWin").contentWindow.document.body.innerHTML="供应商通话记录:山东XXX公司";
-				}
-				else if(obj.event === 'setl8'){
-					console.log(data.type);
-					document.getElementById("datagridview").style.display="none";
-					document.getElementById("subWin").src="/Home/Time_Process?Oreder_number="+obj.data.l3;//跳转到合同详情 传送一个合同编号/Home/Time_Process
-					document.getElementById("Details").style.display="block";
-				}
-				$("#Details").animate({width:"100%"}, 500);//展开
-			});
-		});*/
 	}
 
 	function LandingTable(e)

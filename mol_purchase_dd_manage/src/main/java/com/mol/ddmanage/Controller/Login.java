@@ -16,20 +16,21 @@ public class Login
 {
     @Autowired
     LoginService loginService;
-    @RequestMapping("/verification_login")
+    @RequestMapping("/verification_login")//扫描二维码登录
     public String  user_login(@RequestParam Map map, HttpSession session, Model model)
     {
         Map map1=loginService.LoginService_dingding(map,session);
+       // Map map1=loginService.LoginOAService_dingding(map,session);
        if ((Boolean) map1.get("rest")!=false)
        {
            model.addAttribute("name",map1.get("name").toString());//登录人的名子
+
            return "New_file";
        }
        else
-           {
-               return "New_file";
+       {
+           return "New_file";
        }
-
     }
 
 

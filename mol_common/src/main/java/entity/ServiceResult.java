@@ -1,11 +1,14 @@
 package entity;
 
+import lombok.ToString;
+
 import java.io.Serializable;
 
 /**
  *service层返回对象列表封装
  * @param <T>
  */
+@ToString
 public class ServiceResult<T>  implements Serializable{
 
     private boolean success = false;
@@ -37,7 +40,7 @@ public class ServiceResult<T>  implements Serializable{
         ServiceResult<T> item = new ServiceResult<T>();
         item.success = true;
         item.result = result;
-        item.code = "0";
+        item.code = "1";
         item.message = "success";
         return item;
     }
@@ -46,7 +49,7 @@ public class ServiceResult<T>  implements Serializable{
         ServiceResult<T> item = new ServiceResult<T>();
         item.success = true;
         item.result = result;
-        item.code = "0";
+        item.code = "1";
         item.message = msg;
         return item;
     }
@@ -63,7 +66,7 @@ public class ServiceResult<T>  implements Serializable{
     public static <T> ServiceResult<T> successMsg(String msg) {
         ServiceResult<T> item = new ServiceResult<T>();
         item.success = true;
-        item.code = "0";
+        item.code = "1";
         item.message = msg;
         return item;
     }

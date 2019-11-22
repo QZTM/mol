@@ -1,6 +1,8 @@
 package com.mol.supplier;
 
 import com.mol.cache.CacheHandle;
+import com.mol.fadada.dao.AuthRecordMapper;
+import com.mol.fadada.handler.RecordDbHandler;
 import org.activiti.spring.boot.SecurityAutoConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,6 +15,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import util.IdWorker;
+
+import static com.mol.fadada.handler.RecordDbHandler.*;
 
 @EnableScheduling
 @EnableAsync
@@ -36,4 +40,5 @@ public class SupplierApplication extends SpringBootServletInitializer {
         public CacheHandle getCacheHandler(){
             return CacheHandle.getCacheHandle();
         }
+
 }

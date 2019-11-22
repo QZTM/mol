@@ -7,6 +7,7 @@
   <link rel="shortcut icon" href="/imge/title.ico" />
   <link rel="stylesheet" href="/layui/css/layui.css">
   <script src="/echarts.min.js"></script>
+  <script src="https://g.alicdn.com/dingding/dingtalk-jsapi/2.7.13/dingtalk.open.js"></script>
 </head>
 <body style="overflow-y: hidden;overflow-x: hidden;">
 <!-- 水平导航菜单-->
@@ -40,7 +41,7 @@
 <!--  用户头像-->
   <li class="layui-nav-item " style="float:right " lay-unselect="">
     <a href="javascript:;" th:text="${name}">>
-      <img src="/imge/timg.jpg" class="layui-nav-img"  >
+      <img src="/imge/timg.jpg" class="layui-nav-img">
     </a>
     <dl class="layui-nav-child">
       <dd><a href="javascript:;">修改信息</a></dd>
@@ -139,21 +140,33 @@
 
 <script src="/layui/layui.all.js"></script>
 <script>
-
-
-
   function test1()
   {
     // document.getElementById("tongji").click();
     console.log(1111111);
     // document.getElementById("G1I1_form").style.display="none";
     document.getElementById("web").src="/Home/Title_Details?name=1"
-  //  document.getElementById("web").contentWindow.location.reload();
-
+    //  document.getElementById("web").contentWindow.location.reload();
   }
-
 </script>
 <script>
+
+  var LoginCode=''
+  dd.ready(function() //获取免登授权码
+  {
+    // dd.ready参数为回调函数，在环境准备就绪时触发，jsapi的调用需要保证在该回调函数触发后调用，否则无效。
+    dd.runtime.permission.requestAuthCode({
+      corpId: "ding6ef23b66fc0611a335c2f4657eb6378f",
+      onSuccess: function(result)
+      {
+        LoginCode=result.code;
+      },
+      onFail : function(err)
+      {
+
+      }
+    });
+  });
 
 layui.use('element', function(){
   var $ = layui.jquery
@@ -189,7 +202,7 @@ layui.use('element', function(){
   	}
   	else
   	{
-  		active.tabAdd('G1I1_bat_id',"首页",'<div id="G1I1_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/Home"></iframe></div>');
+  		active.tabAdd('G1I1_bat_id',"首页",'<div id="G1I1_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/Home?LoginCode="'+LoginCode+'></iframe></div>');
     active.tabChange('G1I1_bat_id');   
   	}
   });
@@ -289,7 +302,7 @@ layui.use('element', function(){
     }
     else
     {
-      active.tabAdd('G3I2_bat_id',"岗位设置",'<div id="G3I2_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/JobManagement"></iframe></div>');
+      active.tabAdd('G3I2_bat_id',"岗位设置",'<div id="G3I2_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/jurisdictionManagementList"></iframe></div>');
       active.tabChange('G3I2_bat_id');
     }
   });

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.ddmanage.mapper.DepartmentMangement.AddJurisdictionMapper">
+
+    <insert id="AddJurisdictionMapper" parameterType="com.mol.ddmanage.Ben.DepartmentManagement.AddJurisdictionben">
+        insert into bac_position(jurisdictionId,jurisdictionName,notice,history,bargaining,telephoneRecording,purchaseProgress,contract,department,`position`,staff,expertInfor,expertApproval,purchase,supplierManage,supplierApproval,approvalSet,bargainingSet,logSee,creatTime,creadStaff,status)
+        values (#{jurisdictionId},#{jurisdictionName},#{notice},#{history},#{bargaining},#{telephoneRecording},#{purchaseProgress},#{contract},#{department},#{position},#{staff},#{expertInfor},#{expertApproval},#{purchase},#{supplierManage},#{supplierApproval},#{approvalSet},#{bargainingSet},#{logSee},#{creatTime},#{creadStaff},1)
+    </insert>
+    <select id="test1" resultType="com.mol.ddmanage.Ben.DepartmentManagement.AddJurisdictionben" parameterType="java.util.ArrayList">
+        select * from bac_jurisdiction
+        where
+        <foreach item="workcode" index="index" collection="list" open="" separator="or" close="">
+            jurisdictionName=#{workcode}
+        </foreach>
+    </select>
+</mapper>

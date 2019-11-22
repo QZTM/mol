@@ -12,9 +12,9 @@
         <module>mol_cache</module>
         <module>mol_eureka</module>
         <module>mol_pay</module>
-        <module>mol-fadada</module>
         <module>mol_sms</module>
         <module>mol_oos</module>
+		<module>mol_fadada</module>
         <module>mol_quartz</module>
         <module>mol_purchase</module>
         <module>mol_supplier</module>

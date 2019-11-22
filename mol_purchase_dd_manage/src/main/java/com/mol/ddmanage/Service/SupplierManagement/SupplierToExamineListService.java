@@ -21,6 +21,7 @@ public class SupplierToExamineListService
            List<SupplierToExamineListben> supplierToExamineListbens=supplierToExamineListMapper.SupplierToExamineListbenShow(String.valueOf(n),supplier_type);
            for (SupplierToExamineListben supplier :supplierToExamineListbens)
            {
+               supplier.setSupplier_type(String.valueOf(n+1));//Supplier_type为 1基础供应商 2战略供应商 3单一供应商
                supplierToExamineListbenss.add(supplier);
            }
        }

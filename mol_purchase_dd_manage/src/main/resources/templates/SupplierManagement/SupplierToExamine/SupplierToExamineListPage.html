@@ -134,6 +134,21 @@
             data:{supplier_type:supplier_type},
             // headers:{  'eticket': app.globalData.eticket},
             success: function (data) {
+                for (var n=0;n<data.length;n++)
+                {
+                    if (data[n].supplier_type==='1')
+                    {
+                        data[n].supplier_type='基础供应商'
+                    }
+                    else if (data[n].supplier_type==='2')
+                    {
+                        data[n].supplier_type='战略供应商'
+                    }
+                    else if (data[n].supplier_type==='3')
+                    {
+                        data[n].supplier_type='单一供应商'
+                    }
+                }
                 var Data=data
                 table.render({
                     elem: '#test'
@@ -178,7 +193,7 @@
             else if(obj.event === 'edit1')//点击查看按钮
             {
                 document.getElementById("datagridview").style.display="none";
-                document.getElementById("subWin").src="/Home/SupplierToExaminePage?pk_supplier="+data.pk_supplier;//跳转到合同详情 传送一个合同编号
+                document.getElementById("subWin").src="/Home/SupplierToExaminePage?pk_supplier="+data.pk_supplier+"&supplier_type="+data.supplier_type;//跳转到合同详情 传送一个合同编号
                 document.getElementById("Details").style.display="block";
             }
         });

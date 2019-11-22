@@ -11,7 +11,7 @@
     <!--标题-->
     <div style="width: 95%;height: 50px;background-color: #2D93CA;color: #fbfbfb;border-radius: 6px;margin: 4px;padding: 16px;font-size: 20px;"><!--width: 1568px-->
         <div style="float: left;margin-left: 10px">
-            <p th:text="${titl}">查看审批记录:计算机采购</p>
+            <p >查看审批记录</p>
         </div>
         <div id="close" style="float: right;" onclick="return_top()" >
             <label style="cursor: pointer;">返回</label>
@@ -27,7 +27,7 @@
 
         <!--标题-->
         <div style="margin: 15px; width: 96%;height: 165px; background-color: #009F95;border-radius:12px;"><!--width: 760px-->
-             <div style="float: left;margin-top: 12px;margin-left: 12px; "><font size="5" color="#FBFBFB">斯凯孚SKF6021 轴承</font></div>
+             <div style="float: left;margin-top: 12px;margin-left: 12px; "><font size="5" color="#FBFBFB" th:text="${titl}">斯凯孚SKF6021 轴承</font></div>
              <div style="width: 96.1%; float: left;margin-top: 6px;font-size: 15px;"><!--width: 700px-->
             	<font id="Order" color="#FBFBFB" style="float: left;margin-left: 12px;" th:text="${Order}">订单编号:</font>
             	<font color="#FBFBFB" style="float:right;" th:text="${people}">采购申请人:李XX</font>
@@ -66,17 +66,8 @@
                 <p>审批流程</p>
             </div>
             <div style="margin: 24px" id="approval_view"><!--审批流程视图-->
-                <!--<div style="display: inline-block;vertical-align:top">&lt;!&ndash;头像和姓名&ndash;&gt;-->
-                    <!--<div>-->
-                        <!--<img src="/imge/timg.jpg" style="height: 80px;width: 80px;" class="layui-nav-img">-->
-                    <!--</div>-->
-                    <!--<div style="width: 80px;text-align: center;font-size: 18px;margin-top: 8px">-->
-                        <!--<p>王XX</p>-->
-                    <!--</div>-->
-                <!--</div>-->
 
-
-        </div>
+            </div>
         <div style="margin-top: 48px">
             <div style="width: 100px;background-color: #2D93CA;padding: 6px;border-radius: 4px;font-size: 16px;margin: 24px;text-align: center;color:#fbfbfb;">
                 <p>抄送人</p>
@@ -130,16 +121,12 @@
 
     function add_approval_view()//添加审批视图
     {
-        var a=[{"itme1":"000001","itme2":"询价采购","itme3":"000001","itme4":"张XX","itme5":"机械零件","itme6":"正在询价","itme7":"2019年06月13日09:38"},
-            {"itme1":"000001","itme2":"询价采购","itme3":"000001","itme4":"张XX","itme5":"机械零件","itme6":"正在询价","itme7":"2019年06月13日09:38"}];
-
-
         //获取审批人基本信息
         $.ajax({
             type: 'POST',
             url: '/Office/Title_Details_contorller/ReviewPeolpes',
             dataType: 'json',
-            //data:{},
+            data:{purchase_id:document.getElementById("Order").innerText.split(':')[1]},
             // headers:{  'eticket': app.globalData.eticket},
             success: function (data) {
 
@@ -147,14 +134,32 @@
                     var divitem = document.createElement("div");
                     divitem.style.display="inline-block";
                     var div = document.getElementById("approval_view");
+
+                    var img='';
+                    if (data[i].approvalStatus=="0") //审核进行中
+                    {
+                       img= '<img  src="/imge/chulizhong.png" style=" margin-left: 8px float: left;width: 25px;height: 25px;">';
+                    }
+                    else if (data[i].approvalStatus=="1") //审核已通过
+                    {
+                        img= '<img  src="/imge/duihao.png" style=" margin-left: 8px float: left;width: 25px;height: 25px;">';
+                    }
+                    else if (data[i].approvalStatus=="2")//审核被拒绝
+                    {
+                        img= '<img  src="/imge/cuohao.png" style=" margin-left: 8px float: left;width: 25px;height: 25px;">';
+                    }
                     divitem.innerHTML =
                         '<div style="display: inline-block;vertical-align:top">'+
-                        '<div>'+
-                        ' <img src="/imge/timg.jpg" style="height: 80px;width: 80px;" class="layui-nav-img">'+
-                        '</div>'+
-                        ' <div style="width: 80px;text-align: center;font-size: 18px;margin-top: 8px">'+
-                        ' <p>'+data[i].name+'</p>'+
-                        '</div>'+
+                          '<div>'+
+                            ' <img src="/imge/timg.jpg" style="height: 80px;width: 80px;" class="layui-nav-img">'+
+                          '</div>'+
+                          ' <div style="width: auto;text-align: center;font-size: 18px;margin-top: 8px" >'+
+                            ' <p style="margin-left: 8px;float: left">'+data[i].name+'</p>'+
+                           /* '<img  src="/imge/chulizhong.png" style=" margin-left: 5px float: left;width: 25px;height: 25px;display: none">'+
+                            '<img  src="/imge/duihao.png" style="margin-left: 5px float: left;width: 25px;height: 25px;display: none;">'+
+                            '<img  src="/imge/cuohao.png" style=" margin-left: 5px float: left;width: 25px;height: 25px;display: none">'+*/
+                           img+
+                          '</div>'+
                         '</div>'
                     div.appendChild(divitem);
 
@@ -168,10 +173,43 @@
                             ' <img style="width: 50px;height: 50px;" src="/imge/jiantou.jpg">'+
                             ' </div>'
                         div_1.appendChild(divitem_1);
-
                     }
                 }
 
+                for (var n=0;n<data.length;n++)
+                {
+                    if (data[n].approvalStatus=='1')//审核通过
+                    {
+                        data[n].approvalStatus='同意'
+                    }
+                    else if (data[n].approvalStatus=='2')//审核拒绝
+                    {
+                        data[n].approvalStatus='拒绝'
+                    }
+                    else if (data[n].approvalStatus=='0')//审批中
+                    {
+                        data[n].approvalStatus='审批中'
+                    }
+                }
+                //审批日志
+                layui.use('table', function(){
+                    var table = layui.table;
+                   // var Data = [{"people":"BeJson","state":"http://www.bejson.com","time":true,"opinion":"12"}]
+                    table.render({
+                        elem: '#test3'
+                        // ,url:'/demo/table/user/'
+                        , data:data
+                        ,cols: [
+                            [
+                                {field:'name', width:100, title: '审批人', sort: true}
+                                ,{field:'approvalStatus', width:150, title: '审批状态'}
+                                ,{field:'time', width:200, title: '审批时间', sort: true}
+                                ,{field:'remarks', width:230, title: '意见'}
+                            ]
+                        ]
+                        ,page: true
+                    });
+                });
             },
             error: function (data) {
                 alert("获取审核人信息失败")
@@ -202,7 +240,7 @@
             }
         });*/
 
-        for (var i = 0; i < data.length; i++) {
+        for (var i = 0; i < a.length; i++) {
             var divitem = document.createElement("div");
             divitem.style.display="inline-block";
             var div = document.getElementById("delivery_view");
@@ -219,14 +257,7 @@
 
     }
 
-/*    $(document).ready(
-             $("#close").click(
-                 function () {
-                    // document.getElementById("body").style.display="none";
-                     parent.close_Details_page();
-                 }
-             )
-    )*/
+
     function getUrlParam(name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
         var r = window.location.search.substr(1).match(reg); //匹配目标参数
@@ -241,27 +272,6 @@
     }
 
     layui.use('table', function(){
-/*        var table = layui.table;
-        var Data = [{"id":"BeJson","username":"http://www.bejson.com","sex":true,"city":"12","number":"12","all":"100"}]
-        table.render({
-            elem: '#test1'
-           // ,url:'/demo/table/user/'
-            , data:Data
-            ,cols: [
-                [
-                {field:'id', width:80, title: '序号', sort: true}
-                ,{field:'username', width:150, title: '名称'}
-                ,{field:'sex', width:100, title: '规格', sort: true}
-                ,{field:'city', width:80, title: '单位'}
-                ,{field:'number', width:80,title: '数量', minWidth: 150}
-                    ,{field:'all', width:120, title: '备注', sort: true}
-            ]
-            ]
-            ,page: true
-        });
-        */
-
-
         //计划采购单
         $.ajax({
             type: 'POST',
@@ -296,46 +306,9 @@
             }
         });
 
-
-
     });
 
-/*    layui.use('table', function(){
 
-        $.ajax({
-            type: 'POST',
-            url: '/Office/Title_Details_contorller/SuppelierQuote',
-            dataType: 'json',
-            data:{purchase_id:document.getElementById("Order").innerText.substring(5)},
-            // headers:{  'eticket': app.globalData.eticket},
-            success: function (data)
-            {
-                var table = layui.table;
-                var Data = data
-                table.render({
-                    elem: '#test2'
-                    // ,url:'/demo/table/user/'
-                    , data:Data
-                    ,cols: [
-                        [
-                            {field:'number', width:80, title: '序号', sort: true}
-                            ,{field:'name', width:150, title: '名称'}
-                            ,{field:'materialspec', width:100, title: '规格'}
-                            ,{field:'quote', width:80, title: '报价'}
-                            ,{field:'unit', width:80,title: '单位', minWidth: 150}
-                         /!*   ,{field:'experience', width:240, title: '合计', sort: true}*!/
-                        ]
-                    ]
-                    ,page: true
-                });
-
-            },
-            error: function (data) {
-                alert("获取审核议价信息失败")
-            }
-        });
-
-    });*/
 
 
     $.ajax({
@@ -412,36 +385,10 @@
                     ,page: true
                 });
             });
-
         }
     }
 
 
-
-
-
-
-
-
-
-    layui.use('table', function(){
-        var table = layui.table;
-        var Data = [{"people":"BeJson","state":"http://www.bejson.com","time":true,"opinion":"12"}]
-        table.render({
-            elem: '#test3'
-            // ,url:'/demo/table/user/'
-            , data:Data
-            ,cols: [
-                [
-                    {field:'people', width:100, title: '审批人', sort: true}
-                    ,{field:'state', width:150, title: '审批状态'}
-                    ,{field:'time', width:200, title: '审批时间', sort: true}
-                    ,{field:'opinion', width:230, title: '意见'}
-                ]
-            ]
-            ,page: true
-        });
-    });
     function return_top()//返回上一层
     {
         parent.close_Details_page();

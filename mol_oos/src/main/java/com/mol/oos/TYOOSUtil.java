@@ -11,8 +11,6 @@ import javax.imageio.stream.FileImageOutputStream;
 
 public class TYOOSUtil {
 
-
-
     private AmazonS3 oos = OOSClient.getClient();
     private volatile static TYOOSUtil oosUtil;
     private TYOOSUtil(){
@@ -65,7 +63,6 @@ public class TYOOSUtil {
         System.out.println("Uploading a new object to OOS from a file\n");
         oos.putObject(new PutObjectRequest(bucketName, key, file));
     }
-
 
     /**
      * 下载

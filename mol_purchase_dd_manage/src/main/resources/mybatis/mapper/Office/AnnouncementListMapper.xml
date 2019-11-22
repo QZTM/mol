@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.ddmanage.mapper.Office.AnnouncementListMapper">
+    <insert id="AnnouncementList" parameterType="com.mol.ddmanage.Ben.Office.AnnouncementEditPageben">
+        insert into bac_announcemen(announcemenId,userids,alluser,htmltext,text,titl,creadtime,creaduserid) values (#{announcemenId},#{userids},#{alluser},#{htmltext},#{text},#{titl},#{creadtime},#{creaduserid})
+    </insert>
+</mapper>

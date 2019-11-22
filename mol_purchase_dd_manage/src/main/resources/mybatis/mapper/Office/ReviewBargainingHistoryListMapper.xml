@@ -16,12 +16,10 @@
     <select id="Set_Push_history_list"  resultType="com.mol.ddmanage.Ben.Office.Push_history_list_ben"><!--查找用户-->
 
         SELECT
-        fy_purchase.*,
-        (SELECT bd_supplier.`name` FROM bd_supplier WHERE bd_supplier.pk_supplier=fy_quote.pk_supplier_id)supplier_name,
-        fy_quote.*,
-        (select app_user.user_name from app_user where app_user.dd_user_id=fy_purchase.staff_id)user_name
-        FROM fy_purchase_detail,fy_quote,bd_material,bd_measdoc,fy_purchase
-        WHERE fy_purchase_detail.quote_id=fy_quote.id AND fy_purchase_detail.pk_material=bd_material.pk_material AND bd_material.pk_measdoc=bd_measdoc.pk_measdoc AND fy_quote.id=fy_purchase_detail.quote_id AND fy_purchase.id=fy_purchase_detail.fy_purchase_id and
+        (SELECT app_user.user_name FROM app_user WHERE app_user.dd_user_id=fy_purchase.staff_id)user_name,
+        fy_purchase.*
+        from fy_purchase
+        where
         <if test="status != 100">
             status=#{status}
         </if>

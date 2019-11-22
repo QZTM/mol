@@ -12,6 +12,10 @@ public class DataUtil
         return df.format(new Date());// new Date()为获取当前系统时间
     }
 
+    public static String GetTimestamp()
+    {
+        return  new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date());
+    }
     public static String getHistoryTime(int day)//获取过去几天的时间
     {
         Calendar calendar = Calendar.getInstance();
