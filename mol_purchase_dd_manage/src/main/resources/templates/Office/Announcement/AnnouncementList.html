@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 	<meta charset="UTF-8">
 	<title></title>
 </head>
 <link rel="stylesheet" href="/layui/css/layui.css">
 <script src="/echarts.min.js"></script>
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js" type="text/javascript"></script>
 <body>
 <!--内部公告-->
 <div id="datagridview"><!--1700px-->
@@ -32,13 +33,13 @@
 	<div>
 		<table class="layui-hide" id="test" lay-filter="test"></table>
 
-		<script type="text/html" id="toolbarDemo">
+<!--		<script type="text/html" id="toolbarDemo">
 			<div class="layui-btn-container">
 				<button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
 				<button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
 				<button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
 			</div>
-		</script>
+		</script>-->
 	</div>
 
 
@@ -85,7 +86,7 @@
 			elem: '#test'
 			// ,url:'data.json'//json路径
 			, data:Data
-			,toolbar: '#toolbarDemo'
+			//,toolbar: '#toolbarDemo'
 			,title: '用户数据表'
 			,cols: [
 					[

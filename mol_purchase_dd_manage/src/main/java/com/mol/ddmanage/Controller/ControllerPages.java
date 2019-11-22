@@ -334,6 +334,7 @@ public class ControllerPages {
     @RequestMapping("/SupplierToExaminePage")//供应商审核内容
     public String SupplierToExaminePage(@RequestParam Map map ,Model model)
     {
+        model.addAttribute("supplier_type",map.get("supplier_type").toString());
         model.addAttribute("pk_supplier",map.get("pk_supplier").toString());
         return "SupplierManagement/SupplierToExamine/SupplierToExaminePage";
     }
