@@ -1,12 +1,62 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0," name="viewport"/>
+    <meta charset="utf-8">
     <title>合同管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link th:href="@{/layui/css/layui.css}" rel="stylesheet">
+    <style>
+        .one_out_div{
+            background-color:red;
+        }
+        .one_div{
+            background-color: #dff2ff;
+        }
+        .first_line{
+            padding-top:15px;
+        }
+        .one_unit{
+            background-color:darkorchid;
+        }
+    </style>
 </head>
 <body>
-
+    <div id="total_out__div" style="width:100%;">
+        <div class="one_out_div" style="width:100%;position:relative">
+            <div class="first_line" style="width:100%;height:50px;position:absolute;left:7%">
+                <div>
+                    <span><strong>这里是订单的标题</strong></span>
+                </div>
+            </div>
+            <div class="one_div" style="width:100%;height:50px;position:absolute;left:7%;top:50px;">
+                <div style="width:50%;position:absolute;left:7%;">
+                    <span>单号:</span><span>2019010111111111</span>
+                </div>
+                <div  style="width:43%;position:absolute;left:50%">
+                    <span>类型:</span><span>单一来源</span>
+                </div>
+            </div>
+            <div style="width:100%;height:50px;position:absolute;left:7%;top:100px;">
+                <!--状态标签-->
+                <div style="width:33%;">
+                    <span class="layui-badge layui-bg-blue" style="padding-top:3px;padding-bottom: 3px;">等待签署</span>
+                </div>
+                <div style="padding-top:2px;padding-bottom: 3px;width:33%;">
+                    <span>合同签署时间:</span>
+                </div>
+                <div style="padding-top:5px;padding-bottom: 3px;width:33%">
+                    <span>2019-11-22 20:00:00</span>
+                </div>
+            </div>
+            <div style="width:100%;height:50px;position:absolute;left:7%;top:150px;">
+                <div style="padding-left:60%">
+                    <input type="button" value="查看">
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 <script th:src="@{/js/common.js}"></script>
 <script th:src="@{/layui/layui.all.js}"></script>
@@ -14,7 +64,7 @@
 <script th:inline="javascript">
     window.onload=function(){
         layui.use(["layer","form"], function(){
-            layer = layui.layer;
+            var $ = layui.jquery, layer = layui.layer;
         });
     }
 </script>
