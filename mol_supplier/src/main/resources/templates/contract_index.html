@@ -9,53 +9,79 @@
     <link th:href="@{/layui/css/layui.css}" rel="stylesheet">
     <style>
         .one_out_div{
-            background-color:red;
+            #background-color:red;
         }
         .one_div{
-            background-color: #dff2ff;
+            #background-color: #dff2ff;
         }
         .first_line{
             padding-top:15px;
         }
         .one_unit{
-            background-color:darkorchid;
+            #background-color:darkorchid;
         }
     </style>
 </head>
 <body>
     <div id="total_out__div" style="width:100%;">
-        <div class="one_out_div" style="width:100%;position:relative">
-            <div class="first_line" style="width:100%;height:50px;position:absolute;left:7%">
-                <div>
-                    <span><strong>这里是订单的标题</strong></span>
+
+
+
+        <th:block th:each="purAndCarInfo,purAndCarInfoStat : ${list}">
+            <div class="one_out_div" style="width:100%;">
+                <!--标题行-->
+                <div class="first_line" style="width:93%;height:30px;margin-left:7%;">
+                    <div>
+                        <span th:text="${purAndCarInfo.purchaseTitle}"><strong></strong></span>
+                    </div>
                 </div>
+                <!--单号及类型行开始-->
+                <div class="one_div" style="width:93%;height:30px;margin-left:7%;">
+                    <div style="width:50%;float:left">
+                        <span>单号:</span><span th:text="${purAndCarInfo.orderNumber}"></span>
+                    </div>
+                    <div  style="width:43%;float:left;">
+                        <span>类型:</span><span th:text="${purAndCarInfo.buyChanleId==3 ? '战略采购':purAndCarInfo.buyChanleId==4 ? '询价采购':purAndCarInfo.buyChanleId==5?'单一采购':''}"></span>
+                    </div>
+                </div>
+                <!--单号及类型行结束-->
+                <!--状态标签及合同签署时间开始-->
+                <div style="width:93%;height:30px;margin-left:7%;top:70px;">
+                    <!--状态标签-->
+                    <div style="width:20%;float:left">
+                        <span class="layui-badge layui-bg-blue" style="padding-top:5px;padding-bottom: 5px;padding-left:12%;padding-right:13%;" th:text="${purAndCarInfo.signStatus == '2'?'等待签署':'签署完成'}">等待签署
+
+                        </span>
+                    </div>
+                    <div style="width:30%;float:left;height:100%;line-height: 200%;">
+                        <span>合同签署时间:</span>
+                    </div>
+                    <div style="width:42%;float:left;height:100%;line-height: 200%;">
+                        <span th:text="${purAndCarInfo.startSignTime}"></span>
+                    </div>
+                </div>
+                <!--状态标签及合同签署时间结束-->
+                <!--动作按钮-->
+                <div style="width:93%;height:50px;margin-left:7%;top:105px;">
+                    <div style="padding-left:60%">
+                        <input type="button" th:value="${purAndCarInfo.signStatus == '2'?'确认签署':'查看'}"
+                               style="width:90px;height:25px;display:inline-block;border-radius: 7px;color:cornflowerblue;background-color:#fff;border:1px solid"
+                               th:singStatus = "${purAndCarInfo.signStatus}" th:fddContractId = "${purAndCarInfo.fddContractId}" id="click_btn">
+                    </div>
+                </div>
+                <!--动作按钮结束-->
             </div>
-            <div class="one_div" style="width:100%;height:50px;position:absolute;left:7%;top:50px;">
-                <div style="width:50%;position:absolute;left:7%;">
-                    <span>单号:</span><span>2019010111111111</span>
-                </div>
-                <div  style="width:43%;position:absolute;left:50%">
-                    <span>类型:</span><span>单一来源</span>
-                </div>
-            </div>
-            <div style="width:100%;height:50px;position:absolute;left:7%;top:100px;">
-                <!--状态标签-->
-                <div style="width:33%;">
-                    <span class="layui-badge layui-bg-blue" style="padding-top:3px;padding-bottom: 3px;">等待签署</span>
-                </div>
-                <div style="padding-top:2px;padding-bottom: 3px;width:33%;">
-                    <span>合同签署时间:</span>
-                </div>
-                <div style="padding-top:5px;padding-bottom: 3px;width:33%">
-                    <span>2019-11-22 20:00:00</span>
-                </div>
-            </div>
-            <div style="width:100%;height:50px;position:absolute;left:7%;top:150px;">
-                <div style="padding-left:60%">
-                    <input type="button" value="查看">
-                </div>
-            </div>
-        </div>
+        </th:block>
+
+
+
+
+
+
+
+
+
+
     </div>
 </body>
 <script th:src="@{/js/common.js}"></script>
@@ -65,6 +91,26 @@
     window.onload=function(){
         layui.use(["layer","form"], function(){
             var $ = layui.jquery, layer = layui.layer;
+
+            //点击按钮查看或者去签署法大大合同
+            $("#click_btn").on('click',function(){
+                var signStatus = $(this).attr('singStatus');
+                var fddContractId = $(this).attr('fddContractId');
+                if(signStatus*1 == 2){
+                    //去签署合同
+                    location.href = '/contract/sign?contractId='+fddContractId;
+               }else{
+                    //查看合同
+                    location.href = '/contract/review?contractId='+fddContractId;
+                    }
+            })
+
+
+
+
+
+
+
         });
     }
 </script>
