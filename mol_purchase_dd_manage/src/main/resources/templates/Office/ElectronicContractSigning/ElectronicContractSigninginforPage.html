@@ -43,7 +43,7 @@
     </div>
 </div>
 <script src="/layui/layui.all.js"></script>
-<script>
+<script th:inline="javascript">
     function Start_landing()
     {
         layui.use('table', function(){
@@ -106,8 +106,8 @@
                             ' </div>'+
                             '</div>'+ '<table class="layui-hide" id="test'+n+'" lay-filter="test2"></table>'+
                             '<div style="margin: 12px">' +
-                            '<input  onchange="File_upload()" id="files" name="file" type="file" >' +
-                            '        <div onclick="click_input()" style="margin-top: 6px;margin-left: 12px;padding:4px;background-color:#2D93CA;border-radius: 5px;width: 60px;color: #fbfbfb;text-align: center">' +
+                            '<input  onchange="File_upload()" id="files" name="file" type="file" style="display: none" >' +
+                            '        <div onclick="click_input()" style="cursor:pointer;margin-top: 6px;margin-left: 12px;padding:4px;background-color:#009688;width: 70px;color: #fbfbfb;text-align: center">' +
                             '            <p >上传合同</p>' +
                             '        </div>' +
                             '</div>'
@@ -151,9 +151,8 @@
     function File_upload()//上传文件的方法，参数 url controller地址 上传文件类型的div id 如名片div的id 或者 身份材料的divid
     {
         var files = new FormData(document.getElementById('File_upload_form'));//"domeform"
-       // file.set("ExperId",document.getElementById("ExperId").innerText);//传一个专家id
+        files.set("userid",[[${session.userid}]].toString());//传一个专家id
 
-        console.log(files)
 
         $.ajax({
             url: "/ElectronicContractSigninginforController/Upload_Contract",
