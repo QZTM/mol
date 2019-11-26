@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="mol_cache" />
+        <module name="mol_common" />
+        <module name="mol_eureka" />
+        <module name="mol_expert" />
+        <module name="mol_fadada" />
+        <module name="mol_notification" />
+        <module name="mol_oos" />
+        <module name="mol_pay" />
+        <module name="mol_purchase" />
+        <module name="mol_purchase_dd_manage" />
+        <module name="mol_quartz" />
+        <module name="mol_sms" />
+        <module name="mol_supplier" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="mol-fadada" target="1.8" />
+      <module name="mol_cache" target="1.8" />
+      <module name="mol_common" target="1.8" />
+      <module name="mol_eureka" target="1.8" />
+      <module name="mol_expert" target="1.8" />
+      <module name="mol_fadada" target="1.8" />
+      <module name="mol_notification" target="1.8" />
+      <module name="mol_oos" target="1.8" />
+      <module name="mol_parent" target="1.8" />
+      <module name="mol_pay" target="1.8" />
+      <module name="mol_purchase" target="1.8" />
+      <module name="mol_purchase_dd_manage" target="1.8" />
+      <module name="mol_quartz" target="1.8" />
+      <module name="mol_sms" target="1.8" />
+      <module name="mol_supplier" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="mol-fadada" options="-parameters" />
+      <module name="mol_cache" options="-parameters" />
+      <module name="mol_common" options="-parameters" />
+      <module name="mol_eureka" options="-parameters" />
+      <module name="mol_expert" options="-parameters" />
+      <module name="mol_fadada" options="-parameters -extdirs F:\JAVA_porject\mol\mol_fadada/lib" />
+      <module name="mol_notification" options="-parameters" />
+      <module name="mol_oos" options="-parameters" />
+      <module name="mol_pay" options="-parameters" />
+      <module name="mol_purchase" options="-parameters" />
+      <module name="mol_purchase_dd_manage" options="-parameters" />
+      <module name="mol_quartz" options="-parameters" />
+      <module name="mol_sms" options="-parameters" />
+      <module name="mol_supplier" options="-parameters" />
+    </option>
+  </component>
+</project>
