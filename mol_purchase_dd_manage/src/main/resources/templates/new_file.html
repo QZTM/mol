@@ -70,6 +70,7 @@
       <dd><a id="G2I3" href="javascript:;">通话记录</a></dd>
       <dd><a id="G2I4" href="javascript:;">采购进度跟踪</a></dd>
       <dd><a id="G2I5" href="javascript:;">采购合同管理</a></dd>
+      <dd><a id="G2I6" href="javascript:;">电子合同签署</a></dd>
     </dl>
   </li>
   
@@ -279,6 +280,18 @@ layui.use('element', function(){
   	}
 
 
+  });
+
+  $('#G2I6').on('click', function(){               //电子合同签署点击事件
+    if(document.getElementById('G2I6_form')!=null)
+    {
+      active.tabChange('G2I6_bat_id');
+    }
+    else
+    {
+      active.tabAdd('G2I6_bat_id',"电子合同签署",'<div id="G2I6_form" style="width:100%;height: auto;float:left; display:inline"><iframe style="width:98.8%;height: 800px;" src="/Home/ElectronicContractSigningListPage"></iframe></div>');
+      active.tabChange('G2I6_bat_id');
+    }
   });
 
   $('#G3I1').on('click', function(){               //部门管理点击事件
