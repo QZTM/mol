@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mol.supplier.mapper.microApp.MicroContractMapper">
+
+    <select id="selectPurchaseAndContractList" parameterType="String" resultType="java.util.HashMap">
+        select fpd.fy_purchase_id as purchaseId,fp.order_number as orderNumber,fp.title as purchaseTitle,fp.buy_channel_id as buyChanleId,fq.pk_supplier_id as supplierId,fpd.quote_id as quoteId,fq.supplier_salesman_id as salesmanId ,fpsc.contract_id as fddContractId,fpsc.start_sign_time as startSignTime,fpsc.sign_status as signStatus
+        from fy_purchase_detail fpd
+        left join fy_purchase fp on fp.id = fpd. fy_purchase_id
+        left join fy_quote fq on fpd.quote_id = fq.id
+        left join fy_purchase_supplier_contract fpsc on fpsc.purchase_id = fpd.fy_purchase_id and fq.pk_supplier_id = fpsc.supplier_id
+        where NOT ISNULL(fpd.quote_id)	and fq.supplier_salesman_id = #{salesmanId} and (fpsc.sign_status in ('2','3'))
+    </select>
+
+</mapper>
