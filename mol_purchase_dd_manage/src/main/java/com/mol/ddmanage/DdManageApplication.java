@@ -33,4 +33,9 @@ public class DdManageApplication {
     {
         return new IdWorker();
     }
+/*    @Bean("ContractHandler")
+    public ContractHandler getContractHandler()
+    {
+        return new ContractHandler();
+    }*/
 }

@@ -13,6 +13,7 @@
        telephoneRecording=#{telephoneRecording},
        purchaseProgress=#{purchaseProgress},
        contract=#{contract},
+       electronicContract=#{electronicContract},
        department=#{department},
        `position`=#{position},
        staff=#{staff},

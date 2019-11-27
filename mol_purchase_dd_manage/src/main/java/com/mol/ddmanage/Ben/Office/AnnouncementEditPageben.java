@@ -2,6 +2,7 @@ package com.mol.ddmanage.Ben.Office;
 
 public class AnnouncementEditPageben
 {
+    private String number;//序号
     private String announcemenId;//公告id
     private String messageType;//消息通知类型
     private String userids;//员工id
@@ -11,6 +12,7 @@ public class AnnouncementEditPageben
     private String titl;//标题
     private String creadtime;//创建时间
     private String creaduserid;//创建人id
+    private String creadName;//创建人名子
 
     public String getAnnouncemenId() {
         return announcemenId;
@@ -82,5 +84,21 @@ public class AnnouncementEditPageben
 
     public void setMessageType(String messageType) {
         this.messageType = messageType;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getCreadName() {
+        return creadName;
+    }
+
+    public void setCreadName(String creadName) {
+        this.creadName = creadName;
     }
 }

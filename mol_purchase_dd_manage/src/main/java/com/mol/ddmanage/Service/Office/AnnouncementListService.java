@@ -1,12 +1,11 @@
 package com.mol.ddmanage.Service.Office;
 
 import com.mol.ddmanage.Ben.Office.AnnouncementEditPageben;
-import com.mol.ddmanage.Util.DataUtil;
-import com.mol.ddmanage.Util.Dingding_Tools;
 import com.mol.ddmanage.mapper.Office.AnnouncementListMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,25 +13,26 @@ import java.util.Map;
 public class AnnouncementListService
 {
     @Resource
-    private AnnouncementListMapper announcementListMapper;
-    public Map AnnouncementListLogic(AnnouncementEditPageben json)
+    AnnouncementListMapper announcementListMapper;
+    public ArrayList<AnnouncementEditPageben> AnnouncementList()
+    {
+       ArrayList<AnnouncementEditPageben> announcementEditPageben=announcementListMapper.AnnouncementMessage();
+       for (int n=0;n<announcementEditPageben.size();n++)
+       {
+           announcementEditPageben.get(n).setNumber(String.valueOf(n));
+           announcementEditPageben.get(n).setMessageType("消息通知");
+       }
+      return announcementEditPageben;
+    }
+
+    public Map DeleteAnnouncementListLogic(String announcemenId,String messageType)
     {
         Map map=new HashMap();
         try
         {
-            json.setCreadtime(DataUtil.GetNowSytemTime());//添加创建时间
-            json.setAnnouncemenId(DataUtil.GetTimestamp());//添加id
-            if (json.getAlluser().equals("0"))
-            {
-                Dingding_Tools.PutMessageAnnouncement(json.getUserids(),json.getTitl()+"\n"+json.getText(),false);
-            }
-            else if (json.getAlluser().equals("1"))
-            {
-                Dingding_Tools.PutMessageAnnouncement(json.getUserids(),json.getTitl()+"\n"+json.getText(),true);
-            }
-            announcementListMapper.AnnouncementList(json);
+            announcementListMapper.DeleteAnnouncementList(announcemenId,messageType);
             map.put("statu",true);
-            return  map;
+            return map;
         }
         catch (Exception e)
         {

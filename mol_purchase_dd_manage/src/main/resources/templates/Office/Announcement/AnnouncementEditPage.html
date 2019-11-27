@@ -88,7 +88,7 @@
         <p style="margin-top: 3px">发 布</p>
     </div>
 </div>
-<script >
+<script  th:inline="javascript">
 
     function Landing_start()
     {
@@ -234,15 +234,15 @@
     }
     function RemoveHTML(e) //移除岗位里的员工
     {
-        layer.confirm('要移除此员工吗？', function(){
+        layer.confirm('要移除此员工吗？', function(index){
             e.remove()
+            layer.close(index);
         });
     }
 
     function SubmitMessage()//发送消息
     {
-
-        layer.confirm('确认发布吗？', function(){
+        layer.confirm('是否发布公告', function(index){
             var PeolpeItems=document.getElementsByClassName("PeolpeItems");//获取已经选中的人员
             var ids=''
             for (var n=0;n<PeolpeItems.length;n++)
@@ -271,12 +271,12 @@
 
             $.ajax({
                 type: 'POST',
-                url: '/AnnouncementListController/AnnouncementList',
+                url: '/AnnouncementEditPageController/AnnouncementList',
                 dataType: 'json',
                 data:json,//,characterName:document.getElementById("characterName").value
                 headers:{'Content-type':'application/json'},
                 success: function (data) {
-                    if (data.status==true)
+                    if (data.statu==true)
                     {
                         alert("角色保存成功")
                         return_top()
@@ -290,13 +290,18 @@
                     alert("获取审核议价信息失败")
                 }
             });
+            layer.close(index);
         });
+
+
+
 
     }
     function return_top()//返回上一层
     {
-        layer.confirm('退出后数据不会保存', function(){
+        layer.confirm('退出后数据不会保存', function(index){
             parent.close_Details_page();
+            layer.close(index);
         });
     }
 </script>

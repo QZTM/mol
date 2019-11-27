@@ -10,6 +10,7 @@ public class AddJurisdictionben
     private String telephoneRecording;
     private String purchaseProgress;
     private String contract;
+    private String electronicContract;//电子合同签署
     private String department;
     private String position;
     private String staff;
@@ -201,5 +202,13 @@ public class AddJurisdictionben
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getElectronicContract() {
+        return electronicContract;
+    }
+
+    public void setElectronicContract(String electronicContract) {
+        this.electronicContract = electronicContract;
     }
 }
