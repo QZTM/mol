@@ -44,56 +44,40 @@ public class ContractController {
     }
 
 
-    @RequestMapping("/beforeSignCheck")
+    @RequestMapping("/showCheck")
+    public String showCheckPage(){
+        return "e_contract_auth";
+    }
+
+
+    @RequestMapping("/checkRegist")
     @ResponseBody
-    public ServiceResult beforeSignCheck(HttpSession session) throws InterruptedException {
+    public ServiceResult checkRegist(HttpSession session) throws InterruptedException {
         Supplier supplier = microUserService.getSupplierFromSession(session);
         Salesman salesman = microUserService.getUserFromSession(session);
-
         //判断该单位是否注册了：
         RegistRecord rr = new RegistRecord();
         ServiceResult registResult = RegistAndAuthHandler.checkIfRegisted(supplier.getPkSupplier(),"2");
-
-
         if(!registResult.isSuccess()){
-            //调用注册接口：
-            ServiceResult newRegistResult = RegistAndAuthHandler.regAccount(supplier.getPkSupplier(),"2");
-            if(!newRegistResult.isSuccess()){
-                throw new RuntimeException("法大大注册异常！");
-            }else{
-                Thread.sleep(500);
-                registResult = RegistAndAuthHandler.checkIfRegisted(supplier.getPkSupplier(),"2");
-                int registCount = 0;
-                while(registCount < 10 && !registResult.isSuccess()){
-                    registResult = RegistAndAuthHandler.checkIfRegisted(supplier.getPkSupplier(),"2");
-                    if(registResult.isSuccess()){
-                        break;
-                    }
-                    registCount++;
-                    Thread.sleep(500);
-                }
-            }
-        }
-
-        if(!registResult.isSuccess()){
-            throw new RuntimeException("获取公司法大大注册信息异常，supplierId:"+supplier.getPkSupplier());
+            return ServiceResult.failure("没有注册");
         }else{
-            //验证是否认证了：
-            ServiceResult authResult = RegistAndAuthHandler.checkIfRegisted(supplier.getPkSupplier(),"2");
-            if(!authResult.isSuccess()){
-                //调用认证接口获得认证链接，然后重定向到认证页面。
-                ServiceResult authCompanyurl = RegistAndAuthHandler.getAuthCompanyurl(rr.getCustomerId(), RegistAndAuthHandler.CALLBACK_ORG_AUTH, null);
-                if(!authCompanyurl.isSuccess()){
-                    return ServiceResult.failureMsg("获取法大大企业认证地址失败！");
-                }else{
-                    return ServiceResult.failure("未认证",authCompanyurl.getResult());
-                }
-            }
+            return ServiceResult.success(registResult);
         }
+    }
 
-        return ServiceResult.failure("未认证");
 
-
+    @RequestMapping("/checkAuth")
+    @ResponseBody
+    public ServiceResult checkAuth(HttpSession session,@RequestParam String customerId) throws InterruptedException {
+        Supplier supplier = microUserService.getSupplierFromSession(session);
+        Salesman salesman = microUserService.getUserFromSession(session);
+            //验证是否认证了：
+            ServiceResult authResult = RegistAndAuthHandler.checkIfAuthedByCustomerId(customerId,"2");
+            if(!authResult.isSuccess()){
+                    return ServiceResult.failureMsg("没有认证");
+            }else{
+                return ServiceResult.success(authResult);
+            }
     }
 
 

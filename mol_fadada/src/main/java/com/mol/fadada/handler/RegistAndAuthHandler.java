@@ -281,7 +281,23 @@ public class RegistAndAuthHandler {
             return ServiceResult.failureMsg("该单位/个人没有注册");
         }
         return ServiceResult.failureMsg("该单位/个人没有认证");
+    }
 
+    /**
+     * 根据customerId查询某单位/个人是否已认证
+     * @param customerId        法大大平台id
+     * @param registType        认证类型
+     * @return
+     */
+    public static ServiceResult checkIfAuthedByCustomerId(String customerId,String registType){
+        EntityHelper.initEntityNameMap(AuthRecord.class, new Config());
+        Example example = new Example(AuthRecord.class);
+        example.and().andEqualTo("customerId",customerId).andEqualTo("status","2");
+        AuthRecord authRecord = RecordDbHandler.getAuthRecordMapper().selectOneByExample(example);
+        if(authRecord!=null){
+            return ServiceResult.success(authRecord);
+        }
+        return ServiceResult.failure("没有认证");
     }
 
 

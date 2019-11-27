@@ -38,16 +38,8 @@ public class MicroMyController {
     public String showMyInfoPage(Model model, HttpSession session) {
         Object salesmanObj = microUserService.getUserFromSession(session);
         Object supplierObj = microUserService.getSupplierFromSession(session);
-        if(salesmanObj == null || supplierObj == null){
-            throw new RuntimeException("session中没有用户信息");
-        }
-
-
         Salesman salesman = (Salesman)salesmanObj;
         Supplier supplier = (Supplier)supplierObj;
-
-
-
         String supplierAttrNormalStr = "基础供应商";
         String normalStateStr = "";
         normalStateStr = getSupstateStr(supplier.getSupstateNormal());
