@@ -88,7 +88,6 @@
                     var PeolpeDIV=document.getElementById("Peolpes");
                     PeolpeDIV.appendChild(PeolpeItem)
                 }
-
             },
             error: function (data) {
                 alert("获取审核议价信息失败")
@@ -114,7 +113,6 @@
         else
         {
             DeparmentId=1;
-
         }
 
 
@@ -221,48 +219,46 @@
     }
     function RemoveHTML(e) //移除岗位里的员工
     {
-        layer.confirm('要移除此员工吗？', function(){
             e.remove()
-        });
     }
     function Submits()
     {
+
         var jurisdictionId=[[${jurisdictionId}]];
         var PeolpeItems=document.getElementsByClassName("PeolpeItems");
 
         var ids=''
-        for (var n=0;n<PeolpeItems.length;n++)
-        {
-            ids=ids+','+PeolpeItems[n].childNodes[3].innerText
-        }
-
-        $.ajax({
-            type: 'POST',
-            url: '/AddStaffToPositionPageController/AddStaffToPosition',
-            dataType: 'json',
-            data:{ids:ids,jurisdictionId:jurisdictionId},//该角色的员工id数组，该角色id
-           // headers:{'Content-type':'application/json'},
-            success: function (data) {
-                if (data.status==true)
-                {
-                    alert("角色保存成功")
-                    return_top()
-                }
-                else
-                {
-                    alert("提交失败！")
-                }
-            },
-            error: function (data) {
-                alert("获取审核议价信息失败")
+        layer.confirm('是否保存数据？', function(){
+            for (var n=0;n<PeolpeItems.length;n++)
+            {
+                ids=ids+','+PeolpeItems[n].childNodes[3].innerText
             }
+
+            $.ajax({
+                type: 'POST',
+                url: '/AddStaffToPositionPageController/AddStaffToPosition',
+                dataType: 'json',
+                data:{ids:ids,jurisdictionId:jurisdictionId},//该角色的员工id数组，该角色id
+                // headers:{'Content-type':'application/json'},
+                success: function (data) {
+                    if (data.status==true)
+                    {
+                        return_top()
+                    }
+                    else
+                    {
+                        alert("提交失败！")
+                    }
+                },
+                error: function (data) {
+                    alert("获取审核议价信息失败")
+                }
+            });
         });
     }
     function return_top()//返回上一层
     {
-        layer.confirm('退出后数据不会保存', function(){
             parent.close_Details_page();
-        });
     }
 </script>
 </body>

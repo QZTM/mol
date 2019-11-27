@@ -16,8 +16,8 @@ public class ElectronicContractSigninginforController
     @Resource
     ElectronicContractSigninginforService electronicContractSigninginforService;
     @RequestMapping("/Upload_Contract")
-    public Map Upload_Contract(@RequestParam("file") MultipartFile file)
+    public Map Upload_Contract(@RequestParam("file") MultipartFile file ,@RequestParam Map map)
     {
-        return electronicContractSigninginforService.Upload_Contract_Logic(file);
+        return electronicContractSigninginforService.Upload_Contract_Logic(file,map);
     }
 }
