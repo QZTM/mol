@@ -240,6 +240,11 @@ public class RegistAndAuthHandler {
     }
 
 
+    public static synchronized ServiceResult getAuthCompanyurl(String customerId,String notifyUrl,String returnUrl){
+        return getAuthCompanyurl(customerId,"","","",notifyUrl,returnUrl,"","",null,null,null,null);
+    }
+
+
     /**
      * 判断个人是否注册
      * @param openId            莫尔易购平台id,个人对应的采购员id或者供应商业务员id，组织对应的采购企业id或者供应商id
