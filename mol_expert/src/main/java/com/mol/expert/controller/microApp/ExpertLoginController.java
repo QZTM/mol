@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.dingtalk.api.response.OapiDepartmentGetResponse;
 import com.dingtalk.api.response.OapiUserGetResponse;
 import com.dingtalk.oapi.lib.aes.DingTalkJsApiSingnature;
+import com.mol.expert.config.ExecutorConfig;
+import com.mol.expert.config.ExpertStatus;
 import com.mol.expert.entity.MicroApp.DDDept;
 import com.mol.expert.entity.MicroApp.DDUser;
 import com.mol.expert.mapper.newMysql.expert.ExpertUserMapper;
@@ -98,7 +100,9 @@ public class ExpertLoginController {
         String userDdId = microGetDDUserInfoService.getDDUserId(code);
         //2.通过ddId 查询专家库，
         ExpertUser expertUser=microSalesmanService.findExpertUser(userDdId);
+        logger.info("method:getSticket describe:查询登录人信息  result:"+expertUser);
         if (expertUser==null){
+            logger.info("method:getSticket describe:专家信息为空  ");
             //2.1 没有数据
             //获取电话号码
             //获取组织
@@ -106,6 +110,7 @@ public class ExpertLoginController {
             //获取名称
             OapiUserGetResponse response = microGetDDUserInfoService.getUserDetail(userDdId);
             if (response == null) {
+                logger.info("method:getSticket describe:查询登录人钉钉信息失败  result:"+response);
                 throw new RuntimeException("获取用户信息失败");
             }
             DDUser ddUser = JSONObject.parseObject(JSONObject.toJSONString(response), DDUser.class);
@@ -116,13 +121,19 @@ public class ExpertLoginController {
             }
 
             ExpertUser save = microSalesmanService.save(ddUser);
+            logger.info("method:getSticket describe:保存用户信息  result:"+save);
             session.setAttribute("user",save);
             //2.1.2保存，存入session专家第一次登陆，提醒认证
         }else {
             //2.2 有数据 更新登陆时间  存入session
             microSalesmanService.updataSignInTime(expertUser);
+            logger.info("method:getSticket describe:更新登录时间  result:"+expertUser);
+
             //2.2.1没有认证 提醒认证
             session.setAttribute("user",expertUser);
+            if(Integer.parseInt(expertUser.getAuthentication())== ExpertStatus.EXPERT_UNCERTIFIED){
+                return ServiceResult.success("请完善认证信息");
+            }
             //2.2.2认证，欢迎使用
         }
 

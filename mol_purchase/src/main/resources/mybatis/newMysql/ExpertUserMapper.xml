@@ -6,4 +6,7 @@
     <select id="findExpertUserById" parameterType="java.lang.String" resultType="com.mol.purchase.entity.ExpertUser">
         select id,name,avatar,mobile,expert_grade from expert_user where id=#{expertId}
     </select>
+    <update id="updataAwardByExpertId" parameterType="java.lang.String">
+        UPDATE expert_user set award=#{newAward} where id=#{expertId}
+    </update>
 </mapper>

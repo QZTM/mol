@@ -117,7 +117,7 @@ public class SingleSourceService {
         stObj.setGoodsDetail(toJson(pageArray));//----------------------->
         stObj.setCreateTime(TimeUtil.getNowDateTime());
         stObj.setOrderNumber(makeOrderNum(BuyChannelResource.SINGLESOURCE));
-        stObj.setStatus(OrderStatus.waitingQuote+"");
+        stObj.setStatus(OrderStatus.WAITING_QUOTE+"");
         stObj.setTitle(purchaseList.get(0).getTypeName()+"单一采购");
         stObj.setStaffId(staId);
         stObj.setOrgId(orgId);

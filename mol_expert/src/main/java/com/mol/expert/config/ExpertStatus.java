@@ -24,4 +24,14 @@ public class ExpertStatus {
     //未分配
     public static final Integer EXPERT_MONEY_NOTDISTRIBUTION=0;
 
+    /**
+     * 专家认证状态
+     */
+    //未认证
+    public static final Integer EXPERT_UNCERTIFIED=0;
+    //审核中
+    public static final Integer EXPERT_INAUDIT=1;
+    //认证成功
+    public static final Integer EXPERT_CERTIFIED=2;
+
 }

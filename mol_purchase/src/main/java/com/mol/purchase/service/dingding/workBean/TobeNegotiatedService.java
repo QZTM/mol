@@ -204,7 +204,7 @@ public class TobeNegotiatedService {
         //保存负责人说明
         fyPurchaseMapper.updateExplainById(purId,explain);
         //更改订单状态为等待审核结果
-        fyPurchaseMapper.updateStatusById(purId, OrderStatus.EndOfBargaining+"");
+        fyPurchaseMapper.updateStatusById(purId, OrderStatus.END_OF_BARGAINING+"");
         //对应关系
         List<MaterIdToSupplierId> mts = negotiatIng.getMaterIdToSupplierId();
 

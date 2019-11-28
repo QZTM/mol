@@ -19,4 +19,8 @@ public class QuotePayresult {
     private String purchaseId;
     private String supplierId;
     private String payResult;
+    private String changeStatusTime;
+    private String status;
+    private String createTime;
+    private String invalidTime;
 }

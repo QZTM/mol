@@ -26,4 +26,6 @@ public class ExpertRecommend {
     private String recommendTime;
     //佣金
     private String commissionMoney;
+    //佣金到账时间
+    private String comMoneyTime;
 }

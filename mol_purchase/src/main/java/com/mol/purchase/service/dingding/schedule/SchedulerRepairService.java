@@ -180,10 +180,8 @@ public class SchedulerRepairService {
 
     public QuotePayresult getPayExpertResult(String supplierId, String purId) {
         QuotePayresult t = new QuotePayresult();
-        //t.setSupplierId(supplierId);
-        //t.setPurchaseId(purId);
-        t.setSupplierId(1+"");
-        t.setPurchaseId(1+"");
+        t.setSupplierId(supplierId);
+        t.setPurchaseId(purId);
         return quotePayresultMapper.selectOne(t);
     }
 

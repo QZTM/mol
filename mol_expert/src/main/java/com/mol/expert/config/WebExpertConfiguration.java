@@ -21,7 +21,7 @@ public class WebExpertConfiguration implements WebMvcConfigurer {
         logger.info("expertSession拦截器启动");
         registry.addInterceptor(getSessionExpertInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("static/**","static/**/**","/index/findAll","/microApp/login/expertInfo");
+                .excludePathPatterns("static/**","static/**/**","/index/findAll","/microApp/**");
     }
 
     @Override

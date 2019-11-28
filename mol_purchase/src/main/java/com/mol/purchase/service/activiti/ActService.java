@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.mol.config.Constant;
 import com.mol.notification.SendNotification;
 import com.mol.purchase.config.ExecutorConfig;
+import com.mol.purchase.config.OrderStatus;
 import com.mol.purchase.entity.ExpertUser;
 import com.mol.purchase.entity.FyQuote;
 import com.mol.purchase.entity.QuotePayresult;
@@ -633,16 +634,21 @@ public class ActService {
         expertRecommendMapper.updataAdoptNotChecked(pur);
     }
 
-    public void saveQuotePayresult(fyPurchase pur, List<PurchaseDetail> detailList) {
-        if (detailList!=null && detailList.size()>0){
-            String[] split = detailList.get(0).getExpertId().split(",");
-            for (String s : split) {
-                QuotePayresult t=new QuotePayresult();
-                t.setId(new IdWorker(2,2).nextId()+"");
-                t.setPurchaseId(pur.getId());
-                t.setSupplierId(s);
-                t.setPayResult(0+"");
-                quotePayresultMapper.insert(t);
+    public void saveQuotePayresult(fyPurchase pur) {
+        //判断专家支付费用 或者电子合同费用  是否需要
+        if (pur.getExpertReview().equals("true") || pur.getElectronicContract().equals("true")){
+            List<FyQuote> quoteList=quoteMapper.findSupplierIdListByPurId(pur.getId());
+            if (quoteList!=null){
+                for (FyQuote quote : quoteList) {
+                    QuotePayresult t=new QuotePayresult();
+                    t.setId(new IdWorker(2,2).nextId()+"");
+                    t.setPurchaseId(pur.getId());
+                    t.setSupplierId(quote.getPkSupplierId());
+                    t.setPayResult(OrderStatus.SINGLE_SUPPLIER_PAY_NOT+"");
+                    t.setStatus(OrderStatus.ALL_SUPPLIER_PAY_NOT+"");
+                    t.setCreateTime(TimeUtil.getNowDateTime());
+                    quotePayresultMapper.insert(t);
+                }
             }
         }
     }

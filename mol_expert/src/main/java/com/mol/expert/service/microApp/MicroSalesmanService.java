@@ -42,7 +42,7 @@ public class MicroSalesmanService {
         t.setId(new IdWorker().nextId()+"");
         t.setName(ddUser.getName());
         t.setAvatar(ddUser.getAvatar());
-        t.setDdId(ddUser.getDingId());
+        t.setDdId(ddUser.getUserid());
         t.setMobile(ddUser.getMobile());
         t.setCreateTime(TimeUtil.getNowDateTime());
         t.setLastUpdateTime(TimeUtil.getNowDateTime());
@@ -69,6 +69,9 @@ public class MicroSalesmanService {
     }
 
     public ExpertUser findExpertUser(String userDdId) {
-        return expertUserMapper.findExpertByDdId(userDdId);
+        ExpertUser t = new ExpertUser();
+        t.setDdId(userDdId);
+        return expertUserMapper.selectOne(t);
+        //return expertUserMapper.findExpertByDdId(userDdId);
     }
 }

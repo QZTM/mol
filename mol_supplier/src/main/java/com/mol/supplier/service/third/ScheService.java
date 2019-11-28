@@ -86,7 +86,7 @@ public class ScheService {
     }
     public fyPurchase selectOneById(String id) {
         fyPurchase fyPurchase = tpMapper.selectOneById(id);
-        fyPurchase = StatusScheUtils.getStatusIntegerToString(fyPurchase);
+        fyPurchase= StatusScheUtils.getStatusIntegerToString(fyPurchase);
         String supplierNameById = bdSupplierMapper.getSupplierNameById(fyPurchase.getPkSupplier());
         fyPurchase.setPkSupplier(supplierNameById);
         return fyPurchase;
@@ -112,6 +112,10 @@ public class ScheService {
         Supplier t=new Supplier();
         t.setPkSupplier(pkSupplierId);
         return bdSupplierMapper.selectOne(t);
+    }
+
+    public int getCountWinningKidSupplier(String id) {
+        return fyQuoteMapper.findCountWinningKidSupplierByPurId(id);
     }
 
 

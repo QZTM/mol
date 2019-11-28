@@ -61,7 +61,7 @@ public class SchedulerRepairController {
 
         //公司的list
         List<Supplier> supplierList=new ArrayList<>();
-        if (pur.getStatus().equals(OrderStatus.pass+"") ){
+        if (pur.getStatus().equals(OrderStatus.PASS+"") ){
             detailList=schedulerRepairService.checkQuoteList(id);
 
             for (int i =0;i<detailList.size();i++){

@@ -110,7 +110,7 @@ public class MachiningService {
         stObj.setGoodsBranch(purchaseList.get(0).getUnit());
         stObj.setGoodsDetail(toJson(pageArray));//----------------------->
         stObj.setCreateTime(TimeUtil.getNowDateTime());
-        stObj.setStatus(OrderStatus.waitingQuote+"");
+        stObj.setStatus(OrderStatus.WAITING_QUOTE+"");
         stObj.setTitle("");
         stObj.setStaffId(staId);
         stObj.setOrgId(orgId);
