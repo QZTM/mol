@@ -147,12 +147,29 @@ $.each($(".bottom_icon_img"),function(){
 })
 
 function snyTimeOut(time,callback){
+    console.log("snyTimeOut....");
     return new Promise(function(resolve, reject){
         setTimeout(function(){
             callback;
         },time);
     })
 }
+
+function increase(counter,timedelay){
+    console.log("increase....counter:"+counter);
+    var d = jQuery.Deferred();
+    var doIncrease = function() {
+        if(counter < counter){
+            counter++;
+            setTimeout(doIncrease, timedelay);
+        } else {
+            d.resolve();
+        }
+    };
+    doIncrease();
+    return d.promise();
+};
+
 
 /**
  * 去后端获取支付信息
