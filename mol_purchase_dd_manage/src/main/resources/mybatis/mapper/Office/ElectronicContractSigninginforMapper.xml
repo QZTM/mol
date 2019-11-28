@@ -4,4 +4,12 @@
    <insert id="Upload_Contract">
        insert into fadada_contract_upload_record (id,contract_id,upload_time,upload_user_id) values (#{id},#{contract_id},#{upload_time},#{upload_user_id})
    </insert>
+
+    <insert id="Supplier_Contract">
+       insert into fy_purchase_supplier_contract (id,purchase_id,supplier_id,contract_id,template_id,create_time,start_sign_time,sign_status) values (#{id},#{purchase_id},#{supplier_id},#{contract_id},#{template_id},#{create_time},#{start_sign_time},#{sign_status})
+   </insert>
+
+    <select id="GetContractId" resultType="java.util.Map">
+        select * from fy_purchase_supplier_contract where supplier_id=#{supplierid} and purchase_id=#{purchasId}
+    </select>
 </mapper>

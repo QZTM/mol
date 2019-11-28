@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class ElectronicContractSigningListService
@@ -46,6 +49,30 @@ public class ElectronicContractSigningListService
         for (int n=0;n<contractSigningListbenss.size();n++)//状态值转换
         {
             contractSigningListbenss.get(n).setNumber(String.valueOf(n));
+
+            if (contractSigningListbenss.get(n).getSuplier_name()!=null)//去除重复的公司名
+            {
+                String []copyNames=contractSigningListbenss.get(n).getSuplier_name().split(",");
+                if (copyNames.length>1)
+                {
+                    String copyNamestr="";
+                    Set<String> set=new HashSet<String>(Arrays.asList(copyNames));
+                    int n_1=0;
+                    for (String str : set)
+                    {
+                        if (n_1!=0)
+                        {
+                            copyNamestr=copyNamestr+"，"+str;
+                        }
+                        else if (n_1==0)
+                        {
+                            copyNamestr=str;
+                        }
+                        n_1++;
+                    }
+                    contractSigningListbenss.get(n).setSuplier_name(copyNamestr);
+                }
+            }
             if (contractSigningListbenss.get(n).getBuy_channel_id().equals("3"))
             {
                 contractSigningListbenss.get(n).setBuy_channel_id("战略采购");
@@ -82,7 +109,6 @@ public class ElectronicContractSigningListService
             {
                 contractSigningListbenss.get(n).setContract_statu("未签署");
             }
-
         }
         return contractSigningListbenss;
     }

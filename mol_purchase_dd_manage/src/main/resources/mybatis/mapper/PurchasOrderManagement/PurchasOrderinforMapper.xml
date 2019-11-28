@@ -7,7 +7,8 @@
     (SELECT bd_material.`name` FROM bd_material WHERE fy_quote.pk_material_id=bd_material.pk_material)material_name,
     (SELECT bd_measdoc.`name` FROM bd_measdoc WHERE bd_measdoc.pk_measdoc=(SELECT bd_material.pk_measdoc FROM bd_material WHERE bd_material.pk_material=fy_quote.pk_material_id))unit,
     (SELECT bd_supplier.`name` FROM bd_supplier WHERE bd_supplier.pk_supplier=fy_quote.pk_supplier_id)corp_name,
-    (SELECT bd_material.materialspec FROM bd_material WHERE fy_quote.pk_material_id=bd_material.pk_material)materialspec
+    (SELECT bd_material.materialspec FROM bd_material WHERE fy_quote.pk_material_id=bd_material.pk_material)materialspec,
+   (select fy_purchase_supplier_contract.sign_status from fy_purchase_supplier_contract where  fy_quote.fy_purchase_id=fy_purchase_supplier_contract.purchase_id AND fy_purchase_supplier_contract.supplier_id=fy_quote.pk_supplier_id)sign_status
     FROM fy_quote
     where fy_quote.fy_purchase_id=#{PurchasId}
 

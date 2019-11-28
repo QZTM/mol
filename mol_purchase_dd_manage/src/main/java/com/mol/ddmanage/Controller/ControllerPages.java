@@ -29,7 +29,7 @@ public class ControllerPages {
     public String new_file(@RequestParam Map map , HttpSession httpSession)
     {
         httpSession.setAttribute("userid","083216482529129838");
-        return "New_file";
+        return "new_file";
     }
 
     @RequestMapping("/Home")//首页

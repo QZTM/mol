@@ -1,6 +1,8 @@
 package com.mol.fadada.handler;
+
 import com.alibaba.fastjson.JSON;
 import com.fadada.sdk.client.FddClientBase;
+import com.fadada.sdk.client.FddClientExtra;
 import com.fadada.sdk.client.authForfadada.GetCompanyVerifyUrl;
 import com.fadada.sdk.client.authForfadada.GetPersonVerifyUrl;
 import com.fadada.sdk.client.authForfadada.model.AgentInfoINO;
@@ -18,6 +20,7 @@ import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.mapperhelper.EntityHelper;
 import util.IdWorker;
 import util.TimeUtil;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -50,7 +53,7 @@ public class RegistAndAuthHandler {
     private File file;
     private static String result_type = "";
     private static String cert_flag = "";
-    private StringBuffer response = new StringBuffer("==================Welcome ^_^ ==================");
+    private static StringBuffer response = new StringBuffer("==================Welcome ^_^ ==================");
 
     public static final String CALLBACK_PERSON_AUTH = "http://fyycg88.vaiwan.com/fddCallback/personAuth" ;
     public static final String PERSON_AUTH_TOPAGE = "http://fyycg88.vaiwan.com/fddCallback/personAuthTo" ;
@@ -299,6 +302,28 @@ public class RegistAndAuthHandler {
         }
         return ServiceResult.failure("没有认证");
     }
+
+    /**
+     * 查看合同
+     * @param contract_id 合同编号
+     * @return
+     */
+    public static ServiceResult SetContract(String contract_id)
+    {
+        try {
+            response.append("\n").append("合同查看");
+            FddClientExtra extra = new FddClientExtra(APP_ID,APP_SECRET,V,HOST);
+            String result = extra.invokeViewPdfURL(contract_id);
+           // response.append("\n").append(result);
+          // Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + result);
+            return ServiceResult.success(result);//返回结果
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ServiceResult.failure("查看合同失败");
+        }
+    }
+
+
 
 
     /**

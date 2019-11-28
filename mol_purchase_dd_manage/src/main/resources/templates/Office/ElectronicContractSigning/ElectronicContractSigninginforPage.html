@@ -10,9 +10,6 @@
 <!--电子合同详情页-->
 <div style="padding: 2px;">
     <div>
-        <div style="margin-top: 6px;margin-left: 12px;padding:4px;background-color: #2D93CA;border-radius: 5px;width: 60px;color: #fbfbfb;text-align: center">
-            <p >详情页</p>
-        </div>
 
         <div style="margin: 12px; width:98%;height: 100px; background-color: #009F95;border-radius:12px;color: #fbfbfb;padding: 12px">
             <div style="width: 100%;">
@@ -43,7 +40,7 @@
     </div>
 </div>
 <script src="/layui/layui.all.js"></script>
-<script th:inline="javascript">
+<script th:inline="javascript" language="javascript" type="text/javascript">
     function Start_landing()
     {
         layui.use('table', function(){
@@ -82,7 +79,6 @@
         layui.use('table', function(){//供应商报价单
             var table = layui.table;
 
-
             $.ajax({
                 type: 'POST',
                 url: '/PurchasOrderinfor/OrderDetailedinfor',
@@ -95,6 +91,32 @@
                     for (var n=0;n<data.length;n++)//所有供应商报价
                     {
                         var elements= document.createElement('div')
+                        var butuntext;
+                        if (data[n][0].sign_status==='未签署合同')
+                        {
+                            butuntext=
+                            '<div onclick="click_input(this)" style="float: left; cursor:pointer;margin-top: 6px;margin-left: 12px;padding:4px;background-color:#009688;width: 70px;color: #fbfbfb;text-align: center">' +
+                            '<p>上传合同</p>'  +
+                            '<p style="display: none">'+data[n][0].pk_supplier_id+'</p>'+
+                            '<input id="files" onchange="File_upload(this)" name="file" type="file" style="display: none">' +
+                            '</div>'
+                        }
+                        else if (data[n][0].sign_status==='等待签署合同')
+                        {
+                            butuntext=
+                                ' <div onclick="SetContract(this)" style="float: left; cursor:pointer;margin-top: 6px;margin-left: 12px;padding:4px;background-color:#009688;width: 70px;color: #fbfbfb;text-align: center">' +
+                                '<p >查看合同</p>'  +
+                                '<p style="display: none">'+data[n][0].pk_supplier_id+'</p>'+
+                                '   </div>'
+                        }
+                        else if (data[n][0].sign_status==='已签署合同')
+                        {
+                            butuntext=
+                                ' <div onclick="SetContract(this)" style="float: left; cursor:pointer;margin-top: 6px;margin-left: 12px;padding:4px;background-color:#009688;width: 70px;color: #fbfbfb;text-align: center">' +
+                                '<p >查看合同</p>'  +
+                                '<p style="display: none">'+data[n][0].pk_supplier_id+'</p>'+
+                                '   </div>'
+                        }
                         elements.innerHTML=
 
                             '<div style="margin-top: 12px;margin-left: 12px;width: 100%;height: 50px;">'+
@@ -106,10 +128,8 @@
                             ' </div>'+
                             '</div>'+ '<table class="layui-hide" id="test'+n+'" lay-filter="test2"></table>'+
                             '<div style="margin: 12px">' +
-                            '<input  onchange="File_upload()" id="files" name="file" type="file" style="display: none" >' +
-                            '        <div onclick="click_input()" style="cursor:pointer;margin-top: 6px;margin-left: 12px;padding:4px;background-color:#009688;width: 70px;color: #fbfbfb;text-align: center">' +
-                            '            <p >上传合同</p>' +
-                            '        </div>' +
+                                '<p style="float: left;margin-top: 12px">'+data[n][0].sign_status+'</p>'+
+                            butuntext +
                             '</div>'
                         ;
 
@@ -143,30 +163,122 @@
     }
 
 
-    function click_input()//上传合同
+    function click_input(e)//上传合同
     {
-       document.getElementById("files").click()
+
+       var clicks= e.childNodes[2]
+        clicks.click();
+      // document.getElementById("files").click()
     }
-
-    function File_upload()//上传文件的方法，参数 url controller地址 上传文件类型的div id 如名片div的id 或者 身份材料的divid
+    function SetContract(e)//查看合同
     {
-        var files = new FormData(document.getElementById('File_upload_form'));//"domeform"
-        files.set("userid",[[${session.userid}]].toString());//传一个专家id
-
-
+        var supplier_id=e.childNodes[1]//拿到供应商id
         $.ajax({
-            url: "/ElectronicContractSigninginforController/Upload_Contract",
-            type: "post",
-            data: files,//,img_business:img_business,img_documents:img_documents},
-            processData: false,
-            contentType: false,
-            success: function(data) {
-                alert("123456")
+            type: 'POST',
+            url: '/ElectronicContractSigninginforController/SetContract',
+            dataType: 'json',
+            data:{purchasId:document.getElementById("Oreder_number").innerText.split(':')[1],supplierid:supplier_id.innerText},
+            // headers:{  'eticket': app.globalData.eticket},
+            success: function (data) {
+                if (data.statu===true)
+                {
+                    window.open(data.url);
+                }
             },
-            error: function(e) {
-                console.log(e);
+            error: function (data) {
+                alert("获取审核议价信息失败")
             }
         });
+
+      //  window.open("https://testapi.fadada.com:8443/api/viewContract.api?app_id=402664&v=2.0&timestamp=20191128114609&contract_id=20191127161612252&msg_digest=MzhENTFCNUExNzkxODU4RDIwM0UwOUM4QUE0MUU5MEQxNDFENjU0QQ==")
+        //window.location.href="";
+    }
+
+    function File_upload(e)//上传文件的方法，参数 url controller地址 上传文件类型的div id 如名片div的id 或者 身份材料的divid
+    {
+        var fileTypes = ["pdf"];
+        var filePath = e.value;
+        //当括号里面的值为0、空字符、false 、null 、undefined的时候就相当于false
+        if(filePath){
+            var isNext = false;
+            var fileNames=filePath.split('.');//filePath.substring(filePath.indexOf("."));
+            var fileEnd = fileNames[fileNames.length-1];
+            for (var i = 0; i < fileTypes.length; i++) {
+                if (fileTypes[i] == fileEnd) {
+                    isNext = true;
+                    break;
+                }
+            }
+            if (!isNext)//判断是否符合标准
+            {
+                alert('不接受此文件类型，只能上传格式为pdf的文档');
+                file.value = null;
+                return false;
+            }
+            else //文件通过，可以上传
+            {
+
+                var supplier_id=e.parentElement.childNodes[2]
+                var files = new FormData(document.getElementById('File_upload_form'));//"domeform"
+                files.set("userid",[[${session.userid}]].toString());//传一个专家id
+                files.set("purchase_id",[[${Oreder_number}]].toString().split(":")[1]);//采购单号
+                files.set("supplier_id",supplier_id.innerText);//供应商id
+
+                $.ajax({
+                    url: "/ElectronicContractSigninginforController/Upload_Contract",
+                    type: "post",
+                    data: files,//,img_business:img_business,img_documents:img_documents},
+                    processData: false,
+                    contentType: false,
+                    success: function(data) //data.statu 0上传成功 1上传失败 2未注册 3未认证
+                    {
+                        if (data.statu==="0")
+                        {
+                            alert("上传合同成功")
+                        }
+                        else if (data.statu==="1")
+                        {
+                            alert("上传合失败")
+                        }
+                        else if (data.statu==="2")//您的企业未注册法大大的账号，请注册！
+                        {
+                            layer.confirm('您的企业未注册法大大的账号，是否现在注册？', function(index)
+                            {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '/ElectronicContractSigninginforController/RegisteredAccount',
+                                    dataType: 'json',
+                                   // data:{purchasId:document.getElementById("Oreder_number").innerText.split(':')[1],supplierid:supplier_id.innerText},
+                                    success: function(data1) //data1.statu true注册成功
+                                    {
+                                        if (data1.statu===true)
+                                        {
+                                            alert("您的法大大账号注册成功！")
+                                        }
+                                    },
+                                    error: function(e)
+                                    {
+                                    }
+                                });
+                                layer.close(index);
+                            });
+                        }
+                        else if (data.statu==="3")
+                        {
+                            alert("您的企业的大大账号为认证，请认证！")
+                        }
+                    },
+                    error: function(e) {
+                    }
+                });
+
+            }
+        }
+        else
+        {
+            return false;
+        }
+
     }
 
     function return_top()//返回上一层
