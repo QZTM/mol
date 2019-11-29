@@ -12,4 +12,8 @@
     <select id="GetContractId" resultType="java.util.Map">
         select * from fy_purchase_supplier_contract where supplier_id=#{supplierid} and purchase_id=#{purchasId}
     </select>
+
+    <select id="GetCustomer_id" resultType="java.util.Map">
+        select * from  fadada_regist_record where open_id=#{open_id}
+    </select>
 </mapper>

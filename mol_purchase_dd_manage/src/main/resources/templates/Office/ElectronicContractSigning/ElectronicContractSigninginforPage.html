@@ -253,7 +253,8 @@
                                     {
                                         if (data1.statu===true)
                                         {
-                                            alert("您的法大大账号注册成功！")
+                                            alert("您的法大大账号注册成功！请重新上传")
+                                            e=null;
                                         }
                                     },
                                     error: function(e)
@@ -265,7 +266,26 @@
                         }
                         else if (data.statu==="3")
                         {
-                            alert("您的企业的大大账号为认证，请认证！")
+                            layer.confirm('您的企业的大大账号未认证，是否认证？', function(index)
+                            {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '/ElectronicContractSigninginforController/CertificationAccount',
+                                    dataType: 'json',
+                                    // data:{purchasId:document.getElementById("Oreder_number").innerText.split(':')[1],supplierid:supplier_id.innerText},
+                                    success: function(data1) //data1.statu true注册成功
+                                    {
+                                        if (data1.statu===true)
+                                        {
+
+                                        }
+                                    },
+                                    error: function(e)
+                                    {
+                                    }
+                                });
+                                layer.close(index);
+                            });
                         }
                     },
                     error: function(e) {

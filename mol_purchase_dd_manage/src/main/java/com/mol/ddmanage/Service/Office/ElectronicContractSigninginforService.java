@@ -35,10 +35,35 @@ public class ElectronicContractSigninginforService
          return map;
      }
 
-/*     public Map CertificationAccountLogic()
+    /**
+     * 认证法大大账号
+     * @return
+     */
+     public Map CertificationAccountLogic()
      {
+         Map map1=new HashMap();
+         Map map= electronicContractSigninginforMapper.GetCustomer_id("1161174896704700416");
+         if (map.get("customer_id")!=null)
+         {
+             ServiceResult serviceResult=RegistAndAuthHandler.getAuthCompanyurl(map.get("customer_id").toString(),"http://fyycg66.vaiwan.com/ElectronicContractSigninginforController/AuthAsynchronousNotity","http://fyycg66.vaiwan.com/ElectronicContractSigninginforController/AuthSynchronizeNotity");
+             map1.put("statu",true);
+         }
+         else
+         {
+            map1.put("statu",false);
+         }
+         return map1;
+     }
 
-     }*/
+    public void AuthSynchronizeNotityLogic(Map map)//认证同步回调地址
+    {
+        Map map1=map;
+    }
+
+    public void AuthAsynchronousNotityLogic(Map map)//认证异步回调地址
+    {
+        Map map1=map;
+    }
     /**
      *
      * @param file

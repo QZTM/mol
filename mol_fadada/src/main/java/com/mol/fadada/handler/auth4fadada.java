@@ -90,12 +90,12 @@ public class auth4fadada {
 
     @Test
     public void Test3(){
-        uploadContract();//8合同上传
-        extsign();//12手动签署接口
-        extsignAuto();//11自动签署
+//        uploadContract();//8合同上传
+//        extsign();//12手动签署接口
+//        extsignAuto();//11自动签署
         viewContract();//13合同查看
-        downloadContract();//14合同下载
-        contractFiling();//15合同归档
+//        downloadContract();//14合同下载
+//        contractFiling();//15合同归档
     }
 
     /*=============注册账号=============*/
@@ -322,7 +322,7 @@ public class auth4fadada {
         try {
             response.append("\n").append("合同查看");
             FddClientExtra extra = new FddClientExtra(APP_ID,APP_SECRET,V,HOST);
-            String contract_id = "";
+            String contract_id = "20191127161612252";
             String result = extra.invokeViewPdfURL(contract_id);
             response.append("\n").append(result);
             Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + result);

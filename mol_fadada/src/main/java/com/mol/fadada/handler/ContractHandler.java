@@ -43,7 +43,8 @@ public class ContractHandler {
         log.info(resultStr);
         String result =  JSON.parseObject(resultStr).getString("result");
         ServiceResult sr = null;
-        if("success".equals(result)){
+        if("success".equals(result))
+        {
             //存入数据库
             ContractUploadRecord contractUploadRecord = new ContractUploadRecord();
             contractUploadRecord.setId(new IdWorker().nextId()+"");
@@ -55,7 +56,8 @@ public class ContractHandler {
                 int insert = contractUploadMapper.insert(contractUploadRecord);
                 //存入oos
                 TYOOSUtil.getUtil().uploadObjToBucket(OOSConfig.法大大文件夹,"contract/fadaddaUploadBackup/"+contractId+".pdf",file);
-            }catch (Exception e){
+            }catch (Exception e)
+            {
                 log.warning("法大大合同上传成功，但是数据库记录或者上传入oos发生异常！");
                 e.printStackTrace();
             }
