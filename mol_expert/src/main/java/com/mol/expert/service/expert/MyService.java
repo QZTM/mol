@@ -7,6 +7,7 @@ import com.mol.expert.mapper.newMysql.expert.ExpertRecomendMapper;
 import com.mol.expert.mapper.newMysql.expert.ExpertUserMapper;
 import com.mol.expert.mapper.newMysql.third.BdMarbasclassMapper;
 import entity.BdMarbasclass;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
@@ -85,5 +86,28 @@ public class MyService {
     public void updataExpertUser(String id,int reviewCount, int successCount, int suAndFaCount) {
 
         expertUserMapper.updataReviewAndPassAndRateById(id,reviewCount+"",successCount+"",suAndFaCount+"");
+    }
+
+    public ExpertUser setMarIdToChine(ExpertUser user, List<BdMarbasclass> firstBdMar) {
+        if (user.getMarId()!=null){
+            for (BdMarbasclass bdMarbasclass : firstBdMar) {
+                if (bdMarbasclass.getPkMarbasclass().equals(user.getMarId())){
+                    user.setMarId(bdMarbasclass.getName());
+                    break;
+                }
+            }
+        }
+        return user;
+    }
+
+    public ExpertUser decodeBase64ToImage(ExpertUser user) {
+        //Base64.decodeBase64(user.getFrontOfId().re)
+        return null;
+    }
+
+    public BdMarbasclass getMarbasclassByMarbasclassId(String marId) {
+        BdMarbasclass t =new BdMarbasclass();
+        t.setPkMarbasclass(marId);
+        return bdMarbasclassMapper.selectOne(t);
     }
 }

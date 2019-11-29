@@ -42,7 +42,8 @@ import java.util.*;
 @RestController
 @RequestMapping("/ac")
 @Log
-public class ActController {
+public class
+ActController {
     private static final Logger logger=LoggerFactory.getLogger(ActController.class);
 
     @Autowired
@@ -176,7 +177,7 @@ public class ActController {
 
 
                 //保存订单，选中的供应商，是否支付
-                actService.saveQuotePayresult(pur,detailList);
+                actService.saveQuotePayresult(pur);
                 //设置订单结束审批的时间
                 actService.updataPurchaseApprovalEndTime(pur.getId());
 

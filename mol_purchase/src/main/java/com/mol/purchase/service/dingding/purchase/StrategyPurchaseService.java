@@ -82,6 +82,8 @@ public class StrategyPurchaseService {
         String technicalSupportTelephone = pageArray.getTechnicalSupportTelephone();
         //专家评审
         String expertReview = pageArray.getExpertReview();
+        //电子合同
+        String electronicContract=pageArray.getElectronicContract();
         if (expertReview==null ||expertReview==""){
             expertReview="false";
         }
@@ -100,7 +102,7 @@ public class StrategyPurchaseService {
         stObj.setGoodsBranch(purchaseList.get(0).getUnit());
         stObj.setGoodsDetail(toJson(pageArray));//----------------------->
         stObj.setCreateTime(TimeUtil.getNowDateTime());
-        stObj.setStatus(OrderStatus.waitingQuote+"");
+        stObj.setStatus(OrderStatus.WAITING_QUOTE+"");
         stObj.setTitle(purchaseList.get(0).getTypeName() + "战略采购");
         stObj.setStaffId(staffId);
         stObj.setOrgId(orgId);
@@ -116,6 +118,7 @@ public class StrategyPurchaseService {
         stObj.setExpertReview(expertReview);
         stObj.setExpertReward(expertReward);
         stObj.setQuoteCounts(0+"");
+        stObj.setElectronicContract(electronicContract);
         String []page_text={"申请理由："+applyCause,"报价商家："+quoteSellerNum,"零配件供应商数："+supplierSellerNum,"备注："+remarks};
 
         stObj.setReqfileurl(new Cread_PDF().Cread_PDF_function("询价采购清单",purchaseList,page_text));//生成pdf

@@ -1,6 +1,7 @@
 package com.mol.supplier.controller.third;
 
 import com.alibaba.fastjson.JSON;
+import com.mol.supplier.config.ContractConfig;
 import com.mol.supplier.config.OrderStatus;
 import com.mol.supplier.entity.MicroApp.DDUser;
 import com.mol.supplier.entity.MicroApp.Salesman;
@@ -469,6 +470,7 @@ public class ThirdPlatformController {
         //专家评审费
         String expertReward = pageArray.getExpertReward();
         modelMap.addAttribute("expertReward",expertReward);
+
         return "zbgg_detail";
     }
 
@@ -478,13 +480,24 @@ public class ThirdPlatformController {
      * @return
      */
     @GetMapping("/findnewsDetail")
-    public String findNewsDetail(String id ,ModelMap map){
+    public String findNewsDetail(String id ,ModelMap map,HttpSession session){
+        Salesman sale = microUserService.getUserFromSession(session);
+        int pageNum=1;
+        int pageSize=10;
         log.info("前往新闻详情页面："+id);
         SuppNews news=platformService.findNewsDetail(id);
         log.info("查询资讯详情完成："+news);
+        //中间表插入阅读记录
+        int inert = platformService.saveReadHistory(sale, news);
+        log.info("增加阅读记录："+inert);
         //将id的新闻，阅读人数加一
         int i=platformService.addNewsNumOfReaders(news);
         log.info("查询资讯详情修改阅读人数完成："+i);
+        //添加10条推荐（不包含次条）
+        List<SuppNews> list=platformService.getNewListWithOutThisId(pageNum,pageSize);
+        //判断是否已读
+        list=platformService.getIfRead(pageNum++,pageSize,sale,list);
+        map.addAttribute("list",list);
         map.addAttribute("news",news);
         return "mezx_detail";
     }

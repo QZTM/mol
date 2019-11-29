@@ -36,4 +36,7 @@
         select * from fy_quote where id in
         (select quote_id from fy_purchase_detail where fy_purchase_id=#{id})
     </select>
+    <select id="findCountWinningKidSupplierByPurId" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select  COUNT(DISTINCT pk_supplier_id) from fy_quote where id in(SELECT quote_id FROM `fy_purchase_detail` WHERE fy_purchase_id=#{id})
+    </select>
 </mapper>

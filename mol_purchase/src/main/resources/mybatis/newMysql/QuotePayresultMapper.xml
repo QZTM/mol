@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.purchase.mapper.newMysql.QuotePayresultMapper">
+    <update id="updataStatusByPurId" parameterType="java.lang.String" >
+        UPDATE fy_quote_payresult  SET status=#{status},change_status_time=#{time} WHERE purchase_id=#{purId}
+    </update>
+    <select id="findPayResultListByStatus" parameterType="java.lang.String" resultType="com.mol.purchase.entity.QuotePayresult">
+       select a.purchase_id from
+            (select DISTINCT(purchase_id) from fy_quote_payresult where `status`=#{status}) a
+            inner join
+            (select purchase_id from fy_quote_payresult
+            GROUP BY purchase_id
+            HAVING SUM(pay_result) = COUNT(supplier_id))b
+            on a.purchase_id = b.purchase_id
+    </select>
+</mapper>

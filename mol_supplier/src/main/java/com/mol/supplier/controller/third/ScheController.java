@@ -1,6 +1,8 @@
 package com.mol.supplier.controller.third;
 
 import com.alibaba.fastjson.JSON;
+import com.mol.supplier.config.ContractConfig;
+import com.mol.supplier.config.OrderStatus;
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PageArray;
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseArray;
 import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseDetail;
@@ -10,12 +12,15 @@ import com.mol.supplier.service.microApp.MicroDdJsApiAuthService;
 import com.mol.supplier.service.microApp.MicroUserService;
 import com.mol.supplier.service.third.ScheService;
 import com.mol.supplier.service.third.ThirdPlatformService;
+import com.mol.supplier.util.StatusScheUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import util.BigDecimalUtils;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
@@ -28,13 +33,10 @@ public class ScheController {
 
     @Autowired
     private ScheService scheService;
-
     @Autowired
     private ThirdPlatformService platformService;
-
     @Autowired
     private MicroUserService microUserService;
-
     @Autowired
     private MicroDdJsApiAuthService microDdJsApiAuthService;
 
@@ -83,6 +85,7 @@ public class ScheController {
         String supplierId = microUserService.getUserFromSession(session).getPkSupplier();
 
         fyPurchase purchase=scheService.selectOneById(id);
+
 
         //查询订单相关报价
         List<FyQuote> quoteList=scheService.findQuoteById(id,supplierId);
@@ -179,8 +182,25 @@ public class ScheController {
         //专家评审费
         String expertReward = pageArray.getExpertReward();
         modelMap.addAttribute("expertReward",expertReward);
+
+        if ( purchase.getStatus().equals("通过")){
+            if (expertReview.equals("true")){
+                //查询中标公司，平分专家评审费用
+                int winningKidSupplier = scheService.getCountWinningKidSupplier(purchase.getId());
+
+                String expertRewardOne= Math.ceil(BigDecimalUtils.divide(expertReward,winningKidSupplier+""))+"";
+                modelMap.addAttribute("expertRewardOne",expertRewardOne);
+            }
+
+        }
         modelMap.addAttribute("jsauthmap",microDdJsApiAuthService.getAuthMap(request));
 
+        //电子合同
+        String electronicContract = pageArray.getElectronicContract();
+        modelMap.addAttribute("electronicContract",electronicContract);
+        //合同费用
+        Integer contractCost= ContractConfig.CONTRACT_COST;
+        modelMap.addAttribute("contractCost",contractCost);
         return "schedule_detail";
     }
 }

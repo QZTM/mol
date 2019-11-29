@@ -67,8 +67,6 @@ public class SingleSourceController {
     public ServiceResult start(@RequestBody subObj obj, HttpServletRequest request) throws IOException, DocumentException, IllegalAccessException {
         System.out.println("pagecontent"+ obj);
         PageArray pageArray = obj.getPageArray();
-//        DDUser ddUser = JWTUtil.getUserByRequest(request);
-//        String userid = ddUser.getUserid();
         String staid=obj.getStaffId();
         String orgId=obj.getOrgId();
         StraregyObj stobj=null;

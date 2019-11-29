@@ -106,6 +106,8 @@ public class EnquiryPurchaseService {
         String payMent = pageArray.getPayMent();
         //技术支持电话
         String technicalSupportTelephone = pageArray.getTechnicalSupportTelephone();
+        //电子合同
+        String electronicContract=pageArray.getElectronicContract();
         //专家评审
         String expertReview = pageArray.getExpertReview();
         if (expertReview==null ||expertReview==""){
@@ -126,7 +128,7 @@ public class EnquiryPurchaseService {
         stObj.setGoodsBranch(purchaseList.get(0).getUnit());
         stObj.setGoodsDetail(toJson(pageArray));//----------------------->
         stObj.setCreateTime(TimeUtil.getNowDateTime());
-        stObj.setStatus(OrderStatus.waitingQuote+"");
+        stObj.setStatus(OrderStatus.WAITING_QUOTE+"");
         stObj.setTitle(purchaseList.get(0).getTypeName() + "询价采购");
         stObj.setStaffId(staId);
         stObj.setOrgId(orgId);
@@ -141,8 +143,8 @@ public class EnquiryPurchaseService {
         stObj.setTechnicalSupportTelephone(technicalSupportTelephone);
         stObj.setExpertReview(expertReview);
         stObj.setExpertReward(expertReward);
+        stObj.setElectronicContract(electronicContract);
         stObj.setQuoteCounts(0+"");
-
         //生成pdf
         String []page_text={"申请理由："+applyCause,"报价商家："+quoteSellerNum,"零配件供应商数："+supplierSellerNum,"备注："+remarks};
 
@@ -322,6 +324,7 @@ public class EnquiryPurchaseService {
             for (String phone : manPhoneList) {
                 sendMsmHandler.sendMsm(XiaoNiuMsm.SIGNNAME_MEYG, XiaoNiuMsmTemplate.提醒供应商报价模板(),phone);
             }
+            logger.info("询价采购---短信，通知发送成功："+list);
         }
     }
 }

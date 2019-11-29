@@ -120,11 +120,11 @@
     <div >
         <table class="table table-hover" style="border-bottom: 1px solid #dddddd;text-align: center;font-size: 12px">
             <tr>
-                <td style="width: 16%">序号</td>
+                <td style="width: 12%">序号</td>
                 <td  style="width: 28%;">名称</td>
                 <td  style="width: 32%;">规格</td>
                 <td style="width: 12%">单位</td>
-                <td style="width: 12%">数量</td>
+                <td style="width: 16%">数量</td>
             </tr>
             <tr th:each="en,f:${purList}">
                 <td th:text="${f.index+1}" style="width: 12%">序号</td>
@@ -164,12 +164,12 @@
                 <td th:text="${supplyCycle}"></td>
             </tr>
             <tr>
-                <td style="width: 13%">序号</td>
+                <td style="width: 10%">序号</td>
                 <td  style="width: 27%;">名称</td>
                 <td  style="width: 23%;">规格</td>
                 <td style="width: 12%">数量</td>
                 <td style="width: 12%">报价</td>
-                <td style="width: 13%">总计</td>
+                <td style="width: 16%">总计</td>
 
             </tr>
             <tr th:each="en,f:${purList}">
@@ -192,12 +192,12 @@
         <div>
             <table class="table table-hover" style="border-bottom: 1px solid #dddddd;text-align: center;font-size: 12px">
                 <tr>
-                    <td style="width: 15%">序号</td>
-                    <td  style="width: 23%;">名称</td>
+                    <td style="width: 10%">序号</td>
+                    <td  style="width: 27%;">名称</td>
                     <td  style="width: 23%;">规格</td>
                     <td style="width: 12%">数量</td>
                     <td style="width: 12%">报价</td>
-                    <td style="width: 15%">总计</td>
+                    <td style="width: 16%">总计</td>
 
                 </tr>
                 <tr th:each="en,f:${okList}">
@@ -216,17 +216,19 @@
     <!-- 中标结果结束-->
     <div th:if="${not #lists.isEmpty(okList)}">
 
-        <div th:if="${expertReview=='true'}" >
-            <div style="clear: both;border: 1px solid black;height: 36px;margin-left: 10px;text-align: center;padding: 3px 3px 0px 3px ;">
-             <span style="float: left;">
-                专家评审费：
-            </span>
-                <span style="float: left;color: #b92c28;"  th:text="${expertReward}"></span><span style="float: left;"  >元</span>
+        <div th:if="${expertReview=='true'||electronicContract=='true' }" >
+            <div style="clear: both;border: 1px solid black;height: 36px;margin-left: 10px;padding: 3px 3px 0px 3px ;">
+<!--                 <span style="float: left;">-->
+<!--                    专家评审费：-->
+<!--                </span>-->
+<!--                    <span th:if="${expertReview=='true'}" style="float: left;color: #b92c28;"  th:text="${expertReward}"></span><span style="float: left;"  >元</span>-->
+<!--                    <span th:if="${expertReview=='true'}" style="float: left;color: #b92c28;"  th:text="${contractCost}"></span><span style="float: left;"  >元</span>-->
+                <span th:if="${expertReview=='true'}" >专家评审费:<span style="color: #b92c28;" th:text="${expertRewardOne}">20</span><span >元</span></span>
+                <span th:if="${electronicContract=='true'}" >电子合同费:<span style="color: #b92c28;" th:text="${contractCost}">20</span><span >元</span></span>
                 <span style="width: 14%;float: right">
-                <button  id="basic-addon1" style="background-color: #5B9BD5;text-align: center">支付</button>
-            </span>
+                    <button  id="basic-addon1" style="background-color: #5B9BD5;text-align: center">支付</button>
+                </span>
             </div>
-
             <div style="clear: both;margin: 3px 0px 0px 10px ;">
                 请尽快支付相关费用，以免耽误合作进度！
             </div>

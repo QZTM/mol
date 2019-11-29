@@ -29,4 +29,7 @@
     <select id="findQuoteByid" parameterType="java.lang.String" resultType="com.mol.purchase.entity.FyQuote">
         select * from fy_quote where id=#{quoteId}
     </select>
+    <select id="findSupplierIdListByPurId" parameterType="java.lang.String" resultType="com.mol.purchase.entity.FyQuote">
+        SELECT DISTINCT pk_supplier_id FROM fy_quote WHERE id in (SELECT quote_id FROM `fy_purchase_detail` where fy_purchase_id =#{id})
+    </select>
 </mapper>

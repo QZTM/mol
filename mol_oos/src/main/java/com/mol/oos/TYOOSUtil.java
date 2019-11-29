@@ -2,14 +2,12 @@ package com.mol.oos;
 
 import java.io.*;
 import java.util.List;
+import java.util.logging.Logger;
+
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.Bucket;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.ListObjectsRequest;
-import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.services.s3.model.*;
+
+import javax.imageio.stream.FileImageOutputStream;
 
 public class TYOOSUtil {
 
@@ -63,7 +61,7 @@ public class TYOOSUtil {
     public void uploadObjToBucket(String bucketName,String key,File file) throws IOException {
         /* 上传一个 object 到 bucket 中 */
         System.out.println("Uploading a new object to OOS from a file\n");
-            oos.putObject(new PutObjectRequest(bucketName, key, file));
+        oos.putObject(new PutObjectRequest(bucketName, key, file));
     }
 
     /**
@@ -82,6 +80,17 @@ public class TYOOSUtil {
         S3Object object = oos.getObject(new GetObjectRequest(bucketName, key));
         System.out.println("Content-Type: " + object.getObjectMetadata().getContentType());
         System.out.println("Content:");
+
+        String fileName = key.substring(key.lastIndexOf("/"));
+        S3ObjectInputStream objectContent = object.getObjectContent();
+        FileImageOutputStream fios =new FileImageOutputStream(new File("d:"+File.separator+fileName));
+
+        byte[] bytes=new byte[1024];
+        int len=0;
+        while ((len=objectContent.read(bytes))!=-1){
+            fios.write(bytes,0,len);
+        }
+        fios.close();
         displayTextInputStream(object.getObjectContent());
     }
 
@@ -127,15 +136,33 @@ public class TYOOSUtil {
      * @param bucketName        桶名称
      * @param filePre           文件前缀
      */
-    public  void listObj(String bucketName,String filePre){
+    public  ObjectListing listObj(String bucketName,String filePre){
         /* 列出 bucket 中的 object，支 prefix,delimiter,marker,max-keys 等选项 */
         if(filePre == null){
             filePre = "";
         }
         System.out.println("Listing objects");
         ObjectListing objectListing = oos.listObjects(new ListObjectsRequest().withBucketName(bucketName).withPrefix(filePre));
+//        for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
+//            System.out.println(objectSummary.getBucketName()+" - " + objectSummary.getKey() + "  " + "(size = " + objectSummary.getSize() + ")");
+//        }
+       return objectListing;
+    }
+
+    /**
+     * 批量下载 bucket 中的 object
+     * @param bucketName        桶名称
+     * @param filePre           文件前缀
+     */
+    public  void listDownLoad(String bucketName,String filePre){
+        ObjectListing objectListing = listObj(bucketName,filePre);
         for (S3ObjectSummary objectSummary : objectListing.getObjectSummaries()) {
-            System.out.println(" - " + objectSummary.getKey() + "  " + "(size = " + objectSummary.getSize() + ")");
+            System.out.println(objectSummary.getBucketName()+" - " + objectSummary.getKey() + "  " + "(size = " + objectSummary.getSize() + ")");
+            try {
+                download(objectSummary.getBucketName(),objectSummary.getKey());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         System.out.println();
     }

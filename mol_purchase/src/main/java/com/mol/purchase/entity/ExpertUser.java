@@ -34,6 +34,7 @@ public class  ExpertUser {
     private String passRate;//通过率  通过的次数 / 参与的订单中结束的订单的件数
     private String major;//专业
     private String award;//奖励总和
+    private String balance;//余额
     private byte[] frontOfId;
     private byte[] reverseOfId;
     private byte[] frontOfBusiness;

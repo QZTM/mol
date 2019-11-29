@@ -6,8 +6,8 @@
     <insert id="insertStrategyPur" parameterType="com.mol.purchase.entity.dingding.purchase.enquiryPurchaseEntity.StraregyObj">
         INSERT into
         fy_purchase
-        (id,buy_channel_id,pk_marbasclass,goods_type,goods_brand,goods_name,goods_specs,goods_branch,goods_detail,create_time,status,title,staff_id,org_id,order_number,quote_seller_num,supplier_seller_num,apply_cause,remarks,pk_supplier,req_file_url,dead_line,supply_cycle,pay_ment,technical_support_telephone,expert_review,expert_reward,quote_counts)
-        VALUES (#{id},#{buyChannelId},#{pkMarbasclass},#{goodsType},#{goodsBrand},#{goodsName},#{goodsSpecs},#{goodsBranch},#{goodsDetail},#{createTime},#{status},#{title},#{staffId},#{orgId},#{orderNumber},#{quoteSellerNum},#{supplierSellerNum},#{applyCause},#{remarks},#{pkSupplier},#{reqfileurl},#{deadLine},#{supplyCycle},#{payMent},#{technicalSupportTelephone},#{expertReview},#{expertReward},#{quoteCounts})
+        (id,buy_channel_id,pk_marbasclass,goods_type,goods_brand,goods_name,goods_specs,goods_branch,goods_detail,create_time,status,title,staff_id,org_id,order_number,quote_seller_num,supplier_seller_num,apply_cause,remarks,pk_supplier,req_file_url,dead_line,supply_cycle,pay_ment,technical_support_telephone,expert_review,expert_reward,quote_counts,electronic_contract)
+        VALUES (#{id},#{buyChannelId},#{pkMarbasclass},#{goodsType},#{goodsBrand},#{goodsName},#{goodsSpecs},#{goodsBranch},#{goodsDetail},#{createTime},#{status},#{title},#{staffId},#{orgId},#{orderNumber},#{quoteSellerNum},#{supplierSellerNum},#{applyCause},#{remarks},#{pkSupplier},#{reqfileurl},#{deadLine},#{supplyCycle},#{payMent},#{technicalSupportTelephone},#{expertReview},#{expertReward},#{quoteCounts},#{electronicContract})
     </insert>
 
     <select id="findListByStatus" parameterType="java.lang.String" resultType="com.mol.purchase.entity.dingding.solr.fyPurchase">

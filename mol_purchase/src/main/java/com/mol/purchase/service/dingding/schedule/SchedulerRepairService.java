@@ -1,6 +1,8 @@
 package com.mol.purchase.service.dingding.schedule;
 
 import com.github.pagehelper.PageHelper;
+import com.mol.oos.OOSConfig;
+import com.mol.oos.TYOOSUtil;
 import com.mol.purchase.entity.*;
 import com.mol.purchase.entity.activiti.ActHiActinst;
 import com.mol.purchase.entity.activiti.ActHiComment;
@@ -21,12 +23,22 @@ import com.mol.purchase.mapper.newMysql.dingding.purchase.BdSupplierMapper;
 import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseDetailMapper;
 import com.mol.purchase.mapper.newMysql.dingding.purchase.fyPurchaseMapper;
 import com.mol.purchase.mapper.newMysql.dingding.user.AppUserMapper;
+import jdk.nashorn.internal.ir.annotations.Reference;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.entity.Example;
+import util.TimeUtil;
 
+import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * ClassName:SchedulerRepairService
@@ -74,6 +86,11 @@ public class SchedulerRepairService {
 
     @Autowired
     private QuotePayresultMapper quotePayresultMapper;
+
+    @Autowired
+    private TYOOSUtil tyoosUtil;
+
+    private static final Logger logger= LoggerFactory.getLogger(SchedulerRepairService.class);
 
 
     public List<fyPurchase> getList(String orgId, String userId,Integer pageNum,Integer pageSize) {
@@ -163,10 +180,8 @@ public class SchedulerRepairService {
 
     public QuotePayresult getPayExpertResult(String supplierId, String purId) {
         QuotePayresult t = new QuotePayresult();
-        //t.setSupplierId(supplierId);
-        //t.setPurchaseId(purId);
-        t.setSupplierId(1+"");
-        t.setPurchaseId(1+"");
+        t.setSupplierId(supplierId);
+        t.setPurchaseId(purId);
         return quotePayresultMapper.selectOne(t);
     }
 
@@ -185,4 +200,42 @@ public class SchedulerRepairService {
         }
         return userList;
     }
+
+
+    public void upload(MultipartFile multipartFile, String orgId,String purId) {
+        //获取名字
+        String fileName = multipartFile.getOriginalFilename();
+        //获取后缀
+        String  suffName= fileName.substring(fileName.lastIndexOf("."));
+        //产生一个新名字
+        String name = UUID.randomUUID()+suffName;
+        //获取当前class的路径
+        URL resource = SchedulerRepairService.class.getResource("");
+        File file=new File(resource.getPath()+File.separator+name);
+        try {
+            //m 转 f
+            FileUtils.copyInputStreamToFile(multipartFile.getInputStream(),file);
+            File newFile=new File(resource.getPath()+File.separator+name);
+            //文件夹
+            String url=orgId+"/"+purId+"/";
+            tyoosUtil.uploadObjToBucket(OOSConfig.采购文件夹,url+name,newFile);
+
+        } catch (IOException e) {
+            logger.info("合同照片上传异常");
+            e.printStackTrace();
+        }finally {
+            file.delete();
+        }
+
+    }
+
+    public void downFromOOSImg(String bucket,String key){
+//        try {
+//            tyoosUtil.download(bucket,key);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        tyoosUtil.listObj(bucket,key);
+    }
+
 }

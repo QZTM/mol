@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding" addBOMForNewFiles="with NO BOM">
+    <file url="file://$PROJECT_DIR$" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mol-fadada" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mol_cache" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mol_common" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mol_eureka" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mol_expert" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mol_notification" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mol_oos" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mol_pay" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mol_purchase" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mol_purchase_dd_manage" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mol_quartz" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mol_sms" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/mol_supplier" charset="UTF-8" />
+  </component>
+</project>

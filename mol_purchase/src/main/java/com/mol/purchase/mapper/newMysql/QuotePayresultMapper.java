@@ -3,6 +3,8 @@ package com.mol.purchase.mapper.newMysql;
 import com.mol.base.BaseMapper;
 import com.mol.purchase.entity.QuotePayresult;
 
+import java.util.List;
+
 /**
  * @Classname QuotePayresultMapper
  * @Description TODO
@@ -10,4 +12,8 @@ import com.mol.purchase.entity.QuotePayresult;
  * @Created by Lenovo
  */
 public interface QuotePayresultMapper extends BaseMapper<QuotePayresult> {
+
+    Integer updataStatusByPurId(String status, String time, String purId);
+
+    List<QuotePayresult> findPayResultListByStatus(String status);
 }

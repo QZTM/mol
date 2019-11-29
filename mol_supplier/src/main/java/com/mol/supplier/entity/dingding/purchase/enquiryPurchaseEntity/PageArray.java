@@ -24,4 +24,6 @@ public class PageArray {
     private String expertReview;
     //评审奖励
     private String expertReward;
+    //电子合同
+    private String electronicContract;
 }

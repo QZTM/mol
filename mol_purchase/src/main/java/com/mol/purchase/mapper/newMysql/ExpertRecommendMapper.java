@@ -10,4 +10,6 @@ public interface ExpertRecommendMapper extends BaseMapper<ExpertRecommend> {
     void updataAdoptByPurIdAndExpertId(String purId, String expertId);
 
     void updataAdoptNotChecked(String purId);
+
+    Integer updataComissionMoneyByPurIdAndExpertId(String moneyOne, String nowTime, String purId, String expertId);
 }

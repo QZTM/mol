@@ -9,4 +9,7 @@
     <update id="updataAdoptNotChecked" parameterType="java.lang.String">
         update expert_recommend set adopt="0" where  purchase_id= #{purId} and adopt="2"
     </update>
+    <update id="updataComissionMoneyByPurIdAndExpertId" parameterType="java.lang.String">
+        update expert_recommend set commission_money=#{moneyOne},com_money_time=#{nowTime} where purchase_id=#{purId} AND expert_id=#{expertId}
+    </update>
 </mapper>

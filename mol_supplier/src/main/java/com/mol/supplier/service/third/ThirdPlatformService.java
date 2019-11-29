@@ -1,6 +1,7 @@
 package com.mol.supplier.service.third;
 
 import com.github.pagehelper.PageHelper;
+import com.mol.supplier.config.NewsConfig;
 import com.mol.supplier.entity.MicroApp.Salesman;
 import com.mol.supplier.entity.MicroApp.Supplier;
 import com.mol.supplier.entity.dingding.login.AppAuthOrg;
@@ -8,6 +9,7 @@ import com.mol.supplier.entity.dingding.purchase.enquiryPurchaseEntity.PurchaseD
 import com.mol.supplier.entity.dingding.solr.fyPurchase;
 import com.mol.supplier.entity.thirdPlatform.*;
 import com.mol.supplier.mapper.SuppNewsMapper;
+import com.mol.supplier.mapper.SuppliersalemanNewsMiddleMapper;
 import com.mol.supplier.mapper.dingding.org.AppOrgMapper;
 import com.mol.supplier.mapper.dingding.purchase.BdSupplierMapper;
 import com.mol.supplier.mapper.dingding.purchase.fyPurchaseDetailMapper;
@@ -22,6 +24,7 @@ import entity.PageBean;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.entity.Example;
 import util.IdWorker;
 import util.TimeUtil;
 
@@ -67,6 +70,8 @@ public class ThirdPlatformService {
     @Autowired
     private SuppNewsMapper suppNewsMapper;
 
+    @Autowired
+    private SuppliersalemanNewsMiddleMapper suppliersalemanNewsMiddleMapper;
 
     //enter排版
     public List<Enter> findAll() {
@@ -445,5 +450,47 @@ public class ThirdPlatformService {
         e.setId(news.getId());
         e.setNumberOfReaders(news.getNumberOfReaders()+1);
         return suppNewsMapper.updateByPrimaryKeySelective(e);
+    }
+
+    public List<SuppNews> getNewListWithOutThisId(int pageNum, int pageSize) {
+        System.out.println("getNewListWithOutThisId页码："+pageNum);
+        PageHelper.startPage(pageNum,pageSize);
+        Example e = new Example(SuppNews.class);
+        e.setOrderByClause("creation_time desc");
+        return suppNewsMapper.selectByExample(e);
+    }
+
+    public List<SuppNews> getIfRead(int pageNum, int pageSize, Salesman salesman,List<SuppNews> list) {
+        System.out.println("getIfRead页码："+pageNum);
+        List<SuppNews> threeList=new ArrayList<>();
+        for (SuppNews  news : list) {
+            SupplierslemanNewsMiddle t =new SupplierslemanNewsMiddle();
+            t.setSupplierSalemanId(salesman.getId());
+            t.setSuppNewsId(news.getId());
+            List<SupplierslemanNewsMiddle> select = suppliersalemanNewsMiddleMapper.select(t);
+            if (select.size()==0){
+                threeList.add(news);
+                if (threeList.size()> NewsConfig.NEWS_Recommend ||threeList.size()== NewsConfig.NEWS_Recommend){
+                    break;
+                }
+            }
+        }
+        if (threeList.size()<NewsConfig.NEWS_Recommend){
+            list = getNewListWithOutThisId(pageNum++, pageSize);
+            if (list.size()==0){
+                return threeList;
+            }
+            threeList=getIfRead(pageNum++, pageSize, salesman,list);
+        }
+        return threeList;
+    }
+
+    public int saveReadHistory(Salesman sale, SuppNews news) {
+        SupplierslemanNewsMiddle t=new SupplierslemanNewsMiddle();
+        t.setSupplierSalemanId(sale.getId());
+        t.setSuppNewsId(news.getId());
+        t.setCreationTime(TimeUtil.getNowDateTime());
+        int insert = suppliersalemanNewsMiddleMapper.insert(t);
+        return insert;
     }
 }

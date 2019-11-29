@@ -23,6 +23,7 @@ public class OOSConfig {
      * 专家资料
      */
     public static final String 专家文件夹 = "mol-expert";
+    public static final String 专家文件夹 = "mol-expert";
 
     /**
      * 法大大上传的资料库备份

@@ -13,6 +13,7 @@
         <if test="adopt!=null">
             and adopt=#{adopt}
         </if>
+        order by er.create_time desc
     </select>
 
     <select id="findPurAndAdoptSuccessOrFail" parameterType="java.lang.String" resultType="com.mol.expert.entity.dingding.solr.fyPurchase">

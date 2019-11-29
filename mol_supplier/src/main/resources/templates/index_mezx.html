@@ -12,47 +12,88 @@
 
     <!-- Bootstrap -->
     <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/css/newpage.css}" rel="stylesheet">
 
 
     <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery) -->
     <script th:src="@{/js/jquery-3.2.1.min.js}"></script>
     <!-- 加载 Bootstrap 的所有 JavaScript 插件。 -->
     <script th:src="@{/js/bootstrap.min.js}"></script>
-    <style>
-        .button{
-            clear: both;
-            /*width: 120px;*/
-            text-align: right;
-            padding-right: 13px;
-            margin-top: 163px;
-            height: 50px;
 
-        }
-        .tabble{
-            border-bottom: 1px solid #dddddd;
-            width: 100%;
-        }
+    <style>
+        @charset "utf-8";
+        ul,li{list-style:none}
+        .clearfix:after { content: " "; display: block; clear: both; height: 0; }
+        .clearfix { zoom: 1; }
+        *{margin:0;padding:0}
+        body{width:100%;}
+        table{border-collapse:collapse;border-spacing:0;}
+        a{text-decoration: none;}
+        p{word-wrap:break-word;word-break:break-all;}
+        .news_info{color: #b4b4b4;font-size: 10px;height: 12px;line-height: 11px;position: absolute;right: 1px;}
+        .news_info a{color:#b4b4b4;height: 14px;line-height:13px;float:left;display:block;max-width: 72px;white-space: nowrap;text-overflow: ellipsis;overflow: hidden;}
+        .news_info .t_label{bottom:1px !important;}
+
+        .news_time{font-size: 10px;height: 12px;line-height:11px;float:left;display:block;}
+        .news_time img{height: 12px;vertical-align: text-top;margin-top:0px;}
+        .bgimg_time{line-height: 13px;display:block;margin-left:6px;/*padding-left:13px;background: url(//file.thepaper.cn/wap/v3/img/ydw_time.png) no-repeat 0 0px;background-size: 10px auto;*/}
+        .bgimg_comm{line-height: 10px;display:block;margin-left:6px;padding-left:13px;background: url(//file.thepaper.cn/wap/v3/img/ydw_comm.png) no-repeat 0 0px;background-size: 10px auto;}
+        .t_news_bg{padding:0 10px;}
+        .t_news{height:90px;padding:5px 0 5px;border-bottom: 1px solid #e9e9e9;overflow: hidden;position: relative;}
+        .t_news .topic_panel_fallsbg{padding-top:0;}
+        .img_t{width:112px;min-height: 162px;margin-right:5px;overflow:hidden;float: left;position: relative;margin-left: 20px;}
+        .img_t img{display:block;}
+        /* .select_img .label_videos,
+        .txt_t{position: relative;height: 60px;margin-left:70px;} */
+        /* .hotask_t a{color: #555555;font-size:12px;} */
+        .news_tit02{font-size: 16px;color: #000;height:50px;line-height: 20px;margin-bottom:6px;overflow:hidden;margin-left: 10px;}
+        .news_tit02 p a{color:#2d2d32;word-break: normal;word-wrap: break-word;display:block;width:100%;height:40px;overflow:hidden;font-size:14px;}
+        .news_tit02 p a:visited{color:#ccc;}
+
+        .news_tit03{font-size: 8px;color: #000;height:14px;line-height: 8px;margin-bottom:2px;overflow:hidden;}
+        .news_tit03 p a{color:#2d2d32;word-break: normal;word-wrap: break-word;display:block;width:100%;height:40px;overflow:hidden;font-size:10px;}
+        .news_tit03 p a:visited{color:#ccc;}
+
+
     </style>
 </head>
 <body>
 
-<div class="media" style="margin: 10px 3px 3px 6px ;width: 100%;">
-    <div class="media" style="margin: 10px 3px 3px 6px ;width: 100%;padding: 0px 10px 3px 10px ;" th:each="er:${newsList}">
-        <div class="media-left">
-            <a th:href="@{'/index/findnewsDetail?id='+${er.id}}" style="text-decoration: none;color: black;">
-                <img class="media-object" th:src="${er.img}" alt="..." style="width: 50px;height: 50px;">
-            </a>
-        </div>
-        <div  class="media-body" style="padding-left: 10px;">
-            <a th:href="@{'/index/findnewsDetail?id='+${er.id}}"  style="text-decoration: none;color: black;">
-                <h4 class="media-heading" th:text="${er.title}">Media headingsscs少时诵诗书所所所收到撒大声地所</h4>
-                <h6 th:text="${er.introduction}">dddddddddddddddddxccfddfs d </h6>
+<div class="list_hp" th:each="er:${newsList}">
+    <div class="list_hp">
+        <!--首页t-->
+        <div class="t_news tou">
+            <div class="t_news_bg">
+                <!-- 图片 -->
+                <div class="img_t">
+                    <a th:href="@{'/index/findnewsDetail?id='+${er.id}}"><img  width="100px" height="75px"  th:src="${er.img}"
+                                                                                                  alt=""></a>
+                </div>
+                <!-- 图片右侧 -->
+                <div class="txt_t">
+                    <!-- 标题 -->
+                    <div class="news_tit02">
+                        <p>
+                            <a th:href="@{'/index/findnewsDetail?id='+${er.id}}" th:text="${er.title}"></a>
+                        </p>
+                    </div>
+                    <div class="news_tit03">
+                        <p>
+                            <a th:href="@{'/index/findnewsDetail?id='+${er.id}}" th:text="${er.introduction}"></a>
+                        </p>
+                    </div>
+                    <!-- 小细节 -->
+                    <p class="news_info">
+                        <a href="#">茉尔易购</a>
+                        <span class="news_time bgimg_time" th:text="${er.creationTime}"></span>
+                    </p>
 
-            </a>
-            <p style="float: right;margin-right: 12px;" th:text="${er.creationTime}">2015-6-9</p>
+                </div>
+            </div>
+            <div class="t_news_bg">
+            </div>
         </div>
     </div>
 </div>
 </body>
-
 </html>

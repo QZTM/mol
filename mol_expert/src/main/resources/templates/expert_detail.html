@@ -143,8 +143,11 @@
             推荐公司<text id="lastRadio" style="color: red;" ></text>
         </div>
         <div  style="margin:10px 0px 10px 0px ">
-            <span style="width: 84%;float: left;">
-                <input type="text" id="reason" class="form-control" placeholder="请输入推荐理由" aria-describedby="basic-addon1">
+            <span style="width: 84%;float: left;" th:if="${isRe==false}">
+                <input type="text" id="reason"  class="form-control"  placeholder="请输入推荐理由" aria-describedby="basic-addon1">
+            </span>
+            <span style="width: 100%;float: left;" th:if="${isRe==true}">
+                <input type="text" id="reason"  class="form-control" disabled="disabled" placeholder="请输入推荐理由" aria-describedby="basic-addon1">
             </span>
             <span style="width: 14%;float: right">
                 <button  id="basic-addon1" style="background-color: #5B9BD5;text-align: center" onclick="submit()" th:if="${isRe==false}">提交</button>
@@ -194,9 +197,9 @@
         $("#basic-addon1").attr("disabled",true);
         //判断是否认证
         var auth=[[${authen}]];
-        if (auth == "0"){
+        if (auth != "2"){
             console.log("未认证");
-            alert("请先认证专家身份");
+            alert("请移步个人主页认证专家身份...");
 
             return;
         }
