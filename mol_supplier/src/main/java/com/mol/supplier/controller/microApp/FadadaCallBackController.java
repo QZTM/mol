@@ -64,9 +64,8 @@ public class FadadaCallBackController {
     }
 
     @RequestMapping(value = "/orgAuthTo")
-    public String fddAuthCallBack(@RequestParam Map paraMap){
+    public void fddAuthCallBack(@RequestParam Map paraMap){
         log.info("法大大认证return url,,,"+paraMap.toString());
-        return "/index";
     }
 
 

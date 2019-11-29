@@ -1,6 +1,8 @@
 package com.mol.fadada.handler;
+
 import com.alibaba.fastjson.JSON;
 import com.fadada.sdk.client.FddClientBase;
+import com.fadada.sdk.client.FddClientExtra;
 import com.fadada.sdk.client.authForfadada.GetCompanyVerifyUrl;
 import com.fadada.sdk.client.authForfadada.GetPersonVerifyUrl;
 import com.fadada.sdk.client.authForfadada.model.AgentInfoINO;
@@ -18,6 +20,7 @@ import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.mapperhelper.EntityHelper;
 import util.IdWorker;
 import util.TimeUtil;
+
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -50,12 +53,12 @@ public class RegistAndAuthHandler {
     private File file;
     private static String result_type = "";
     private static String cert_flag = "";
-    private StringBuffer response = new StringBuffer("==================Welcome ^_^ ==================");
+    private static StringBuffer response = new StringBuffer("==================Welcome ^_^ ==================");
 
-    private static final String CALLBACK_PERSON_AUTH = "http://fyycg88.vaiwan.com/fddCallback/personAuth" ;
-    private static final String PERSON_AUTH_TOPAGE = "http://fyycg88.vaiwan.com/fddCallback/personAuthTo" ;
-    private static final String CALLBACK_ORG_AUTH = "http://fyycg88.vaiwan.com/fddCallback/orgAuth" ;
-    private static final String ORG_AUTH_TOPAGE = "http://fyycg88.vaiwan.com/fddCallback/orgAuthTo" ;
+    public static final String CALLBACK_PERSON_AUTH = "http://fyycg88.vaiwan.com/fddCallback/personAuth" ;
+    public static final String PERSON_AUTH_TOPAGE = "http://fyycg88.vaiwan.com/fddCallback/personAuthTo" ;
+    public static final String CALLBACK_ORG_AUTH = "http://fyycg88.vaiwan.com/fddCallback/orgAuth" ;
+    public static final String ORG_AUTH_TOPAGE = "http://fyycg88.vaiwan.com/fddCallback/orgAuthTo" ;
 
     /**
      * 注册账号
@@ -238,6 +241,94 @@ public class RegistAndAuthHandler {
     public static synchronized ServiceResult getAuthCompanyurl(String customerId,String notifyUrl,LegalInfoINO legalInfo){
         return getAuthCompanyurl(customerId,"","","",notifyUrl,"","","",null,null,legalInfo,null);
     }
+
+
+    public static synchronized ServiceResult getAuthCompanyurl(String customerId,String notifyUrl,String returnUrl){
+        return getAuthCompanyurl(customerId,"","","",notifyUrl,returnUrl,"","",null,null,null,null);
+    }
+
+
+    /**
+     * 判断个人是否注册
+     * @param openId            莫尔易购平台id,个人对应的采购员id或者供应商业务员id，组织对应的采购企业id或者供应商id
+     * @param registType        注册类型，1为个人，2为公司
+     * @return
+     */
+    public static ServiceResult checkIfRegisted(String openId,String registType){
+        EntityHelper.initEntityNameMap(RegistRecord.class, new Config());
+        Example example = new Example(RegistRecord.class);
+        example.and().andEqualTo("openId",openId).andEqualTo("accountType",registType);
+        RegistRecord registRecord = RecordDbHandler.getRegistRecordMapper().selectOneByExample(example);
+        if(registRecord != null){
+            return ServiceResult.success(registRecord);
+        }
+        return ServiceResult.failure("该单位/个人没有注册");
+    }
+
+
+    /**
+     * 查询某单位/个人是否已经实名认证
+     * @param openId
+     * @param registType
+     * @return
+     */
+    public static ServiceResult checkIfAuthed(String openId,String registType){
+        ServiceResult sr = checkIfRegisted(openId,registType);
+        String customerId = "";
+        if(sr.isSuccess()){
+            RegistRecord registRecord = (RegistRecord)sr.getResult();
+            customerId = registRecord.getCustomerId();
+            EntityHelper.initEntityNameMap(AuthRecord.class, new Config());
+            Example example = new Example(AuthRecord.class);
+            example.and().andEqualTo("customerId",customerId).andEqualTo("status","2");
+            AuthRecord authRecord = RecordDbHandler.getAuthRecordMapper().selectOneByExample(example);
+            if(authRecord!=null){
+                return ServiceResult.success(authRecord);
+            }
+        }else{
+            return ServiceResult.failureMsg("该单位/个人没有注册");
+        }
+        return ServiceResult.failureMsg("该单位/个人没有认证");
+    }
+
+    /**
+     * 根据customerId查询某单位/个人是否已认证
+     * @param customerId        法大大平台id
+     * @param registType        认证类型
+     * @return
+     */
+    public static ServiceResult checkIfAuthedByCustomerId(String customerId,String registType){
+        EntityHelper.initEntityNameMap(AuthRecord.class, new Config());
+        Example example = new Example(AuthRecord.class);
+        example.and().andEqualTo("customerId",customerId).andEqualTo("status","2");
+        AuthRecord authRecord = RecordDbHandler.getAuthRecordMapper().selectOneByExample(example);
+        if(authRecord!=null){
+            return ServiceResult.success(authRecord);
+        }
+        return ServiceResult.failure("没有认证");
+    }
+
+    /**
+     * 查看合同
+     * @param contract_id 合同编号
+     * @return
+     */
+    public static ServiceResult SetContract(String contract_id)
+    {
+        try {
+            response.append("\n").append("合同查看");
+            FddClientExtra extra = new FddClientExtra(APP_ID,APP_SECRET,V,HOST);
+            String result = extra.invokeViewPdfURL(contract_id);
+           // response.append("\n").append(result);
+          // Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + result);
+            return ServiceResult.success(result);//返回结果
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ServiceResult.failure("查看合同失败");
+        }
+    }
+
+
 
 
     /**

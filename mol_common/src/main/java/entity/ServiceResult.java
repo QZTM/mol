@@ -106,6 +106,15 @@ public class ServiceResult<T>  implements Serializable{
         return item;
     }
 
+    public static <T> ServiceResult<T> failure(String errorMsg,T t) {
+        ServiceResult<T> item = new ServiceResult<T>();
+        item.success = false;
+        item.code = "";
+        item.message = "errorMsg";
+        item.result = t;
+        return item;
+    }
+
     public boolean hasResult() {
         return result != null;
     }

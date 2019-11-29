@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<link rel="stylesheet" href="/layui/css/layui.css">
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js" type="text/javascript"></script>
+<body onload="Start_landing()">
+<!--电子合同详情页-->
+<div style="padding: 2px;">
+    <div>
+
+        <div style="margin: 12px; width:98%;height: 100px; background-color: #009F95;border-radius:12px;color: #fbfbfb;padding: 12px">
+            <div style="width: 100%;">
+                <p id="Tilte_name" th:text="${goods_name}" style="font-size: 24px;display: inline-block">标题零部件名字</p>
+                <p style="font-size: 16px;display: inline-block;margin-top: 6px;float:right;cursor:pointer;margin-right: 12px" onclick="return_top()">返 回</p>
+            </div>
+            <div style="font-size: 16px;width: 100%;float: left;margin-top: 12px">
+                <p id="Oreder_number" style="display: inline-block" th:text="${Oreder_number}"></p><!--订单编号-->
+                <p  id="People" th:text="${user_name}" style="display: inline-block;float: right;margin-right: 12px" >申请人:王XX</p>
+            </div>
+            <div style="width: 100%; float: left;font-size: 16px;margin-top: 12px">
+                <p id="Merchant_number" style="float: left;" >已报价商家:2</p>
+                <p  id="Create_time" th:text="${create_time}" style="float:right;margin-right: 12px"  color="#FBFBFB" >发布日期:2019-09-01</p>
+            </div>
+        </div>
+        <div style="margin-top: 6px;margin-left: 12px;padding:4px;background-color:#2D93CA;border-radius: 5px;width: 60px;color: #fbfbfb;text-align: center">
+            <p >采购单</p>
+        </div>
+
+        <div style="margin: 12px">
+            <table class="layui-hide" id="test" lay-filter="test1"></table>
+        </div>
+        <form id="File_upload_form" method="post" enctype="multipart/form-data">
+            <div id="table_panel" style="margin-left: 12px">
+
+            </div>
+        </form>
+    </div>
+</div>
+<script src="/layui/layui.all.js"></script>
+<script th:inline="javascript" language="javascript" type="text/javascript">
+    function Start_landing()
+    {
+        layui.use('table', function(){
+            var table = layui.table;
+
+            $.ajax({
+                type: 'POST',
+                url: '/PurchasOrderinfor/PlannedPurchaseben',
+                dataType: 'json',
+                data:{PurchasId:document.getElementById("Oreder_number").innerText.split(":")[1]},
+                // headers:{  'eticket': app.globalData.eticket},
+                success: function (data) {
+
+                    var Data = data
+                    table.render({
+                        elem: '#test'
+                        , data:Data
+                        ,cols: [
+                            [
+                                {field:'number', width:80, title: '序号', sort: true}
+                                ,{field:'name', width:150, title: '名称'}
+                                ,{field:'materialspec', width:200, title: '规格'}
+                                ,{field:'pk_measdoc', width:150, title: '单位'}
+                                ,{field:'goods_quantity', width:280,title: '数量', minWidth: 150}
+                            ]
+                        ]
+                        ,page: true
+                    });
+                },
+                error: function (data) {
+                    alert("获取审核议价信息失败")
+                }
+            });
+        });
+
+        layui.use('table', function(){//供应商报价单
+            var table = layui.table;
+
+            $.ajax({
+                type: 'POST',
+                url: '/PurchasOrderinfor/OrderDetailedinfor',
+                dataType: 'json',
+                data:{PurchasId:document.getElementById("Oreder_number").innerText.split(':')[1]},
+                // headers:{  'eticket': app.globalData.eticket},
+                success: function (data) {
+
+                    document.getElementById("Merchant_number").innerText="已报价商家数:"+data.length+" 家"
+                    for (var n=0;n<data.length;n++)//所有供应商报价
+                    {
+                        var elements= document.createElement('div')
+                        var butuntext;
+                        if (data[n][0].sign_status==='未签署合同')
+                        {
+                            butuntext=
+                            '<div onclick="click_input(this)" style="float: left; cursor:pointer;margin-top: 6px;margin-left: 12px;padding:4px;background-color:#009688;width: 70px;color: #fbfbfb;text-align: center">' +
+                            '<p>上传合同</p>'  +
+                            '<p style="display: none">'+data[n][0].pk_supplier_id+'</p>'+
+                            '<input id="files" onchange="File_upload(this)" name="file" type="file" style="display: none">' +
+                            '</div>'
+                        }
+                        else if (data[n][0].sign_status==='等待签署合同')
+                        {
+                            butuntext=
+                                ' <div onclick="SetContract(this)" style="float: left; cursor:pointer;margin-top: 6px;margin-left: 12px;padding:4px;background-color:#009688;width: 70px;color: #fbfbfb;text-align: center">' +
+                                '<p >查看合同</p>'  +
+                                '<p style="display: none">'+data[n][0].pk_supplier_id+'</p>'+
+                                '   </div>'
+                        }
+                        else if (data[n][0].sign_status==='已签署合同')
+                        {
+                            butuntext=
+                                ' <div onclick="SetContract(this)" style="float: left; cursor:pointer;margin-top: 6px;margin-left: 12px;padding:4px;background-color:#009688;width: 70px;color: #fbfbfb;text-align: center">' +
+                                '<p >查看合同</p>'  +
+                                '<p style="display: none">'+data[n][0].pk_supplier_id+'</p>'+
+                                '   </div>'
+                        }
+                        elements.innerHTML=
+
+                            '<div style="margin-top: 12px;margin-left: 12px;width: 100%;height: 50px;">'+
+                            '<div style="float: left;margin-top: 6px;margin-right: 12px;padding:4px;background-color: #2D93CA;border-radius: 5px;color: #fbfbfb;text-align: center">'+
+                            ' <p >'+data[n][0].corp_name+' 报价</p>'+
+                            ' </div>'+
+                            ' <div style="float: right;margin-top: 6px;margin-right: 12px;padding:4px;background-color:#eb7350;border-radius: 5px;color: #fbfbfb;text-align: center">'+
+                            ' <p >总计 200元</p>'+
+                            ' </div>'+
+                            '</div>'+ '<table class="layui-hide" id="test'+n+'" lay-filter="test2"></table>'+
+                            '<div style="margin: 12px">' +
+                                '<p style="float: left;margin-top: 12px">'+data[n][0].sign_status+'</p>'+
+                            butuntext +
+                            '</div>'
+                        ;
+
+                        document.getElementById("table_panel").appendChild(elements);
+
+                        var Data = data[n];
+
+                        table.render({
+                            elem: '#test'+n
+                            , data:Data
+                            ,cols: [
+                                [
+                                    {field:'number', width:80, title: '序号', sort: true}
+                                    ,{field:'material_name', width:150, title: '物料名称'}
+                                    ,{field:'materialspec', width:200, title: '规格', sort: true}
+                                    ,{field:'unit', width:150, title: '单位'}
+                                    ,{field:'quote', width:150, title: '报价', sort: true}
+                                    ,{field:'l8', width:120,event: 'setl8', title: '操作',sort: true}
+                                ]
+                            ]
+                            ,page: true
+                        });
+                    }
+                },
+                error: function (data) {
+                    alert("获取审核议价信息失败")
+                }
+            });
+
+        });
+    }
+
+
+    function click_input(e)//上传合同
+    {
+
+       var clicks= e.childNodes[2]
+        clicks.click();
+      // document.getElementById("files").click()
+    }
+    function SetContract(e)//查看合同
+    {
+        var supplier_id=e.childNodes[1]//拿到供应商id
+        $.ajax({
+            type: 'POST',
+            url: '/ElectronicContractSigninginforController/SetContract',
+            dataType: 'json',
+            data:{purchasId:document.getElementById("Oreder_number").innerText.split(':')[1],supplierid:supplier_id.innerText},
+            // headers:{  'eticket': app.globalData.eticket},
+            success: function (data) {
+                if (data.statu===true)
+                {
+                    window.open(data.url);
+                }
+            },
+            error: function (data) {
+                alert("获取审核议价信息失败")
+            }
+        });
+
+      //  window.open("https://testapi.fadada.com:8443/api/viewContract.api?app_id=402664&v=2.0&timestamp=20191128114609&contract_id=20191127161612252&msg_digest=MzhENTFCNUExNzkxODU4RDIwM0UwOUM4QUE0MUU5MEQxNDFENjU0QQ==")
+        //window.location.href="";
+    }
+
+    function File_upload(e)//上传文件的方法，参数 url controller地址 上传文件类型的div id 如名片div的id 或者 身份材料的divid
+    {
+        var fileTypes = ["pdf"];
+        var filePath = e.value;
+        //当括号里面的值为0、空字符、false 、null 、undefined的时候就相当于false
+        if(filePath){
+            var isNext = false;
+            var fileNames=filePath.split('.');//filePath.substring(filePath.indexOf("."));
+            var fileEnd = fileNames[fileNames.length-1];
+            for (var i = 0; i < fileTypes.length; i++) {
+                if (fileTypes[i] == fileEnd) {
+                    isNext = true;
+                    break;
+                }
+            }
+            if (!isNext)//判断是否符合标准
+            {
+                alert('不接受此文件类型，只能上传格式为pdf的文档');
+                file.value = null;
+                return false;
+            }
+            else //文件通过，可以上传
+            {
+
+                var supplier_id=e.parentElement.childNodes[2]
+                var files = new FormData(document.getElementById('File_upload_form'));//"domeform"
+                files.set("userid",[[${session.userid}]].toString());//传一个专家id
+                files.set("purchase_id",[[${Oreder_number}]].toString().split(":")[1]);//采购单号
+                files.set("supplier_id",supplier_id.innerText);//供应商id
+
+                $.ajax({
+                    url: "/ElectronicContractSigninginforController/Upload_Contract",
+                    type: "post",
+                    data: files,//,img_business:img_business,img_documents:img_documents},
+                    processData: false,
+                    contentType: false,
+                    success: function(data) //data.statu 0上传成功 1上传失败 2未注册 3未认证
+                    {
+                        if (data.statu==="0")
+                        {
+                            alert("上传合同成功")
+                        }
+                        else if (data.statu==="1")
+                        {
+                            alert("上传合失败")
+                        }
+                        else if (data.statu==="2")//您的企业未注册法大大的账号，请注册！
+                        {
+                            layer.confirm('您的企业未注册法大大的账号，是否现在注册？', function(index)
+                            {
+                                $.ajax({
+                                    type: 'POST',
+                                    url: '/ElectronicContractSigninginforController/RegisteredAccount',
+                                    dataType: 'json',
+                                   // data:{purchasId:document.getElementById("Oreder_number").innerText.split(':')[1],supplierid:supplier_id.innerText},
+                                    success: function(data1) //data1.statu true注册成功
+                                    {
+                                        if (data1.statu===true)
+                                        {
+                                            alert("您的法大大账号注册成功！")
+                                        }
+                                    },
+                                    error: function(e)
+                                    {
+                                    }
+                                });
+                                layer.close(index);
+                            });
+                        }
+                        else if (data.statu==="3")
+                        {
+                            alert("您的企业的大大账号为认证，请认证！")
+                        }
+                    },
+                    error: function(e) {
+                    }
+                });
+
+            }
+        }
+        else
+        {
+            return false;
+        }
+
+    }
+
+    function return_top()//返回上一层
+    {
+        parent.close_Details_page();
+    }
+</script>
+</body>
+</html>

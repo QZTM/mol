@@ -19,7 +19,6 @@ public class EditExperInforController
    @RequestMapping("/ImageUpload") //修改专家信息
     public String ImageUpload(@RequestParam("file") ArrayList<MultipartFile> files, @RequestParam Map map)
    {
-
        return editExperInforService.ImageUploadLogic(files,map);
    }
 

@@ -31,6 +31,25 @@ public class PurchasOrderinforService
                     map_corp.put(purchasOrderinforben.get(n).getCorp_name(),purchasOrderinforben.get(n).getCorp_name());
                 }
             }
+            if (purchasOrderinforben.get(n).getSign_status()!=null)//查看供应商合同状态
+            {
+                if (purchasOrderinforben.get(n).getSign_status().equals("1"))
+                {
+                    purchasOrderinforben.get(n).setSign_status("未签署合同");
+                }
+                else if (purchasOrderinforben.get(n).getSign_status().equals("2"))
+                {
+                    purchasOrderinforben.get(n).setSign_status("等待签署合同");
+                }
+                else if (purchasOrderinforben.get(n).getSign_status().equals("3"))
+                {
+                    purchasOrderinforben.get(n).setSign_status("已签署合同");
+                }
+            }
+            else
+            {
+                purchasOrderinforben.get(n).setSign_status("未签署合同");
+            }
         }
 
         for (String value :map_corp.values())//相同公司的报价归为同一组

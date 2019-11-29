@@ -67,7 +67,7 @@
 	function AddAnnouncement() //添加新的公告
 	{
 		document.getElementById("datagridview").style.display="none";
-		document.getElementById("subWin").src="/Home//AnnouncementEditPage";
+		document.getElementById("subWin").src="/Home/AnnouncementEditPage";
 		document.getElementById("Details").style.display="block";
 
 		$("#Details").animate({width:"100%"}, 500);//展开
@@ -81,26 +81,38 @@
 
 	layui.use('table', function(){
 		var table = layui.table;
-		var Data=[{"id":"BeJson","fujian":"http://www.bejson.com","titl":true,"fenlei":"12","time":"12","founder":"12","right":"12111"},{"id":"BeJson","fujian":"http://www.bejson.com","titl":true,"fenlei":"12","time":"12","founder":"12","right":"12111"},{"id":"BeJson","fujian":"http://www.bejson.com","titl":true,"fenlei":"12","time":"12","founder":"12","right":"12111"}]
-		table.render({
-			elem: '#test'
-			// ,url:'data.json'//json路径
-			, data:Data
-			//,toolbar: '#toolbarDemo'
-			,title: '用户数据表'
-			,cols: [
-					[
-				{type: 'checkbox', fixed: 'left'}
-				,{field:'id', title:'ID', width:180, fixed: 'left', unresize: true, sort: true}
-				,{field:'fujian', title:'附件', width:220, edit: 'text'}
-				,{field:'titl', title:'标题', width:280, edit: 'text', sort: true}
-				,{field:'fenlei', title:'分类', width:200}
-				,{field:'time', title:'日期'}
-				,{field:'founder', title:'创建人', width:150, sort: true}
-				,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
-			]
-			]
-			,page: true
+		//var Data=[{"id":"BeJson","fujian":"http://www.bejson.com","titl":true,"fenlei":"12","time":"12","founder":"12","right":"12111"},{"id":"BeJson","fujian":"http://www.bejson.com","titl":true,"fenlei":"12","time":"12","founder":"12","right":"12111"},{"id":"BeJson","fujian":"http://www.bejson.com","titl":true,"fenlei":"12","time":"12","founder":"12","right":"12111"}]
+		$.ajax({
+			type: 'POST',
+			url: '/AnnouncementListController/AnnouncementList',
+			dataType: 'json',
+			//data:{supplier_type:supplier_type},
+			// headers:{  'eticket': app.globalData.eticket},
+			success: function (Data) {
+				table.render({
+					elem: '#test'
+					// ,url:'data.json'//json路径
+					, data:Data
+					//,toolbar: '#toolbarDemo'
+					,title: '用户数据表'
+					,cols: [
+						[
+							{type: 'checkbox', fixed: 'left'}
+							,{field:'number', title:'序号', width:180, fixed: 'left', unresize: true, sort: true}
+							,{field:'announcemenId', title:'公告id', width:220, edit: 'text'}
+							,{field:'titl', title:'标题', width:280, edit: 'text', sort: true}
+							,{field:'messageType', title:'分类', width:200}
+							,{field:'creadtime', title:'日期'}
+							,{field:'creadName', title:'创建人', width:150, sort: true}
+							,{fixed: 'right', title:'操作', toolbar: '#barDemo', width:150}
+						]
+					]
+					,page: true
+				});
+			},
+			error: function (data) {
+				alert("获取信息失败")
+			}
 		});
 
 		//头工具栏事件
@@ -127,6 +139,36 @@
 			//console.log(obj)
 			if(obj.event === 'del'){
 				layer.confirm('真的删除行么', function(index){
+					var messageType=''
+					if (data.messageType==='消息通知')
+					{
+						messageType='1'
+					}
+					else if (data.messageType==='任务安排')
+					{
+						messageType='2'
+					}
+					else if (data.messageType==='公司新闻')
+					{
+						messageType='3'
+					}
+					$.ajax({
+						type: 'POST',
+						url: '/AnnouncementListController/DeleteAnnouncementList',
+						dataType: 'json',
+						data:{announcemenId:data.announcemenId,messageType:messageType},
+						// headers:{  'eticket': app.globalData.eticket},
+						success: function (Data) {
+							if (Data.statu==false)
+							{
+								alert("删除公告失败")
+							}
+						},
+						error: function (data) {
+							alert("删除公告失败")
+						}
+					});
+
 					obj.del();
 					layer.close(index);
 				});

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script th:src="@{/js/jquery-3.3.1.js}"></script>
+    <meta charset="utf-8">
+    <title>电子合同认证</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}"  media="all">
+    <link rel="stylesheet" th:href="@{/css/style_common.css}">
+</head>
+<body>
+<div>
+</div>
+<div style="width:100%;height:100%;background-color:rgba(29, 26, 26, 0.1);position: fixed;left:0px;top:0px;z-index:13000" hidden="hidden" id="loading_div">
+    <span style="top: 275px;left: 37%;position: absolute;" id="loading_img_span">加载用户信息中</span>
+    <img src="/img/loading2.gif" style="height: 60px;position: relative;top: 212px;left: 43%;">
+</div>
+<div id="loadingtitlediv" style="width:100%;height:30px;font-size: 16px;text-align: center">
+    <p id="loadingtitletext" style="text-align: center;width:100%;height:100%"></p>
+</div>
+<div  id="turntoauthpagetitle" style="hidden:hidden;text-align: center;margin-top:200px;color:#666" hidden="hidden">
+    <span></span>
+</div>
+<div class="layui-progress" lay-showpercent="true" lay-filter="demo" style="position:relative;top:20px;width:80%;left:10%;" hidden="hidden" id="progressline">
+    <div class="layui-progress-bar layui-bg-blue" lay-percent="0%"></div>
+</div>
+<div th:include="footer.html :: footer"></div>
+<script th:src="@{/layui/layui.all.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+</body>
+<script th:inline="javascript">
+    var element;
+    window.onload=function() {
+        layui.use(["layer",'element'], function () {
+            var layer = layui.layer;
+            element = layui.element;
+            //alertMsg("查询认证状态中，请稍等");
+            Promise.resolve()
+            .then(
+            )
+            .then(function (data) {
+                return checkRegist('2');
+            }).then(function (data) {
+                                console.log("second.then...data:");
+                                console.log(data.success);
+                                if (data.success) {
+                                    //如果该单位已注册，那么去验证是否认证了；
+                                    console.log("该单位已注册：data；");
+                                    console.log(data);
+                                    checkAuthThen(data);
+                                } else {
+                                    //没有注册的情况：（弹框提示是否去注册，如果是，去注册，如果否则返回）
+                                    layer.confirm('您尚未注册，是否自动注册?', {btn: ['是', '否'],icon: 3, title: '',closeBtn: 0}, function (index) {
+                                        layer.close(index);
+                                        //去后端注册
+                                        return toRegist('2',registthenauth);
+                                    },function(index){
+                                        location.href="/microApp/my/show";
+                                    });
+                                }
+                            }, function () {
+                                alertMsg("系统异常请稍后再试！");
+                                history.back();
+                            })
+            // .then(function(data){
+            //                 console.log("验证完注册的then,data:");
+            //                 console.log(data);
+            //             //注册成功！后执行：
+            //             if(data.success){
+            //                 //去后台获取企业认证链接
+            //                 return getOrgAuthUrl(data.result);
+            //             }
+            //           },function(data){
+            //                     alertMsg("注册失败，请稍后再试！");
+            //                     history.back();})
+            // .then(function(data){
+            //     console.log("five ..then..data:");
+            //     console.log(data);
+            //     //注册成功后引导去认证页面：
+            //     if(data.success){
+            //         showLoadingLine();
+            //     }
+            // },function(){
+            //
+            // })
+
+        })
+    }
+
+
+    function registthenauth(pertime,callback){
+        console.log("registthenauth...");
+        alertMsg("注册成功，即将跳转到实名认证页面");
+        var n = 0, timer = setInterval(function(){
+            n = n + 1;
+            if(n>100){
+                n = 100;
+                clearInterval(timer);
+                callback;
+            }
+            //element.progress('demo', n+'%');
+        }, pertime);
+    }
+
+    function talktoauth(pertime,callback){
+        alertMsg("您尚未认证，即将跳转到认证页面");
+        var n = 0, timer = setInterval(function(){
+            n = n + 1;
+            if(n>100){
+                n = 100;
+                clearInterval(timer);
+                callback;
+            }
+            //element.progress('demo', n+'%');
+        }, pertime);
+    }
+
+    function checkAuthThen(res){
+        Promise.resolve(res).then(function(data){
+            return checkAuth(data.result,'2');
+        }).then(function(data){
+            if(data.success){
+                //跳转到认证已完成页面
+                location.href="/econtract/showAuthSuccess";
+            }else{
+                //talktoauth(60,checkAuthThen(data.result,'2'));
+                talktoauth(60,getAuthUrl(data.result,'2',getAuthUrlthen));
+                //获取认证链接并提示跳转
+                  // return getAuthUrl(data.result,'2');
+            }
+        },function(data){
+            alertMsg("系统出错，请稍后再试！");
+        })
+        //     .then(function(data){
+        //     console.log("获取认证url后的then...data:");
+        //     console.log(data);
+        //     if(data.success){
+        //         //showLoadingLine(turnToAuthPage(data.result));
+        //         alert(data.result);
+        //         console.log(data.result);
+        //         //turnToAuthPage(data.result)
+        //     }else{
+        //         alertMsg("系统出错，请稍后再试！");
+        //     }
+        // },function(){
+        //
+        // })
+    }
+
+    function getAuthUrlthen(res){
+        Promise.resolve(res).then(function(data){
+            console.log("获取认证url后的then...data:");
+            console.log(data);
+            if(data.success){
+                //showLoadingLine(turnToAuthPage(data.result));
+                alert(data.result);
+                console.log(data.result);
+                //turnToAuthPage(data.result)
+            }else{
+                alertMsg("系统出错，请稍后再试！");
+            }
+        },function(){
+
+        })
+    }
+
+    /**
+     * 去后端查询是否注册过
+     * @returns {Promise<unknown>}
+     */
+    function checkRegist(registType){
+        console.log("checkRegist...");
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url:'/econtract/checkRegist',
+                data:{registType:registType},
+                type:'get',
+                dataType:'json',
+                success:function(res){
+                    console.log("checkRegist...res:");
+                    console.log(res);
+                    resolve(res);
+                },fail:function(res){
+                    reject(res);
+                }
+            })
+        })
+    }
+
+    function checkAuth(customerId,authType){
+        console.log("checkAuth...");
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url:'/econtract/checkAuth',
+                data:{customerId:customerId,authType:authType},
+                type:'post',
+                dataType:'json',
+                success:function(res){
+                    console.log("checkAuth...res:");
+                    console.log(res);
+                    resolve(res);
+                },fail:function(res){
+                    reject(res);
+                }
+            })
+        })
+    }
+
+    function toRegist(registType,callback){
+        console.log("toRegist...");
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url:'/econtract/regist',
+                data:{registType:registType},
+                type:'post',
+                dataType:'json',
+                success:function(res){
+                    console.log("toRegist...res:");
+                    console.log(res);
+                    callback(50,checkAuthThen(res));
+                    resolve(res);
+                },fail:function(res){
+                    reject(res);
+                }
+            })
+        })
+    }
+
+    function getAuthUrl(customerId,authType,callback){
+        console.log("getOrgAuthUrl...");
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url:'/econtract/getAuthUrl',
+                data:{customerId:customerId,authType:authType},
+                type:'post',
+                dataType:'json',
+                success:function(res){
+                    console.log("getOrgAuthUrl...res:");
+                    console.log(res);
+                    callback(res);
+                    resolve(res);
+                },fail:function(res){
+                    reject(res);
+                }
+            })
+        })
+    }
+
+
+function showLoadingLine(callback){
+        $("#turntoauthpagetitle").show();
+    $("#progressline").show();
+    //模拟loading
+    var n = 0, timer = setInterval(function(){
+        n = n + 1;
+        if(n>100){
+            n = 100;
+            clearInterval(timer);
+            alert(1);
+            callback;
+        }
+        element.progress('demo', n+'%');
+    }, 30);
+}
+
+function turnToAuthPage(url){
+        console.log(url);
+        location.href = url;
+}
+
+
+
+
+
+
+
+</script>
+</html>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mol.ddmanage.mapper.Office.ElectronicContractSigningListMapper">
+    <select id="GetElectronicContractSigningList" resultType="com.mol.ddmanage.Ben.Office.ElectronicContractSigningListben">
+
+select
+(select app_user.user_name from app_user where fy_purchase.staff_id=app_user.dd_user_id)user_name,
+(SELECT fy_purchase_supplier_contract.sign_status FROM fy_purchase_supplier_contract WHERE fy_purchase_supplier_contract.purchase_id=fy_purchase.id)contract_statu,
+GROUP_CONCAT((SELECT bd_supplier.`name` FROM bd_supplier WHERE bd_supplier.pk_supplier=fy_purchase_detail.quote_id))suplier_name,
+fy_purchase.*
+FROM fy_purchase_supplier_contract,fy_purchase
+LEFT JOIN fy_purchase_detail ON
+fy_purchase.id=fy_purchase_detail.fy_purchase_id
+WHERE  fy_purchase.buy_channel_id!=1 AND fy_purchase.buy_channel_id!=2 AND fy_purchase.`status`=7
+GROUP BY fy_purchase.id
+     </select>
+</mapper>

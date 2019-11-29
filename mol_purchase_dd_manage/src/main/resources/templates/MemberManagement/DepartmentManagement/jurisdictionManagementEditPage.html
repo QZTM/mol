@@ -56,6 +56,7 @@
             <p style="float: left;margin: 12px;font-size: 18px"><input class="inputs" id="telephoneRecording" type="checkbox" name="vehicle" value="Bike" />通话记录</p>
             <p style="float: left;margin: 12px;font-size: 18px"><input class="inputs" id="purchaseProgress" type="checkbox" name="vehicle" value="Bike" />采购进度</p>
             <p style="float: left;margin: 12px;font-size: 18px"><input class="inputs" id="contract" type="checkbox" name="vehicle" value="Bike" />采购合同</p>
+            <p style="float: left;margin: 12px;font-size: 18px"><input class="inputs" id="electronicContract" type="checkbox" name="vehicle" value="Bike" />电子合同签署</p>
         </div>
 
         <div style="width: 100%; height: 40px;">
@@ -131,6 +132,7 @@
     {
         layer.confirm('退出后数据不会保存', function(){
             parent.close_Details_page();
+            layer.close(index)
         });
     }
     function saveSet() {

@@ -29,7 +29,7 @@ public class ControllerPages {
     public String new_file(@RequestParam Map map , HttpSession httpSession)
     {
         httpSession.setAttribute("userid","083216482529129838");
-        return "New_file";
+        return "new_file";
     }
 
     @RequestMapping("/Home")//首页
@@ -97,11 +97,37 @@ public class ControllerPages {
         }
     }
 
+
     @RequestMapping("/Contract")//合同管理详情
     public String Contract(@RequestParam Map map, Model model)
     {
         model.addAttribute("Oreder_number",map.get("Oreder_number").toString());//传一个订单编号
         return "Office/Purchase_Contract/Contract";
+    }
+
+    @RequestMapping("/ElectronicContractSigningListPage")//电子合同签署页面#
+    public String ElectronicContractSigningListPage(HttpServletRequest httpServletRequest)
+    {
+        HttpSession httpSession=httpServletRequest.getSession();
+        if(verificationPermissionService.VerificationPermissionLogic(httpSession.getAttribute("userid").toString(),"electronicContract"))//查询用户是否有进入这个页面的权限
+        {
+            return "Office/ElectronicContractSigning/ElectronicContractSigningListPage";
+        }
+        else
+        {
+            return "Permission/NotVerificationPage";
+        }
+
+    }
+
+    @RequestMapping("/ElectronicContractSigninginforPage")//电子合同签署详情页面
+    public String ElectronicContractSigninginforPage(@RequestParam Map map ,Model model)
+    {
+        model.addAttribute("Oreder_number","订单编号:"+map.get("Oreder_number").toString());//传一个订单编号
+        model.addAttribute("user_name","申请人:"+map.get("user_name").toString());//申请人
+        model.addAttribute("create_time","发布日期:"+map.get("create_time").toString());//创建日期
+        model.addAttribute("goods_name",map.get("goods_name").toString());
+        return "Office/ElectronicContractSigning/ElectronicContractSigninginforPage";
     }
 
     @RequestMapping("/Purchase_Grogress")//采购进度#
